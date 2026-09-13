@@ -1,38 +1,38 @@
 <script lang="ts" generics="T">
+  import type { Snippet } from "svelte";
+  import Loader from "@lucide/svelte/icons/loader-circle";
+  import Button from "./ui/Button.svelte";
   import { t } from "../lib/i18n.svelte";
 
-  /**
-   * Render a promise: a spinner, an error with a retry, or the content.
-   *
-   * Every page loads from the API, and repeating three states in each one is
-   * how one of them ends up forgotten.
-   */
+  /** Render a promise: spinner, error with retry, or the content. */
   let {
     promise,
     children,
     onretry = null,
   }: {
     promise: Promise<T>;
-    children: import("svelte").Snippet<[T]>;
+    children: Snippet<[T]>;
     onretry?: (() => void) | null;
   } = $props();
 </script>
 
 {#await promise}
-  <p class="muted py-8 text-sm" role="status">{t("common.loading")}…</p>
+  <p
+    class="flex items-center gap-2 py-8 text-sm text-muted-foreground"
+    role="status"
+  >
+    <Loader class="size-4 animate-spin" aria-hidden="true" />
+    {t("common.loading")}
+  </p>
 {:then value}
   {@render children(value)}
 {:catch error}
-  <div class="surface rounded-lg p-4" role="alert">
-    <p class="text-sm">{t("common.error")}: {error.message}</p>
+  <div class="rounded-lg border bg-muted/30 p-4 text-sm" role="alert">
+    <p class="text-destructive">{t("common.error")}: {error.message}</p>
     {#if onretry}
-      <button
-        type="button"
-        class="accent mt-2 text-sm underline"
-        onclick={onretry}
+      <Button variant="outline" size="sm" class="mt-3" onclick={onretry}
+        >{t("common.retry")}</Button
       >
-        {t("common.retry")}
-      </button>
     {/if}
   </div>
 {/await}

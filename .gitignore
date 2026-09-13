@@ -15,8 +15,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+# Anchored: the unanchored form also swallowed frontend/src/lib/.
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -164,3 +165,7 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
+
+# Aperçu local routé par le Traefik de la machine : propre à un poste, et il
+# porte un hash d'authentification, donc il ne se versionne pas.
+compose.preview.yml

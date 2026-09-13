@@ -1,8 +1,14 @@
 <script lang="ts">
+  import Loader from "@lucide/svelte/icons/loader-circle";
+  import Send from "@lucide/svelte/icons/send";
   import type { ChatOut } from "../generated/api";
+  import PlaygroundShell from "../components/PlaygroundShell.svelte";
   import RefPicker from "../components/RefPicker.svelte";
+  import Button from "../components/ui/Button.svelte";
+  import Region from "../components/ui/Region.svelte";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
+  import { FIELD } from "../lib/ui";
 
   let ref = $state("piighost/fr-default");
   let draft = $state(
@@ -37,83 +43,89 @@
   }
 </script>
 
-<div class="mx-auto max-w-4xl px-4 py-8">
-  <h1 class="text-2xl font-semibold tracking-tight">{t("chat.title")}</h1>
-  <p class="muted mt-2 max-w-2xl text-sm">{t("chat.lede")}</p>
-
-  <div class="mt-5 flex flex-wrap items-end gap-3">
-    <div class="min-w-64 flex-1">
-      <label class="mb-1.5 block text-sm font-medium" for="chat-ref"
-        >{t("play.object")}</label
-      >
-      <RefPicker id="chat-ref" bind:value={ref} />
-    </div>
-    <label class="flex items-center gap-2 text-sm">
-      <input type="checkbox" bind:checked={reveal} />
-      {t("chat.modelSees")}
-    </label>
-    {#if messages.length > 0}
-      <button
-        type="button"
-        class="hairline rounded-md border px-3 py-2 text-sm"
-        onclick={reset}
-      >
-        {t("chat.reset")}
-      </button>
-    {/if}
-  </div>
-
-  <ol class="mt-6 space-y-3">
-    {#each result?.turns ?? [] as turn, index (index)}
-      <li class="space-y-2">
-        <p
-          class="surface ms-auto max-w-[85%] rounded-2xl rounded-br-sm px-3 py-2 text-sm"
-        >
-          {reveal ? turn.user_sent : turn.user_text}
-        </p>
-        <p
-          class="max-w-[85%] rounded-2xl rounded-bl-sm bg-[var(--accent-soft)] px-3 py-2 text-sm"
-        >
-          {reveal ? turn.reply_received : turn.reply_text}
-        </p>
-      </li>
-    {/each}
-  </ol>
-
-  {#if error}
-    <p class="surface mt-4 rounded-lg p-3 text-sm" role="alert">{error}</p>
-  {/if}
-
-  <form
-    class="mt-5 flex gap-2"
-    onsubmit={(event) => {
-      event.preventDefault();
-      send();
-    }}
+<PlaygroundShell>
+  <Region
+    step={1}
+    done={messages.length > 0}
+    title={t("play.configure")}
+    bodyClass="gap-4"
   >
-    <input
-      bind:value={draft}
-      placeholder={t("chat.placeholder")}
-      aria-label={t("chat.placeholder")}
-      class="hairline flex-1 rounded-md border bg-[var(--page)] px-3 py-2 text-sm"
-    />
-    <button
-      type="submit"
-      class="rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-      disabled={busy || draft.trim() === ""}
-    >
-      {t("chat.send")}
-    </button>
-  </form>
+    <RefPicker id="chat-ref" bind:value={ref} label={t("play.object")} />
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" bind:checked={reveal} class="accent-primary" />
+      {t("chat.reveal")}
+    </label>
+    <p class="text-xs text-muted-foreground">{t("chat.lede")}</p>
+    <div class="mt-auto flex flex-col gap-2 pt-2">
+      {#if messages.length > 0}
+        <Button variant="outline" size="sm" class="self-start" onclick={reset}
+          >{t("chat.reset")}</Button
+        >
+      {/if}
+      {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+    </div>
+  </Region>
 
-  {#if result && Object.keys(result.mapping).length > 0}
-    <section class="mt-6">
-      <h2 class="text-sm font-semibold">{t("chat.mapping")}</h2>
-      <ul class="mt-2 space-y-1 font-mono text-xs">
+  <Region step={2} done={messages.length > 0} title={t("play.chat")}>
+    <ol class="flex flex-1 flex-col gap-3 overflow-auto">
+      {#each result?.turns ?? [] as turn, index (index)}
+        <li class="flex flex-col gap-2">
+          <p
+            class="ms-auto max-w-[85%] rounded-2xl rounded-br-sm bg-muted px-3 py-2 text-sm"
+          >
+            {reveal ? turn.user_sent : turn.user_text}
+          </p>
+          <p
+            class="max-w-[85%] rounded-2xl rounded-bl-sm bg-primary/10 px-3 py-2 text-sm"
+          >
+            {reveal ? turn.reply_received : turn.reply_text}
+          </p>
+        </li>
+      {:else}
+        <li class="text-sm text-muted-foreground">{t("chat.empty")}</li>
+      {/each}
+    </ol>
+    <form
+      class="mt-3 flex shrink-0 gap-2"
+      onsubmit={(event) => {
+        event.preventDefault();
+        send();
+      }}
+    >
+      <input
+        bind:value={draft}
+        placeholder={t("chat.placeholder")}
+        aria-label={t("chat.placeholder")}
+        class="{FIELD} h-8 text-sm"
+      />
+      <Button
+        type="submit"
+        disabled={busy || draft.trim() === ""}
+        aria-label={t("chat.send")}
+      >
+        {#if busy}<Loader class="animate-spin" />{:else}<Send />{/if}
+      </Button>
+    </form>
+  </Region>
+
+  <Region
+    step={3}
+    done={Boolean(result && Object.keys(result.mapping).length)}
+    title={t("chat.mapping")}
+  >
+    {#if result && Object.keys(result.mapping).length > 0}
+      <ul class="space-y-1.5">
         {#each Object.entries(result.mapping) as [token, value] (token)}
-          <li class="surface rounded px-2 py-1">{token} → {value}</li>
+          <li
+            class="flex items-center justify-between gap-2 rounded-md bg-muted/40 p-2 font-mono text-xs"
+          >
+            <span class="text-primary">{token}</span>
+            <span class="truncate text-muted-foreground">{value}</span>
+          </li>
         {/each}
       </ul>
-    </section>
-  {/if}
-</div>
+    {:else}
+      <p class="text-sm text-muted-foreground">{t("play.empty")}</p>
+    {/if}
+  </Region>
+</PlaygroundShell>

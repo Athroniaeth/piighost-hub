@@ -891,6 +891,9 @@
           "commit": {
             "type": "string"
           },
+          "description": {
+            "$ref": "#/components/schemas/Localized"
+          },
           "key": {
             "type": "string"
           },
@@ -924,6 +927,7 @@
         },
         "required": [
           "commit",
+          "description",
           "key",
           "kind",
           "labels",

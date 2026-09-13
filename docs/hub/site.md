@@ -1,23 +1,53 @@
 # Le site
 
 Une application Svelte servie par nginx, qui parle à l'API sous `/api/v1` en
-origine unique. Neuf routes, aucun état côté serveur, aucun compte.
+origine unique. Sept routes, aucun état côté serveur, aucun compte.
 
 | Route | Ce qu'on y fait |
 |---|---|
-| `/` | chercher, et partir d'une configuration |
-| `/browse` | parcourir avec des facettes ; les filtres sont dans l'URL |
-| `/r/:ns/:name[/:selector]` | une fiche d'objet |
-| `/labels` | les labels que le registre peut émettre |
-| `/playground` | lancer un objet sur un texte, ou essayer un regex |
-| `/compare` | deux à quatre objets sur le même texte |
-| `/chat` | l'aller-retour complet, avec un assistant scripté |
-| `/submit` | vérifier un manifeste et ouvrir une pull request |
+| `/` | chercher et parcourir le catalogue ; les filtres vivent dans l'URL |
+| `/r/:ns/:name[/:selector]` | une fiche d'objet : le contenu à gauche, la mesure et l'historique dessous, « l'utiliser » à droite |
+| `/playground` | lancer un objet ou un regex candidat sur un texte |
+| `/playground/compare` | deux à quatre objets sur le même texte |
+| `/playground/chat` | l'aller-retour complet, avec un assistant scripté |
+| `/contribute` | vérifier un manifeste et ouvrir une pull request |
+| `/labels` | les labels que le registre peut émettre, depuis le pied de page |
+
+Trois entrées de navigation, pas plus : Catalogue, Bac à sable, Contribuer.
+Comparer et le chat sont des onglets du bac à sable, parce qu'ils partagent sa
+grammaire et son texte d'entrée.
+
+## Charte
+
+Le site reprend la charte de `piighost-studio` pour que l'écosystème se lise
+d'un seul tenant : l'échelle neutre de shadcn, un seul violet primaire, Geist
+pour le texte et Geist Mono pour le code et la marque, un rayon de base de
+0,625 rem. Le clair est le défaut et le sombre est une classe sur `<html>`
+posée par le visiteur, jamais déduite du système, comme le studio le fait.
+
+Les polices sont auto-hébergées par `@fontsource-variable/geist`, la CSP ne
+laissant aucune autre origine. Les icônes viennent de lucide, une par import.
+
+**Trois surfaces, une grammaire.** Le bac à sable, la comparaison, le chat et
+la page de contribution sont une même carte en trois colonnes numérotées,
+Configurer, Texte, Résultats, avec un en-tête de région identique. C'est le
+composant `Region` qui porte cette grammaire, et les quatre pages l'importent.
+
+**Les couleurs d'entités sont celles du studio.** Une palette de quinze teintes
+attribuée par ordre d'apparition, `PERSON` sur le primaire, portée
+verbatim de `labels.ts`. Un label garde donc la même couleur dans le hub et
+dans le bac à sable du studio.
+
+**Les composants.** Sous `components/ui/` : `Button`, `Badge`, `Card`,
+`Segmented`, `Tabs`, `Region`, `StepChip`, `CodeBlock`, `CopyButton`. Au-dessus :
+`EntityLabel`, `EntityRow`, `EntityHighlight`, `ObjectCard`, `RefPicker`,
+`SamplePicker`, `SiteNav`, `SiteFooter`. Les contrôles natifs partagent leurs
+classes depuis `lib/ui.ts` plutôt qu'un composant par champ.
 
 ## Choix qui se voient
 
 **Les filtres vivent dans l'URL.** Une vue filtrée doit être partageable, et le
-bouton retour doit défaire un filtre plutôt que quitter la page. `/browse` lit
+bouton retour doit défaire un filtre plutôt que quitter la page. Le catalogue lit
 donc `q`, `kind`, `tag` (répétable) et `label` depuis la query, et n'a pas d'état
 propre.
 
@@ -32,15 +62,11 @@ marcherait en développement et casserait en production, donc la coloration pass
 par des classes et les couleurs vivent dans la feuille de style. Le bundle
 construit ne contient aucun attribut `style`.
 
-**Les surlignages ne reposent pas que sur la couleur.** Chaque détection porte
-une teinte *et* un soulignement, et la teinte est choisie en hachant le label,
-donc un label garde sa couleur d'une page à l'autre.
-
 **Une fiche imprimable.** La classe `no-print` retire les contrôles, et la
 feuille bascule en noir sur blanc. Un DPO lit une fiche de couverture sur
 papier, pas un fichier TOML.
 
-**Un routeur en un fichier.** Neuf routes, pas de layouts imbriqués : une
+**Un routeur en un fichier.** Sept routes, pas de layouts imbriqués : une
 dépendance de routage coûterait plus en indirection qu'elle n'apporte. nginx
 sert déjà `index.html` en repli, ce dont un routeur d'historique a besoin. Les
 liens restent de vrais `<a href>`, donc le clic du milieu et l'ouverture dans un

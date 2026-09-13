@@ -1,0 +1,68 @@
+<script lang="ts">
+  import { t } from "../lib/i18n.svelte";
+</script>
+
+<footer class="border-t">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3">
+    <div>
+      <p class="font-mono text-lg font-bold">piighost hub</p>
+      <p class="mt-2 max-w-xs text-sm text-muted-foreground">
+        {t("footer.tagline")}
+      </p>
+    </div>
+    <div>
+      <p class="text-sm font-semibold">piighost</p>
+      <ul class="mt-3 space-y-2 text-sm text-muted-foreground">
+        <li>
+          <a
+            class="hover:text-foreground"
+            href="https://github.com/Athroniaeth/piighost"
+            target="_blank"
+            rel="noreferrer">GitHub</a
+          >
+        </li>
+        <li>
+          <a
+            class="hover:text-foreground"
+            href="https://pypi.org/project/piighost/"
+            target="_blank"
+            rel="noreferrer">PyPI</a
+          >
+        </li>
+        <li>
+          <a
+            class="hover:text-foreground"
+            href="https://athroniaeth.github.io/piighost/"
+            target="_blank"
+            rel="noreferrer">{t("footer.docs")}</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-sm font-semibold">{t("footer.links")}</p>
+      <ul class="mt-3 space-y-2 text-sm text-muted-foreground">
+        <li>
+          <a class="hover:text-foreground" href="/labels">{t("labels.title")}</a
+          >
+        </li>
+        <li>
+          <a class="hover:text-foreground" href="/contribute"
+            >{t("nav.contribute")}</a
+          >
+        </li>
+        <li>
+          <a
+            class="hover:text-foreground"
+            href="https://discord.gg/vFg9GHQR2s"
+            target="_blank"
+            rel="noreferrer">Discord</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t py-6 text-center text-xs text-muted-foreground">
+    {t("footer.mit")}
+  </div>
+</footer>

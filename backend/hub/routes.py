@@ -140,6 +140,7 @@ class SearchHit(msgspec.Struct):
     tags: list[str]
     labels: list[str]
     used_by: list[str]
+    description: Localized
 
 
 class FacetOut(msgspec.Struct):
@@ -428,6 +429,9 @@ class HubController(Controller):
                     tags=e.tags,
                     labels=e.labels,
                     used_by=e.used_by,
+                    description=Localized(
+                        en=e.description.get("en", ""), fr=e.description.get("fr", "")
+                    ),
                 )
                 for e in entries
             ],

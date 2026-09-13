@@ -1,9 +1,18 @@
 <script lang="ts">
+  import Loader from "@lucide/svelte/icons/loader-circle";
+  import Plus from "@lucide/svelte/icons/plus";
+  import X from "@lucide/svelte/icons/x";
   import type { CompareOut } from "../generated/api";
-  import Highlighted from "../components/Highlighted.svelte";
+  import EntityHighlight from "../components/EntityHighlight.svelte";
+  import PlaygroundShell from "../components/PlaygroundShell.svelte";
   import RefPicker from "../components/RefPicker.svelte";
+  import SamplePicker from "../components/SamplePicker.svelte";
+  import Button from "../components/ui/Button.svelte";
+  import Region from "../components/ui/Region.svelte";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
+  import { assignLabelColors } from "../lib/labels";
+  import { EYEBROW, TEXTAREA } from "../lib/ui";
 
   let refs = $state<string[]>([
     "piighost/regex-default",
@@ -12,10 +21,16 @@
   let text = $state(
     "Patrick Dupont, 06 39 98 12 34, patrick@example.com, SIRET 732 829 320 00074, 75008 Paris.",
   );
-  const slots = $derived(refs.map((_, index) => index));
   let result = $state<CompareOut | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
+
+  const slots = $derived(refs.map((_, index) => index));
+  const colors = $derived(
+    assignLabelColors(
+      result?.runs.flatMap((run) => run.hits.map((hit) => hit.label)) ?? [],
+    ),
+  );
 
   async function go() {
     busy = true;
@@ -31,81 +46,107 @@
   }
 </script>
 
-<div class="mx-auto max-w-6xl px-4 py-8">
-  <h1 class="text-2xl font-semibold tracking-tight">{t("compare.title")}</h1>
-  <p class="muted mt-2 max-w-2xl text-sm">{t("compare.lede")}</p>
-
-  <div class="mt-6 grid gap-3 sm:grid-cols-2">
+<PlaygroundShell>
+  <Region
+    step={1}
+    done={result !== null}
+    title={t("play.configure")}
+    bodyClass="gap-3"
+  >
     {#each slots as index (index)}
-      <div>
-        <label class="mb-1.5 block text-sm font-medium" for="cmp-{index}">
-          {index + 1}
-        </label>
-        <RefPicker id="cmp-{index}" bind:value={refs[index]} />
+      <div class="flex items-center gap-1.5">
+        <RefPicker
+          id="cmp-{index}"
+          bind:value={refs[index]}
+          label="{t('play.object')} {index + 1}"
+        />
+        {#if refs.length > 2}
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t("compare.remove")}
+            onclick={() => (refs = refs.filter((_, i) => i !== index))}
+          >
+            <X />
+          </Button>
+        {/if}
       </div>
     {/each}
-  </div>
-
-  {#if refs.length < 4}
-    <button
-      type="button"
-      class="hairline mt-3 rounded-md border px-3 py-1.5 text-sm"
-      onclick={() => (refs = [...refs, "piighost/generic"])}
-    >
-      {t("compare.add")}
-    </button>
-  {/if}
-
-  <label class="mt-5 mb-1.5 block text-sm font-medium" for="cmp-text"
-    >{t("play.custom")}</label
-  >
-  <textarea
-    id="cmp-text"
-    bind:value={text}
-    rows="5"
-    class="hairline w-full rounded-md border bg-[var(--page)] p-3 font-mono text-[0.8rem]"
-  ></textarea>
-
-  <button
-    type="button"
-    class="mt-3 rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
-    onclick={go}
-    disabled={busy}
-  >
-    {busy ? `${t("play.running")}…` : t("compare.run")}
-  </button>
-
-  {#if error}
-    <p class="surface mt-4 rounded-lg p-3 text-sm" role="alert">{error}</p>
-  {/if}
-
-  {#if result}
-    <dl class="mt-6 grid gap-3 sm:grid-cols-2">
-      <div class="surface rounded-lg p-3">
-        <dt class="text-sm font-medium">{t("compare.agreed")}</dt>
-        <dd class="mt-1 font-mono text-xs">
-          {result.agreed.length > 0 ? result.agreed.join(" · ") : "—"}
-        </dd>
-      </div>
-      <div class="surface rounded-lg p-3">
-        <dt class="text-sm font-medium">{t("compare.disputed")}</dt>
-        <dd class="mt-1 font-mono text-xs">
-          {result.disputed.length > 0 ? result.disputed.join(" · ") : "—"}
-        </dd>
-      </div>
-    </dl>
-
-    <div class="mt-5 grid gap-4 lg:grid-cols-2">
-      {#each result.runs as item (item.ref)}
-        <section>
-          <h2 class="mb-1.5 font-mono text-sm">{item.ref}</h2>
-          <Highlighted {text} hits={item.hits} />
-          <p class="muted mt-1 text-xs">
-            {item.hits.filter((hit) => hit.kept).length}
-            {t("play.kept")} · {item.elapsed_ms.toFixed(1)} ms
-          </p>
-        </section>
-      {/each}
+    {#if refs.length < 4}
+      <Button
+        variant="outline"
+        size="sm"
+        class="self-start"
+        onclick={() => (refs = [...refs, "piighost/generic"])}
+      >
+        <Plus />
+        {t("compare.add")}
+      </Button>
+    {/if}
+    <div class="mt-auto flex flex-col gap-2 pt-2">
+      <Button onclick={go} disabled={busy || text.trim() === ""}>
+        {#if busy}<Loader class="animate-spin" />{/if}
+        {busy ? t("play.running") : t("compare.go")}
+      </Button>
+      {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+      <p class="text-xs text-muted-foreground">{t("play.privacy")}</p>
     </div>
-  {/if}
-</div>
+  </Region>
+
+  <Region
+    step={2}
+    done={result !== null}
+    title={t("play.text")}
+    bodyClass="gap-4"
+  >
+    {#snippet action()}
+      <SamplePicker
+        onpick={(sample) => (text = sample.text.trim())}
+        disabled={busy}
+      />
+    {/snippet}
+    <textarea
+      bind:value={text}
+      spellcheck="false"
+      aria-label={t("play.text")}
+      class="{TEXTAREA} min-h-24"></textarea>
+    {#if result}
+      {#each result.runs as run (run.ref)}
+        <div>
+          <p class="mb-1.5 font-mono text-xs text-muted-foreground">
+            {run.ref} ·
+            <span class="tabular-nums"
+              >{run.hits.filter((h) => h.kept).length} {t("play.kept")}</span
+            >
+          </p>
+          <div class="rounded-lg border bg-muted/30 p-3">
+            <EntityHighlight {text} hits={run.hits} {colors} />
+          </div>
+        </div>
+      {/each}
+    {/if}
+  </Region>
+
+  <Region step={3} done={result !== null} title={t("play.results")}>
+    {#if !result}
+      <p class="text-sm text-muted-foreground">{t("play.empty")}</p>
+    {:else}
+      <h3 class="{EYEBROW} mb-2">{t("compare.agreed")}</h3>
+      <ul class="space-y-1.5">
+        {#each result.agreed as value (value)}
+          <li class="rounded-md bg-muted/40 p-2 font-mono text-sm">{value}</li>
+        {:else}
+          <li class="text-sm text-muted-foreground">{t("play.nothing")}</li>
+        {/each}
+      </ul>
+      <h3 class="{EYEBROW} mt-5 mb-2">{t("compare.disputed")}</h3>
+      <ul class="space-y-1.5">
+        {#each result.disputed as value (value)}
+          <li class="rounded-md bg-muted/40 p-2 font-mono text-sm">{value}</li>
+        {:else}
+          <li class="text-sm text-muted-foreground">{t("play.nothing")}</li>
+        {/each}
+      </ul>
+    {/if}
+  </Region>
+</PlaygroundShell>

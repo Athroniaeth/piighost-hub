@@ -32,6 +32,7 @@ class Entry:
     commit: str
     tags: list[str]
     labels: list[str]
+    description: dict[str, str] = field(default_factory=dict)
     haystack: str = ""
     used_by: list[str] = field(default_factory=list)
 
@@ -82,6 +83,10 @@ class Index:
                 commit=head.short,
                 tags=list(head.content.get("tags", [])),
                 labels=labels,
+                description={
+                    "en": description.get("en", ""),
+                    "fr": description.get("fr", ""),
+                },
             )
             entry.haystack = fold(
                 " ".join(
