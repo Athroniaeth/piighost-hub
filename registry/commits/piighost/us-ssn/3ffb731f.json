@@ -1,0 +1,48 @@
+{
+  "digest": "3ffb731f7c4e0e33363714a7954a08b42ebe0f28b79f552fabea9fdc4c24ebd7",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-ssn",
+    "schema_version": 1,
+    "label": "US_SSN",
+    "regex": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+    "description": {
+      "en": "US Social Security number in its hyphenated 3-2-4 form. Forbidden areas (000, 666, 9xx) and unhyphenated values are not handled; any AAA-GG-SSSS digit group is reported.",
+      "fr": "Numéro de sécurité sociale américain (SSN) dans sa forme 3-2-4 avec tirets. Les zones interdites (000, 666, 9xx) et les valeurs sans tiret ne sont pas gérées ; tout groupe de chiffres AAA-GG-SSSS est signalé."
+    },
+    "tags": [
+      "us",
+      "government-id",
+      "identity",
+      "hr"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "SSN 123-45-6789 on file.",
+          "value": "123-45-6789"
+        },
+        {
+          "text": "Applicant 987-65-4321 approved",
+          "value": "987-65-4321"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "123-456-789"
+        },
+        {
+          "text": "123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "123-45-6789 ",
+      "filler": "123-45-",
+      "suffix": "x"
+    }
+  }
+}

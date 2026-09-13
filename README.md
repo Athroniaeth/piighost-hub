@@ -152,6 +152,25 @@ WEB_CONCURRENCY=4 docker compose up -d    # 4 workers Granian
 Passer à l'horizontal ensuite ne demande que des répliques d'`api` derrière nginx —
 à condition de n'avoir mis aucun état en mémoire dans le processus.
 
+## Hub de configurations
+
+Ce dépôt porte le **piighost hub** : un registre de motifs regex, de groupes de
+motifs et de configs de pipeline pour [piighost](https://github.com/Athroniaeth/piighost),
+servi en lecture par l'API sous `/api/v1`. Les manifestes vivent dans `registry/`,
+le code dans `backend/hub/`.
+
+- [Format des manifestes](docs/hub/manifest.md) : motifs, groupes, configs, tags.
+- [Références, commits et résolution](docs/hub/resolution.md) : `ns/name:tag`,
+  `ns/name:3fa9c2e1`, commits immuables, règles de composition, rendu piighost.
+- [API HTTP](docs/hub/api.md) : les routes, le cache, les erreurs.
+
+```bash
+just hub-check                                  # valide le registre (dans `just check`)
+just hub-record                                 # enregistre les têtes comme commits
+uv run python -m backend.hub resolve piighost/fr
+uv run python -m backend.hub render piighost/fr-default --memory redis
+```
+
 ## Clé d'API
 
 `/api/hello` est protégée par une clé, `/api/health` reste publique (le healthcheck de

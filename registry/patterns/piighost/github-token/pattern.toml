@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "github-token"
+label = "GITHUB_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{82})\b'
+
+[pattern.description]
+en = "GitHub token: the classic prefixed forms (ghp_ personal, gho_ OAuth, ghu_ user-to-server, ghs_ server-to-server, ghr_ refresh) and the fine-grained form github_pat_ followed by eighty-two characters."
+fr = "Jeton GitHub : les formes classiques à préfixe (ghp_ personnel, gho_ OAuth, ghu_ utilisateur vers serveur, ghs_ serveur vers serveur, ghr_ rafraîchissement) et la forme à portée fine github_pat_ suivie de quatre-vingt-deux caractères."
+
+# Jetons inventés, de la bonne longueur.
+[[examples.match]]
+text = "git remote set-url origin https://ghp_abcdefghijklmnopqrstuvwxyz0123456789@github.com/o/r"
+value = "ghp_abcdefghijklmnopqrstuvwxyz0123456789"
+
+[[examples.match]]
+text = "Token ghs_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 expired."
+value = "ghs_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+# Préfixe valide mais trop court.
+[[examples.no_match]]
+text = "ghp_abcdef123"
+
+# Un préfixe qui n'existe pas.
+[[examples.no_match]]
+text = "ghx_abcdefghijklmnopqrstuvwxyz0123456789"
+
+[redos]
+prefix = "ghp_"
+filler = "a"
+suffix = "!"

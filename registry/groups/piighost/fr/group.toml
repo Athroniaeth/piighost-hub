@@ -1,0 +1,18 @@
+schema_version = 1
+
+[group]
+name = "fr"
+description = { en = "France: phone, IBAN, NIR, SIRET. Mirrors piighost's built-in `fr` catalog.", fr = "France : téléphone, IBAN, NIR, SIRET. Miroir du catalogue intégré `fr` de piighost." }
+tags = ["fr", "contact", "finance", "government-id", "business"]
+
+[[sources]]
+ref = "piighost/fr-phone"
+
+[[sources]]
+ref = "piighost/fr-iban"
+
+[[sources]]
+ref = "piighost/fr-nir"
+
+[[sources]]
+ref = "piighost/fr-siret"

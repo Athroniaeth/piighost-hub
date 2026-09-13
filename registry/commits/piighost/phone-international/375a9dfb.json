@@ -1,0 +1,50 @@
+{
+  "digest": "375a9dfb157e21d2658d7f159d9ce7e710715b90cc393355cba6ff03a2af74a0",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "phone-international",
+    "schema_version": 1,
+    "label": "PHONE_INTERNATIONAL",
+    "regex": "(?<![\\w+])\\+\\d{1,3}[\\s.-]?(?:\\(\\d{1,4}\\)|\\d{1,4})(?:[\\s.-]?\\d{1,4}){1,4}(?!\\d)",
+    "description": {
+      "en": "Phone number in international form: a + sign, a country code, then groups of digits. The area code may be parenthesised, and the parentheses are paired so a number written inside brackets does not swallow one. Deliberately loose about grouping, so it overlaps with every national phone pattern: do not put both in the same detector.",
+      "fr": "Numéro de téléphone en forme internationale : un signe +, un indicatif pays, puis des groupes de chiffres. L'indicatif régional peut être entre parenthèses, appariées pour qu'un numéro écrit entre crochets n'en avale pas une. Volontairement souple sur le découpage, donc il recouvre tous les motifs nationaux : ne les mettez pas dans le même détecteur."
+    },
+    "tags": [
+      "international",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Call +44 20 7946 0958 during office hours.",
+          "value": "+44 20 7946 0958"
+        },
+        {
+          "text": "Fax: +49 (30) 1234567",
+          "value": "+49 (30) 1234567"
+        },
+        {
+          "text": "Mobile +33 6 39 98 01",
+          "value": "+33 6 39 98 01"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Call 44 20 7946 0958 now"
+        },
+        {
+          "text": "version C+42 1234"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+44 ",
+      "filler": "20 ",
+      "suffix": "x"
+    }
+  }
+}

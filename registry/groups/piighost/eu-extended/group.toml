@@ -1,0 +1,12 @@
+schema_version = 1
+
+[group]
+name = "eu-extended"
+description = { en = "The `eu` group plus VAT numbers.", fr = "Le groupe `eu` plus les numéros de TVA." }
+tags = ["eu", "finance", "business"]
+
+[[sources]]
+ref = "piighost/eu"
+
+[[sources]]
+ref = "piighost/eu-vat"

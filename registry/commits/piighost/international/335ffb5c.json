@@ -1,0 +1,39 @@
+{
+  "digest": "335ffb5cce9143fa1ac509a1af70f58669eff8746601fad29b5351719b59f1d6",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "international",
+    "schema_version": 1,
+    "description": {
+      "en": "The `generic` group plus IPv6 and international phone numbers. Do not combine with a country phone pattern: a +33 or +1 number collides on the same span.",
+      "fr": "Le groupe `generic` plus IPv6 et téléphones internationaux. À ne pas combiner avec un motif de téléphone national : un numéro en +33 ou +1 entre en collision sur le même span."
+    },
+    "tags": [
+      "international",
+      "contact",
+      "network"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/generic",
+        "commit": "e9f9b4fa",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/ipv6",
+        "commit": "4443d3c0",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/phone-international",
+        "commit": "375a9dfb",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

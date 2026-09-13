@@ -1,0 +1,59 @@
+{
+  "digest": "1b6bb5775b7dbf92ef57ae9d662cb0ffc0d9e5e21c28a269e64fcfd205f96fbe",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "dev-secrets",
+    "schema_version": 1,
+    "description": {
+      "en": "For a coding assistant: inherits regex-default without the country packs and card numbers, adds API keys, tokens and IPv6. What a developer pastes into a prompt. URL is dropped on purpose: a credential embedded in a URL, as in https://ghp_...@github.com/o/r, sits inside the URL span, and the URL starts first, so no ordering keeps the token. Losing the URL matters less here than leaking the token.",
+      "fr": "Pour un assistant de code : hérite de regex-default sans les packs nationaux ni les cartes bancaires, ajoute clés d'API, jetons et IPv6. Ce qu'un développeur colle dans un prompt. URL est écarté volontairement : un secret inclus dans une URL, comme https://ghp_...@github.com/o/r, se trouve à l'intérieur du span de l'URL, et l'URL commence avant, donc aucun ordre ne sauve le jeton. Perdre l'URL compte moins ici que laisser fuir le jeton."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "network",
+      "software-dev",
+      "code-assistant",
+      "logs"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [
+      {
+        "ref": "piighost/regex-default",
+        "commit": "9f9f1c2a",
+        "exclude": [
+          "detector:regex-fr",
+          "detector:regex-eu",
+          "detector:regex-us",
+          "label:CREDIT_CARD",
+          "label:URL"
+        ]
+      }
+    ],
+    "detectors": [
+      {
+        "name": "secrets",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/secrets",
+            "commit": "46bea273"
+          }
+        ]
+      },
+      {
+        "name": "network",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/ipv6",
+            "commit": "4443d3c0"
+          }
+        ]
+      }
+    ],
+    "stages": {}
+  }
+}

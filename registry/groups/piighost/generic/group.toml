@@ -1,0 +1,18 @@
+schema_version = 1
+
+[group]
+name = "generic"
+description = { en = "Country-agnostic shapes: email, URL, IPv4, card number. Mirrors piighost's built-in `generic` catalog.", fr = "Formes indépendantes du pays : e-mail, URL, IPv4, numéro de carte. Miroir du catalogue intégré `generic` de piighost." }
+tags = ["international", "contact", "finance", "network"]
+
+[[sources]]
+ref = "piighost/email"
+
+[[sources]]
+ref = "piighost/url"
+
+[[sources]]
+ref = "piighost/ipv4"
+
+[[sources]]
+ref = "piighost/credit-card"

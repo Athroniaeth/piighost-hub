@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "stripe-key"
+label = "STRIPE_KEY"
+tags = ["international", "secrets", "software-dev", "ecommerce"]
+regex = '\b[sr]k_(?:live|test)_[A-Za-z0-9]{24,}\b'
+
+[pattern.description]
+en = "Stripe secret or restricted key, in its live or test form. The test form is caught too: it is harmless on its own but reveals an account and usually travels with the live one."
+fr = "Clé secrète ou restreinte Stripe, en forme live ou test. La forme test est repérée aussi : inoffensive seule, elle désigne un compte et voyage le plus souvent avec la clé live."
+
+# Clés inventées.
+[[examples.match]]
+text = "STRIPE_SECRET_KEY=sk_test_abcdefghijklmnopqrstuvwx"
+value = "sk_test_abcdefghijklmnopqrstuvwx"
+
+[[examples.match]]
+text = "Use rk_live_ABCDEFGHIJKLMNOPQRSTUVWX for the webhook."
+value = "rk_live_ABCDEFGHIJKLMNOPQRSTUVWX"
+
+# pk_ est la clé publiable, qui n'est pas un secret.
+[[examples.no_match]]
+text = "pk_live_abcdefghijklmnopqrstuvwx"
+
+# Ni live ni test.
+[[examples.no_match]]
+text = "sk_prod_abcdefghijklmnopqrstuvwx"
+
+[redos]
+prefix = "sk_test_"
+filler = "a"
+suffix = "!"

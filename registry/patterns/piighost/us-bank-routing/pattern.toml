@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "us-bank-routing"
+label = "US_BANK_ROUTING"
+tags = ["us", "finance", "banking"]
+regex = '\b\d{9}\b'
+
+[pattern.description]
+en = "US bank routing number, nine digits. Very noisy: any nine-digit run matches, an order number, a part reference, a truncated identifier. Use it only in a banking context, and expect it to take spans a narrower pattern would have claimed if it is declared first."
+fr = "Numéro de routage bancaire américain, neuf chiffres. Très bruyant : toute suite de neuf chiffres correspond, un numéro de commande, une référence de pièce, un identifiant tronqué. À n'utiliser qu'en contexte bancaire, en sachant qu'il prendra les spans d'un motif plus étroit s'il est déclaré avant lui."
+
+[[examples.match]]
+text = "Routing 021000021 for the wire."
+value = "021000021"
+
+[[examples.match]]
+text = "ABA number 011401533 confirmed."
+value = "011401533"
+
+# Huit chiffres.
+[[examples.no_match]]
+text = "12345678"
+
+# Dix chiffres.
+[[examples.no_match]]
+text = "1234567890"
+
+[redos]
+prefix = ""
+filler = "1"
+suffix = "x"

@@ -1,0 +1,15 @@
+schema_version = 1
+
+[group]
+name = "us"
+description = { en = "United States: SSN, phone, ZIP. Mirrors piighost's built-in `us` catalog.", fr = "États-Unis : SSN, téléphone, ZIP. Miroir du catalogue intégré `us` de piighost." }
+tags = ["us", "government-id", "contact", "location"]
+
+[[sources]]
+ref = "piighost/us-ssn"
+
+[[sources]]
+ref = "piighost/us-phone"
+
+[[sources]]
+ref = "piighost/us-zip"

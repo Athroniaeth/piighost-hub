@@ -1,0 +1,9 @@
+schema_version = 1
+
+[group]
+name = "eu"
+description = { en = "Pan-European: IBAN. Mirrors piighost's built-in `eu` catalog.", fr = "Paneuropéen : IBAN. Miroir du catalogue intégré `eu` de piighost." }
+tags = ["eu", "finance"]
+
+[[sources]]
+ref = "piighost/iban"

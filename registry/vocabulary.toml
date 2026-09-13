@@ -1,0 +1,140 @@
+# Vocabulaire fermé des tags. Un manifeste ne peut porter qu'un tag défini ici :
+# `hub check` rejette tout autre. Le site dérive ses facettes du champ `kind`,
+# pas des manifestes, ce qui laisse aux auteurs une simple liste à plat.
+#
+# Trois familles ne se tapent pas, elles se déduisent : officiel ou communautaire
+# vient de l'espace de noms, regex seul ou modèle local ou clé d'API vient du
+# contenu d'une config, retiré vient du statut d'un commit.
+
+# ---- region : le pays ou la zone dont le format est propre --------------------
+[international]
+kind = "region"
+label = { en = "International", fr = "International" }
+
+[fr]
+kind = "region"
+label = { en = "France", fr = "France" }
+
+[eu]
+kind = "region"
+label = { en = "European Union", fr = "Union européenne" }
+
+[us]
+kind = "region"
+label = { en = "United States", fr = "États-Unis" }
+
+[uk]
+kind = "region"
+label = { en = "United Kingdom", fr = "Royaume-Uni" }
+
+[de]
+kind = "region"
+label = { en = "Germany", fr = "Allemagne" }
+
+# ---- category : la nature de la donnée ---------------------------------------
+[contact]
+kind = "category"
+label = { en = "Contact details", fr = "Coordonnées" }
+
+[identity]
+kind = "category"
+label = { en = "Identity", fr = "Identité" }
+
+[government-id]
+kind = "category"
+label = { en = "Government identifier", fr = "Identifiant d'État" }
+
+[finance]
+kind = "category"
+label = { en = "Financial", fr = "Financier" }
+
+[location]
+kind = "category"
+label = { en = "Location", fr = "Localisation" }
+
+[network]
+kind = "category"
+label = { en = "Network and infrastructure", fr = "Réseau et infrastructure" }
+
+[secrets]
+kind = "category"
+label = { en = "Secrets and API keys", fr = "Secrets et clés d'API" }
+
+[health]
+kind = "category"
+label = { en = "Health", fr = "Santé" }
+
+[business]
+kind = "category"
+label = { en = "Business identifier", fr = "Identifiant d'entreprise" }
+
+# ---- domain : le métier qui rencontre la donnée -------------------------------
+[notarial]
+kind = "domain"
+label = { en = "Notarial", fr = "Notariat" }
+
+[healthcare]
+kind = "domain"
+label = { en = "Healthcare", fr = "Santé" }
+
+[banking]
+kind = "domain"
+label = { en = "Banking", fr = "Banque" }
+
+[hr]
+kind = "domain"
+label = { en = "Human resources", fr = "Ressources humaines" }
+
+[legal]
+kind = "domain"
+label = { en = "Legal", fr = "Juridique" }
+
+[accounting]
+kind = "domain"
+label = { en = "Accounting", fr = "Comptabilité" }
+
+[customer-support]
+kind = "domain"
+label = { en = "Customer support", fr = "Support client" }
+
+[software-dev]
+kind = "domain"
+label = { en = "Software development", fr = "Développement logiciel" }
+
+[ecommerce]
+kind = "domain"
+label = { en = "E-commerce", fr = "E-commerce" }
+
+# ---- use-case : le contexte d'exécution --------------------------------------
+[chat]
+kind = "use-case"
+label = { en = "Chat", fr = "Chat" }
+
+[tool-agent]
+kind = "use-case"
+label = { en = "Agent with tools", fr = "Agent avec outils" }
+
+[document]
+kind = "use-case"
+label = { en = "Documents", fr = "Documents" }
+
+[code-assistant]
+kind = "use-case"
+label = { en = "Code assistant", fr = "Assistant de code" }
+
+[logs]
+kind = "use-case"
+label = { en = "Logs", fr = "Journaux" }
+
+# ---- language : la langue du texte, quand elle compte -------------------------
+[lang-fr]
+kind = "language"
+label = { en = "French text", fr = "Texte en français" }
+
+[lang-en]
+kind = "language"
+label = { en = "English text", fr = "Texte en anglais" }
+
+[lang-de]
+kind = "language"
+label = { en = "German text", fr = "Texte en allemand" }

@@ -1,0 +1,69 @@
+{
+  "digest": "240a672d35e69e3a6523d76fe25a053e0ead6268bb8f0d9b27e4ff421c00c39a",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "fr-default",
+    "schema_version": 1,
+    "description": {
+      "en": "French text without a model: extended French and EU shapes plus the generic ones, with whole-word expansion so a value detected once is caught everywhere in the message.",
+      "fr": "Texte français sans modèle : formes françaises et européennes étendues plus les génériques, avec expansion par mot entier pour qu'une valeur détectée une fois soit reprise partout dans le message."
+    },
+    "tags": [
+      "fr",
+      "eu",
+      "lang-fr",
+      "chat",
+      "document",
+      "customer-support"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [],
+    "detectors": [
+      {
+        "name": "regex-fr",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/fr-extended",
+            "commit": "d06fa46f"
+          }
+        ]
+      },
+      {
+        "name": "regex-eu",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/eu-extended",
+            "commit": "5e0f9493"
+          }
+        ]
+      },
+      {
+        "name": "regex-generic",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/generic",
+            "commit": "e9f9b4fa"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "linker": {
+        "type": "exact"
+      },
+      "expander": {
+        "type": "word_boundary"
+      },
+      "anonymizer": {
+        "placeholder": {
+          "type": "label_counter"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+schema_version = 1
+
+[pattern]
+name = "email"
+label = "EMAIL"
+tags = ["international", "contact"]
+regex = '(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}'
+
+[pattern.description]
+en = "Email address, simplified RFC 5322. The lookbehind pins the start of the local part and the domain is segmented label by label, which keeps the scan linear."
+fr = "Adresse e-mail, RFC 5322 simplifiée. Le lookbehind ancre le début de la partie locale et le domaine est segmenté label par label, ce qui garde le balayage linéaire."
+
+
+# Exemples synthétiques uniquement : domaines réservés (example.com), jamais
+# une adresse réelle. `value` est la sous-chaîne exacte attendue, présente une
+# seule fois dans `text`. Le check enveloppe aussi chaque valeur de ponctuation
+# adjacente et vérifie que la détection couvre la valeur seule.
+
+[[examples.match]]
+text = "Write to john.doe@example.com for any question."
+value = "john.doe@example.com"
+
+[[examples.match]]
+text = "Contact : support+billing@mail.example.org"
+value = "support+billing@mail.example.org"
+
+[[examples.no_match]]
+text = "not an email"
+
+[[examples.no_match]]
+text = "john@doe"
+
+# Recette adverse pour la borne de backtracking : un préfixe valide, un
+# fragment ambigu répété jusqu'à 100 000 caractères, une fin qui interdit le match.
+[redos]
+prefix = "john.doe@example.com "
+filler = "a."
+suffix = "@"

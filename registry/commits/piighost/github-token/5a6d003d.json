@@ -1,0 +1,47 @@
+{
+  "digest": "5a6d003da93963db9e6aa8d9b78c598ccc52f800bc58db7b7222c522c6b3a638",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "github-token",
+    "schema_version": 1,
+    "label": "GITHUB_TOKEN",
+    "regex": "\\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{82})\\b",
+    "description": {
+      "en": "GitHub token: the classic prefixed forms (ghp_ personal, gho_ OAuth, ghu_ user-to-server, ghs_ server-to-server, ghr_ refresh) and the fine-grained form github_pat_ followed by eighty-two characters.",
+      "fr": "Jeton GitHub : les formes classiques à préfixe (ghp_ personnel, gho_ OAuth, ghu_ utilisateur vers serveur, ghs_ serveur vers serveur, ghr_ rafraîchissement) et la forme à portée fine github_pat_ suivie de quatre-vingt-deux caractères."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "git remote set-url origin https://ghp_abcdefghijklmnopqrstuvwxyz0123456789@github.com/o/r",
+          "value": "ghp_abcdefghijklmnopqrstuvwxyz0123456789"
+        },
+        {
+          "text": "Token ghs_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 expired.",
+          "value": "ghs_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ghp_abcdef123"
+        },
+        {
+          "text": "ghx_abcdefghijklmnopqrstuvwxyz0123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "ghp_",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

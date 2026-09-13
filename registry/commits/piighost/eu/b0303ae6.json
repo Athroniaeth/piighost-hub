@@ -1,0 +1,26 @@
+{
+  "digest": "b0303ae6dca6f565d99cc4aaa7dc84e95b3de9f761dd65971fa2cae8be375429",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "eu",
+    "schema_version": 1,
+    "description": {
+      "en": "Pan-European: IBAN. Mirrors piighost's built-in `eu` catalog.",
+      "fr": "Paneuropéen : IBAN. Miroir du catalogue intégré `eu` de piighost."
+    },
+    "tags": [
+      "eu",
+      "finance"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/iban",
+        "commit": "cbfafeb7",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

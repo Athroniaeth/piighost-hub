@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "us-zip"
+label = "US_ZIP"
+tags = ["us", "location", "contact"]
+regex = '\b\d{5}(?:-\d{4})?\b'
+
+[pattern.description]
+en = "US ZIP code, five digits with an optional ZIP+4 extension. Any isolated 5-digit number matches (French and German postal codes included), so pair it with context or a location-aware config."
+fr = "Code postal américain (ZIP), cinq chiffres avec une extension ZIP+4 optionnelle. Tout nombre isolé de 5 chiffres correspond (codes postaux français et allemands compris) ; à combiner avec du contexte ou une config sensible à la localisation."
+
+
+[[examples.match]]
+text = "Ship to 12345-6789 Anytown."
+value = "12345-6789"
+
+[[examples.match]]
+text = "ZIP 20500 on the envelope"
+value = "20500"
+
+# Quatre chiffres.
+[[examples.no_match]]
+text = "1234"
+
+# Six chiffres accolés.
+[[examples.no_match]]
+text = "123456"
+
+[redos]
+prefix = "12345 "
+filler = "12345-"
+suffix = "x"

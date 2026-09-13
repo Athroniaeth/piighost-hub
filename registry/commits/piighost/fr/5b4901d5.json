@@ -1,0 +1,47 @@
+{
+  "digest": "5b4901d52eadf5b9dcecf9e67a6065cd8715b0e55a6879dbab869884ffcb457d",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "fr",
+    "schema_version": 1,
+    "description": {
+      "en": "France: phone, IBAN, NIR, SIRET. Mirrors piighost's built-in `fr` catalog.",
+      "fr": "France : téléphone, IBAN, NIR, SIRET. Miroir du catalogue intégré `fr` de piighost."
+    },
+    "tags": [
+      "fr",
+      "contact",
+      "finance",
+      "government-id",
+      "business"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/fr-phone",
+        "commit": "fb0afba5",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/fr-iban",
+        "commit": "61f86ceb",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/fr-nir",
+        "commit": "0b19f679",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/fr-siret",
+        "commit": "fe9145c5",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

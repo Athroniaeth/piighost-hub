@@ -1,0 +1,47 @@
+{
+  "digest": "98750e5c18fe083aedb504220933e8fef0a478851401eb7bdeb4480edec88d99",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "de-zip",
+    "schema_version": 1,
+    "label": "DE_ZIP",
+    "regex": "\\b(?:0[1-9]|[1-9]\\d)\\d{3}\\b",
+    "description": {
+      "en": "German postal code, five digits, the first pair never 00. It collides span for span with the French and US postal codes, which have the same length: pick one per detector.",
+      "fr": "Code postal allemand, cinq chiffres dont la première paire n'est jamais 00. Il entre en collision span pour span avec les codes postaux français et américain, de même longueur : n'en retenez qu'un par détecteur."
+    },
+    "tags": [
+      "de",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Berlin, 10115 Mitte.",
+          "value": "10115"
+        },
+        {
+          "text": "München 80331 Innenstadt",
+          "value": "80331"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "00123"
+        },
+        {
+          "text": "101150"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

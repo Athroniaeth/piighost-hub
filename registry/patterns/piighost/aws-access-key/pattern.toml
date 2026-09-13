@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "aws-access-key"
+label = "AWS_ACCESS_KEY"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bAKIA[0-9A-Z]{16}\b'
+
+[pattern.description]
+en = "AWS access key identifier: the AKIA prefix of a long-term user key, then sixteen uppercase characters. Catches the identifier, not the secret key that goes with it, which has no distinctive shape."
+fr = "Identifiant de clé d'accès AWS : le préfixe AKIA d'une clé utilisateur à long terme, puis seize caractères en majuscules. Repère l'identifiant, pas la clé secrète qui l'accompagne, laquelle n'a aucune forme distinctive."
+
+# AKIAIOSFODNN7EXAMPLE est l'exemple publié par AWS dans sa documentation.
+[[examples.match]]
+text = "aws_access_key_id = AKIAIOSFODNN7EXAMPLE"
+value = "AKIAIOSFODNN7EXAMPLE"
+
+[[examples.match]]
+text = "Rotate AKIAQWERTYUIOPASDFGH before Friday."
+value = "AKIAQWERTYUIOPASDFGH"
+
+# ASIA est le préfixe d'une clé temporaire, hors périmètre de ce motif.
+[[examples.no_match]]
+text = "ASIAIOSFODNN7EXAMPLE"
+
+# Trop court.
+[[examples.no_match]]
+text = "AKIAIOSFODNN7"
+
+[redos]
+prefix = "AKIA"
+filler = "A"
+suffix = " "

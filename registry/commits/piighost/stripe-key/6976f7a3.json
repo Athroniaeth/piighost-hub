@@ -1,0 +1,48 @@
+{
+  "digest": "6976f7a3effecacd0ed964d7bbc723210460ad990a364687354a4ed6be2255df",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "stripe-key",
+    "schema_version": 1,
+    "label": "STRIPE_KEY",
+    "regex": "\\b[sr]k_(?:live|test)_[A-Za-z0-9]{24,}\\b",
+    "description": {
+      "en": "Stripe secret or restricted key, in its live or test form. The test form is caught too: it is harmless on its own but reveals an account and usually travels with the live one.",
+      "fr": "Clé secrète ou restreinte Stripe, en forme live ou test. La forme test est repérée aussi : inoffensive seule, elle désigne un compte et voyage le plus souvent avec la clé live."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev",
+      "ecommerce"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "STRIPE_SECRET_KEY=sk_test_abcdefghijklmnopqrstuvwx",
+          "value": "sk_test_abcdefghijklmnopqrstuvwx"
+        },
+        {
+          "text": "Use rk_live_ABCDEFGHIJKLMNOPQRSTUVWX for the webhook.",
+          "value": "rk_live_ABCDEFGHIJKLMNOPQRSTUVWX"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "pk_live_abcdefghijklmnopqrstuvwx"
+        },
+        {
+          "text": "sk_prod_abcdefghijklmnopqrstuvwx"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "sk_test_",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

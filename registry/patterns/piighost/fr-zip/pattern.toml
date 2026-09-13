@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "fr-zip"
+label = "FR_ZIP"
+tags = ["fr", "location", "contact"]
+regex = '\b(?:0[1-9]|[1-8]\d|9[0-8])\d{3}\b'
+
+[pattern.description]
+en = "French postal code, five digits whose first two form a department number from 01 to 98. A postal code identifies nobody alone, but it narrows a person down when combined with other values. It collides span for span with a US or German postal code: never put two of them in one detector."
+fr = "Code postal français, cinq chiffres dont les deux premiers forment un numéro de département de 01 à 98. Un code postal n'identifie personne seul, mais il restreint fortement quand il accompagne d'autres valeurs. Il entre en collision span pour span avec un code postal américain ou allemand : n'en mettez jamais deux dans un même détecteur."
+
+[[examples.match]]
+text = "Paris 8e, 75008 France."
+value = "75008"
+
+[[examples.match]]
+text = "Adresse à Lyon, 69003 exactement."
+value = "69003"
+
+# 99 n'est pas un département.
+[[examples.no_match]]
+text = "99123"
+
+# Quatre chiffres.
+[[examples.no_match]]
+text = "7500"
+
+[redos]
+prefix = ""
+filler = "7"
+suffix = "x"

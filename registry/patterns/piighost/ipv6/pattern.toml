@@ -1,0 +1,46 @@
+schema_version = 1
+
+[pattern]
+name = "ipv6"
+label = "IPV6"
+tags = ["international", "network"]
+regex = '(?<![:\w])(?:(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:[0-9A-Fa-f]{1,4}:){1,7}:(?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,6})?|::[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,6})(?![:\w])'
+
+[pattern.description]
+en = "IPv6 address, either the full eight-hextet form or a form compressed with a single :: (leading, middle or trailing). Lookarounds instead of \\b let a leading :: anchor and stop the match at a stray colon. The hextet count across the :: is not verified, and IPv4-suffixed forms (::ffff:192.0.2.1) are only partially covered."
+fr = "Adresse IPv6, en forme complète à huit hextets ou compressée par un unique :: (en tête, au milieu ou en fin). Des lookarounds à la place de \\b permettent d'ancrer un :: initial et d'arrêter le match sur un deux-points isolé. Le nombre d'hextets de part et d'autre du :: n'est pas vérifié, et les formes à suffixe IPv4 (::ffff:192.0.2.1) ne sont couvertes que partiellement."
+
+
+# 2001:db8::/32 : préfixe réservé à la documentation.
+[[examples.match]]
+text = "Node 2001:db8:85a3:0000:0000:8a2e:0370:7334 is up."
+value = "2001:db8:85a3:0000:0000:8a2e:0370:7334"
+
+[[examples.match]]
+text = "Listening on 2001:db8::1 port 8080."
+value = "2001:db8::1"
+
+[[examples.match]]
+text = "Loopback ::1 answered."
+value = "::1"
+
+[[examples.match]]
+text = "Prefix 2001:db8:: is reserved."
+value = "2001:db8::"
+
+# Opérateur de portée C++ : le lookbehind le bloque.
+[[examples.no_match]]
+text = "std::vector<int> v;"
+
+# Heure.
+[[examples.no_match]]
+text = "Meeting at 12:30:45 today"
+
+# Adresse MAC : six groupes, pas de ::.
+[[examples.no_match]]
+text = "MAC 00:1a:2b:3c:4d:5e"
+
+[redos]
+prefix = "2001:db8::1 "
+filler = "abcd:"
+suffix = "x"

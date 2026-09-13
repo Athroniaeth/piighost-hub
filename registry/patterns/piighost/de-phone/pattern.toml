@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "de-phone"
+label = "DE_PHONE"
+tags = ["de", "contact"]
+regex = '(?<![\w+])(?:\+49|0)[\s/-]?\d{2,5}[\s/-]?\d{3,10}(?!\d)'
+
+[pattern.description]
+en = "German phone number, the +49 or 0 prefix then an area code and a subscriber number, separated by a space, a slash or a dash as German writing does. A lookbehind replaces the word boundary, which does not anchor before a + sign."
+fr = "Numéro de téléphone allemand, le préfixe +49 ou 0 puis un indicatif régional et un numéro d'abonné, séparés par une espace, une barre oblique ou un tiret comme l'écriture allemande le fait. Un lookbehind remplace la limite de mot, qui n'ancre pas devant un signe +."
+
+# +49 30 1234567 : forme de Berlin, numéro inventé.
+[[examples.match]]
+text = "Rufen Sie +49 30 1234567 an."
+value = "+49 30 1234567"
+
+[[examples.match]]
+text = "Zentrale 0221/1234567 erreichbar."
+value = "0221/1234567"
+
+# Sans préfixe reconnu.
+[[examples.no_match]]
+text = "Nummer 1234567 fehlt"
+
+# Un + collé à un mot n'ouvre pas un numéro.
+[[examples.no_match]]
+text = "Modell C+49 30 1234567"
+
+[redos]
+prefix = "+49 "
+filler = "30"
+suffix = "x"

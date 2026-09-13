@@ -1,0 +1,33 @@
+{
+  "digest": "5c0661344332b4ca595a571f124aa35ae7ce2383a52bd680c2a2f8f5f7595e42",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "de",
+    "schema_version": 1,
+    "description": {
+      "en": "Germany: phone and postal code.",
+      "fr": "Allemagne : téléphone et code postal."
+    },
+    "tags": [
+      "de",
+      "contact",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/de-phone",
+        "commit": "a94db6e7",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/de-zip",
+        "commit": "98750e5c",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

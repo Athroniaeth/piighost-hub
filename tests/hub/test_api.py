@@ -1,0 +1,100 @@
+import tomllib
+
+from litestar import Litestar
+from litestar.testing import AsyncTestClient
+
+from backend.hub.routes import IMMUTABLE, REVALIDATE
+
+
+class TestListing:
+    async def test_vocabulary(self, client: AsyncTestClient[Litestar]) -> None:
+        response = await client.get("/api/v1/vocabulary")
+        assert response.status_code == 200
+        tags = {item["tag"]: item["kind"] for item in response.json()["items"]}
+        assert tags["fr"] == "region"
+
+    async def test_list_and_filters(self, client: AsyncTestClient[Litestar]) -> None:
+        everything = (await client.get("/api/v1/refs")).json()["items"]
+        assert len(everything) == 7
+        groups = (await client.get("/api/v1/refs", params={"kind": "group"})).json()[
+            "items"
+        ]
+        assert sorted(g["name"] for g in groups) == ["all", "fr"]
+        finance = (await client.get("/api/v1/refs", params={"tag": "finance"})).json()[
+            "items"
+        ]
+        assert sorted(p["name"] for p in finance) == ["credit-card", "fr-siret"]
+        assert everything[0]["pointers"]["latest"] == everything[0]["latest"]
+
+    async def test_object_detail_lists_commits(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.get("/api/v1/refs/piighost/all")
+        assert response.status_code == 200
+        body = response.json()
+        assert body["kind"] == "group"
+        assert [c["commit"] for c in body["commits"]] == [body["latest"]]
+        assert body["commits"][0]["recorded_at"] is None
+
+    async def test_unknown_object_is_404(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.get("/api/v1/refs/piighost/nope")
+        assert response.status_code == 404
+        assert response.headers["content-type"].startswith("application/problem+json")
+
+
+class TestCommits:
+    async def test_commit_by_tag_and_by_hash_with_cache_headers(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        by_tag = await client.get("/api/v1/refs/piighost/all/latest")
+        assert by_tag.status_code == 200
+        assert by_tag.headers["cache-control"] == REVALIDATE
+        short = by_tag.json()["commit"]
+        by_hash = await client.get(f"/api/v1/refs/piighost/all/{short}")
+        assert by_hash.status_code == 200
+        assert by_hash.headers["cache-control"] == IMMUTABLE
+        assert by_hash.headers["etag"] == f'"{by_tag.json()["digest"]}"'
+        assert by_hash.json()["content"]["sources"][0]["ref"] == "piighost/fr"
+
+    async def test_unknown_tag_is_404_and_bad_selector_is_400(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        assert (await client.get("/api/v1/refs/piighost/all/prod")).status_code == 404
+        assert (await client.get("/api/v1/refs/piighost/all/Prod")).status_code == 400
+
+    async def test_resolved_group_and_config(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        group = (await client.get("/api/v1/refs/piighost/all/latest/resolved")).json()
+        assert [entry["label"] for entry in group["labels"]] == [
+            "FR_SIRET",
+            "EMAIL",
+            "CREDIT_CARD",
+        ]
+        assert group["pipeline"]["detector"]["type"] == "regex"
+        config = (
+            await client.get("/api/v1/refs/piighost/child/latest/resolved")
+        ).json()
+        assert config["labels"] is None
+        assert [d["name"] for d in config["detectors"]] == ["regex-all"]
+        assert config["pipeline"]["expander"] == {"type": "word_boundary"}
+
+    async def test_pipeline_toml(self, client: AsyncTestClient[Litestar]) -> None:
+        response = await client.get(
+            "/api/v1/refs/piighost/child/latest/pipeline.toml",
+            params={"memory": "redis"},
+        )
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith("application/toml")
+        data = tomllib.loads(response.text)
+        assert data["memory"]["type"] == "redis"
+        assert list(data["detector"]["patterns"]) == ["FR_SIRET", "EMAIL"]
+        refs = await client.get(
+            "/api/v1/refs/piighost/child/latest/pipeline.toml",
+            params={"keep_refs": "true"},
+        )
+        assert tomllib.loads(refs.text)["detector"]["catalogs"][0].startswith(
+            "hub:piighost/all:"
+        )

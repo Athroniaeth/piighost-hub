@@ -1,0 +1,51 @@
+{
+  "digest": "3f033fc3a710aec03f5a061ac003a311521896717e3a58cd79e15067c275577a",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "uk-nino",
+    "schema_version": 1,
+    "label": "UK_NINO",
+    "regex": "\\b[A-CEGHJ-PR-TW-Z]{2}\\d{6}[A-D]\\b",
+    "description": {
+      "en": "UK National Insurance number: two letters from the allowed set, six digits, then a letter from A to D. The prefix classes exclude D, F, I, Q, U and V, which HMRC never issues, so the shape alone is already selective. One consequence worth knowing: HMRC's own example number QQ123456C is not matched, because Q is one of the excluded letters, which is exactly why HMRC publishes it.",
+      "fr": "Numéro d'assurance nationale britannique : deux lettres de l'ensemble autorisé, six chiffres, puis une lettre de A à D. Les classes de préfixe excluent D, F, I, Q, U et V, que HMRC n'attribue jamais, donc la forme seule est déjà sélective. Une conséquence à connaître : le numéro d'exemple QQ123456C de HMRC n'est pas reconnu, car Q fait partie des lettres exclues, ce qui est précisément la raison pour laquelle HMRC le publie."
+    },
+    "tags": [
+      "uk",
+      "government-id",
+      "identity",
+      "hr"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "NI number AB123456C on the payslip.",
+          "value": "AB123456C"
+        },
+        {
+          "text": "Reference AB654321A recorded.",
+          "value": "AB654321A"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "DA123456C"
+        },
+        {
+          "text": "QQ123456C"
+        },
+        {
+          "text": "AB123456Z"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "AB",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

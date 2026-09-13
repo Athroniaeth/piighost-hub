@@ -1,0 +1,47 @@
+{
+  "digest": "38e73fdcab59b00fe98281e7f8fcb2e4a0dd99e959411e17f253ba6ea17ca6c7",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-zip",
+    "schema_version": 1,
+    "label": "US_ZIP",
+    "regex": "\\b\\d{5}(?:-\\d{4})?\\b",
+    "description": {
+      "en": "US ZIP code, five digits with an optional ZIP+4 extension. Any isolated 5-digit number matches (French and German postal codes included), so pair it with context or a location-aware config.",
+      "fr": "Code postal américain (ZIP), cinq chiffres avec une extension ZIP+4 optionnelle. Tout nombre isolé de 5 chiffres correspond (codes postaux français et allemands compris) ; à combiner avec du contexte ou une config sensible à la localisation."
+    },
+    "tags": [
+      "us",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ship to 12345-6789 Anytown.",
+          "value": "12345-6789"
+        },
+        {
+          "text": "ZIP 20500 on the envelope",
+          "value": "20500"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "1234"
+        },
+        {
+          "text": "123456"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "12345 ",
+      "filler": "12345-",
+      "suffix": "x"
+    }
+  }
+}

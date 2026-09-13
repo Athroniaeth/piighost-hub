@@ -1,0 +1,33 @@
+{
+  "digest": "5e0f9493b2202efb13d519db4bd0a7147dfcf6e348e952950864e383d466a42f",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "eu-extended",
+    "schema_version": 1,
+    "description": {
+      "en": "The `eu` group plus VAT numbers.",
+      "fr": "Le groupe `eu` plus les numéros de TVA."
+    },
+    "tags": [
+      "eu",
+      "finance",
+      "business"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/eu",
+        "commit": "b0303ae6",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/eu-vat",
+        "commit": "4dca3529",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

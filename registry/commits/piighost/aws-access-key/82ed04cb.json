@@ -1,0 +1,47 @@
+{
+  "digest": "82ed04cbcaa146cf3bb7d5bce0bd2e321d640cfd285b16385116bdc6d6587d56",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "aws-access-key",
+    "schema_version": 1,
+    "label": "AWS_ACCESS_KEY",
+    "regex": "\\bAKIA[0-9A-Z]{16}\\b",
+    "description": {
+      "en": "AWS access key identifier: the AKIA prefix of a long-term user key, then sixteen uppercase characters. Catches the identifier, not the secret key that goes with it, which has no distinctive shape.",
+      "fr": "Identifiant de clé d'accès AWS : le préfixe AKIA d'une clé utilisateur à long terme, puis seize caractères en majuscules. Repère l'identifiant, pas la clé secrète qui l'accompagne, laquelle n'a aucune forme distinctive."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "aws_access_key_id = AKIAIOSFODNN7EXAMPLE",
+          "value": "AKIAIOSFODNN7EXAMPLE"
+        },
+        {
+          "text": "Rotate AKIAQWERTYUIOPASDFGH before Friday.",
+          "value": "AKIAQWERTYUIOPASDFGH"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ASIAIOSFODNN7EXAMPLE"
+        },
+        {
+          "text": "AKIAIOSFODNN7"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "AKIA",
+      "filler": "A",
+      "suffix": " "
+    }
+  }
+}

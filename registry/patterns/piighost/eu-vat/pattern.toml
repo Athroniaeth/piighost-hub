@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "eu-vat"
+label = "EU_VAT"
+tags = ["eu", "business", "finance", "accounting"]
+regex = '\b[A-Z]{2}\d{8,12}\b'
+
+[pattern.description]
+en = "European VAT number in its purely numeric form: a two-letter country code then eight to twelve digits. Member states whose number carries letters, such as Ireland or the Netherlands, are not covered. It overlaps with any code written as two letters and digits, an IBAN prefix included."
+fr = "Numéro de TVA européen en forme purement numérique : un code pays de deux lettres puis huit à douze chiffres. Les États dont le numéro comporte des lettres, Irlande ou Pays-Bas par exemple, ne sont pas couverts. Il recouvre tout code écrit en deux lettres suivies de chiffres, un préfixe d'IBAN compris."
+
+[[examples.match]]
+text = "VAT FR12345678901 on the invoice."
+value = "FR12345678901"
+
+[[examples.match]]
+text = "Intra-community number DE123456789"
+value = "DE123456789"
+
+# Sept chiffres : trop court.
+[[examples.no_match]]
+text = "FR1234567"
+
+# Une seule lettre de préfixe.
+[[examples.no_match]]
+text = "F123456789"
+
+[redos]
+prefix = "FR"
+filler = "1"
+suffix = "x"

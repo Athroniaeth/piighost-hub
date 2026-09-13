@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "uk-nhs"
+label = "UK_NHS"
+tags = ["uk", "government-id", "health", "healthcare"]
+regex = '\b\d{3}[\s-]?\d{3}[\s-]?\d{4}\b'
+
+[pattern.description]
+en = "NHS patient number, ten digits usually written in three-three-four groups. Health data, so the most sensitive category this registry carries. The shape is also that of a US phone number: the two must not share a detector."
+fr = "Numéro de patient NHS, dix chiffres écrits le plus souvent en groupes de trois, trois et quatre. Donnée de santé, donc la catégorie la plus sensible de ce registre. La forme est aussi celle d'un numéro de téléphone américain : les deux ne doivent pas partager un détecteur."
+
+# 943 476 5919 est le numéro d'exemple de la documentation NHS.
+[[examples.match]]
+text = "NHS number 943 476 5919 verified."
+value = "943 476 5919"
+
+[[examples.match]]
+text = "Patient 4857773456 admitted."
+value = "4857773456"
+
+# Neuf chiffres.
+[[examples.no_match]]
+text = "943 476 591"
+
+# Onze chiffres.
+[[examples.no_match]]
+text = "94347659199"
+
+[redos]
+prefix = "943 476 "
+filler = "5"
+suffix = "x"

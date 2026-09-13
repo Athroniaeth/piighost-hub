@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "us-ein"
+label = "US_EIN"
+tags = ["us", "business", "finance", "accounting"]
+regex = '\b\d{2}-\d{7}\b'
+
+[pattern.description]
+en = "US employer identification number, two digits, a dash, then seven. The shape is distinctive enough to be usable on its own, though a nine-digit reference written the same way would match."
+fr = "Numéro d'identification d'employeur américain, deux chiffres, un tiret, puis sept. La forme est assez distinctive pour être utilisable seule, même si une référence à neuf chiffres écrite ainsi correspondrait."
+
+[[examples.match]]
+text = "EIN 12-3456789 on file."
+value = "12-3456789"
+
+[[examples.match]]
+text = "Taxpayer 98-7654321 filed late."
+value = "98-7654321"
+
+# Découpage d'un SSN, pas d'un EIN.
+[[examples.no_match]]
+text = "123-45-6789"
+
+# Trop de chiffres après le tiret.
+[[examples.no_match]]
+text = "12-34567890"
+
+[redos]
+prefix = "12-"
+filler = "3"
+suffix = "x"

@@ -1,0 +1,47 @@
+{
+  "digest": "0a6bed5195c259c059fc3e8a79d10fd253bc373f711af427634cbc9e301d7264",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "uk-postcode",
+    "schema_version": 1,
+    "label": "UK_POSTCODE",
+    "regex": "\\b[A-Z]{1,2}\\d[A-Z\\d]?\\s?\\d[A-Z]{2}\\b",
+    "description": {
+      "en": "UK postcode, the outward code then the inward code, the space between them optional. A UK postcode is far narrower than a continental one, often a handful of addresses, so it identifies much more than five digits elsewhere.",
+      "fr": "Code postal britannique, le code sortant puis le code entrant, l'espace entre les deux étant optionnel. Un code postal britannique est bien plus étroit que son équivalent continental, souvent quelques adresses, donc il identifie bien davantage que cinq chiffres ailleurs."
+    },
+    "tags": [
+      "uk",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Deliver to SW1A 1AA please.",
+          "value": "SW1A 1AA"
+        },
+        {
+          "text": "Office at EC1A1BB in the City.",
+          "value": "EC1A1BB"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ABC1 1AA"
+        },
+        {
+          "text": "SW1A 1A"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "SW",
+      "filler": "1",
+      "suffix": "!"
+    }
+  }
+}

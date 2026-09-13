@@ -1,0 +1,15 @@
+schema_version = 1
+
+[group]
+name = "uk"
+description = { en = "United Kingdom: National Insurance number, NHS number, postcode.", fr = "Royaume-Uni : numéro d'assurance nationale, numéro NHS, code postal." }
+tags = ["uk", "government-id", "health", "location"]
+
+[[sources]]
+ref = "piighost/uk-nino"
+
+[[sources]]
+ref = "piighost/uk-nhs"
+
+[[sources]]
+ref = "piighost/uk-postcode"

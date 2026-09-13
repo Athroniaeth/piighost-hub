@@ -14,6 +14,7 @@ from litestar_vite.config import PathConfig, RuntimeConfig
 
 from backend import DOCS_ENABLED, FRONTEND_ROOT, OPENAPI_SCHEMA
 from backend.exceptions import AppError, app_error_handler
+from backend.hub.routes import HubController, load_hub_registry
 from backend.routes import ApiController
 from backend.security import API_KEY_HEADER, ensure_api_key_configured, identify_client
 
@@ -77,7 +78,7 @@ plugins = [
 
 # All Python routes live under /api to avoid collisions with the Svelte SPA (served
 # at / by the Vite plugin). Register every controller here, not with a hardcoded prefix.
-api_router = Router(path="/api", route_handlers=[ApiController])
+api_router = Router(path="/api", route_handlers=[ApiController, HubController])
 
 
 def build_openapi_config(*, docs_enabled: bool) -> OpenAPIConfig | None:
@@ -98,7 +99,7 @@ def build_openapi_config(*, docs_enabled: bool) -> OpenAPIConfig | None:
         return None
 
     return OpenAPIConfig(
-        title="Litestar API",
+        title="PIIGhost Hub API",
         version="1.0.0",
         components=Components(
             security_schemes={
@@ -150,5 +151,7 @@ app = Litestar(
     openapi_config=build_openapi_config(docs_enabled=DOCS_ENABLED),
     # Checked at startup, not at import: the CLI (`litestar assets generate-types`)
     # loads this module without needing a key.
-    on_startup=[ensure_api_key_configured],
+    # The registry loads once here too: an invalid tree stops the app instead of
+    # serving half a hub.
+    on_startup=[ensure_api_key_configured, load_hub_registry],
 )

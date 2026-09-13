@@ -1,0 +1,18 @@
+schema_version = 1
+
+[group]
+name = "us-extended"
+description = { en = "The `us` group plus passport, EIN and bank routing numbers. The routing pattern is noisy: any nine-digit run.", fr = "Le groupe `us` plus passeport, EIN et numéro de routage bancaire. Le motif de routage est bruyant : toute suite de neuf chiffres." }
+tags = ["us", "government-id", "finance", "business"]
+
+[[sources]]
+ref = "piighost/us"
+
+[[sources]]
+ref = "piighost/us-passport"
+
+[[sources]]
+ref = "piighost/us-ein"
+
+[[sources]]
+ref = "piighost/us-bank-routing"

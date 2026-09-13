@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "fr-siret"
+label = "FR_SIRET"
+tags = ["fr", "business", "accounting", "legal"]
+regex = '\b\d{3}[\s-]?\d{3}[\s-]?\d{3}[\s-]?\d{5}\b'
+
+[pattern.description]
+en = "French SIRET establishment identifier: 9-digit SIREN plus a 5-digit NIC, written 3-3-3-5 with optional spaces or hyphens or as 14 contiguous digits. No Luhn check, so any 14-digit number of that shape is reported."
+fr = "Identifiant d'établissement SIRET : SIREN de 9 chiffres suivi d'un NIC de 5 chiffres, écrit 3-3-3-5 avec espaces ou tirets optionnels ou en 14 chiffres accolés. Sans clé de Luhn, tout nombre de 14 chiffres de cette forme est signalé."
+
+
+# 732 829 320 00074 : exemple officiel de l'INSEE.
+[[examples.match]]
+text = "SIRET 732 829 320 00074 de l'établissement."
+value = "732 829 320 00074"
+
+[[examples.match]]
+text = "Établissement n° 73282932000074"
+value = "73282932000074"
+
+# SIREN seul : 9 chiffres.
+[[examples.no_match]]
+text = "SIREN 732 829 320"
+
+# Code postal.
+[[examples.no_match]]
+text = "Code 75008"
+
+[redos]
+prefix = "732 829 320 00074 "
+filler = "123 "
+suffix = "x"

@@ -12,3 +12,8 @@ OPENAPI_SCHEMA = PROJECT_ROOT / "openapi.json"
 # turns them off (see compose.prod.yml). Kept on by default: they are useful in
 # development, and `litestar assets generate-types` needs the schema in memory.
 DOCS_ENABLED = os.getenv("ENABLE_DOCS", "true").lower() in {"1", "true", "yes"}
+
+# The hub registry: TOML manifests, the commit store and the tag vocabulary. Read at
+# startup by the hub routes and by `python -m backend.hub`. Overridable so a mirror
+# or a test can point at another tree.
+REGISTRY_ROOT = Path(os.getenv("HUB_REGISTRY_DIR", str(PROJECT_ROOT / "registry")))

@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "fr-iban"
+label = "FR_IBAN"
+tags = ["fr", "finance", "banking"]
+regex = '\bFR\d{2}(?:[\s-]?[A-Z0-9]){23}\b'
+
+[pattern.description]
+en = "French IBAN: FR, two check digits, then exactly 23 alphanumerics (bank, branch, account, RIB key) with optional spaces or hyphens between them. Shape only, no mod-97 verification."
+fr = "IBAN français : FR, deux chiffres de contrôle, puis exactement 23 caractères alphanumériques (banque, guichet, compte, clé RIB) avec espaces ou tirets optionnels. Forme seule, sans vérification mod 97."
+
+
+# IBAN de test publié par la Banque de France.
+[[examples.match]]
+text = "IBAN FR76 3000 6000 0112 3456 7890 189 pour le virement."
+value = "FR76 3000 6000 0112 3456 7890 189"
+
+[[examples.match]]
+text = "RIB : FR7630006000011234567890189"
+value = "FR7630006000011234567890189"
+
+# Tronqué.
+[[examples.no_match]]
+text = "FR76 3000 6000 0112"
+
+# IBAN britannique : autre pattern.
+[[examples.no_match]]
+text = "GB82WEST12345698765432"
+
+[redos]
+prefix = "FR76 "
+filler = "3000--"
+suffix = "x"

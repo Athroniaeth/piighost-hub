@@ -1,0 +1,50 @@
+{
+  "digest": "e489706c62a67c307a47704bf1aa5e04d1d04edd399e1021d59e87406d72f549",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-phone",
+    "schema_version": 1,
+    "label": "US_PHONE",
+    "regex": "(?<![\\w+])(?:\\+?1[\\s.-]?)?(?:\\([2-9]\\d{2}\\)|[2-9]\\d{2})[\\s.-]?\\d{3}[\\s.-]?\\d{4}(?!\\d)",
+    "description": {
+      "en": "US phone number, optional +1 prefix and parentheses, then 3-3-4 digits. A lookbehind anchors before a leading + or (, which \\b would miss, and a lookahead stops a trailing digit run. The area-code parentheses are paired, so a number written inside parentheses does not swallow the opening one.",
+      "fr": "Numéro de téléphone américain, préfixe +1 et parenthèses optionnels, puis 3-3-4 chiffres. Un lookbehind ancre avant un + ou une ( initiale, que \\b raterait, et un lookahead coupe une suite de chiffres. Les parenthèses de l'indicatif sont appariées, donc un numéro écrit entre parenthèses n'avale pas la parenthèse ouvrante."
+    },
+    "tags": [
+      "us",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Call +1 (415) 555-0123 before noon.",
+          "value": "+1 (415) 555-0123"
+        },
+        {
+          "text": "Office: 415-555-0123",
+          "value": "415-555-0123"
+        },
+        {
+          "text": "Cell (415) 555-0123",
+          "value": "(415) 555-0123"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Call 115-555-0123 now"
+        },
+        {
+          "text": "555-0123"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+1 (415) ",
+      "filler": "555-",
+      "suffix": "x"
+    }
+  }
+}

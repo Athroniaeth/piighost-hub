@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "us-passport"
+label = "US_PASSPORT"
+tags = ["us", "government-id", "identity"]
+regex = '\b[A-Z]\d{8}\b'
+
+[pattern.description]
+en = "US passport number, one uppercase letter then eight digits. Noisy by nature: any reference code of that shape matches, for example an invoice number. Pair it with a whitelist, or keep it for documents where a passport is expected."
+fr = "Numéro de passeport américain, une lettre majuscule puis huit chiffres. Bruyant par nature : tout code de cette forme correspond, un numéro de facture par exemple. À combiner avec une whitelist, ou à réserver aux documents où un passeport est attendu."
+
+[[examples.match]]
+text = "Passport C12345678 expires in 2031."
+value = "C12345678"
+
+[[examples.match]]
+text = "Travel document: X98765432"
+value = "X98765432"
+
+# Neuf chiffres après la lettre : trop long.
+[[examples.no_match]]
+text = "C123456789"
+
+# Une lettre minuscule ne convient pas.
+[[examples.no_match]]
+text = "c12345678"
+
+[redos]
+prefix = "C"
+filler = "1"
+suffix = "x"

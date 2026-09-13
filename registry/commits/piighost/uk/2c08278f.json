@@ -1,0 +1,40 @@
+{
+  "digest": "2c08278ff6845d3fc6052a9a8becb6dd2e559b83c4ee0e108a875e860a145b9d",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "uk",
+    "schema_version": 1,
+    "description": {
+      "en": "United Kingdom: National Insurance number, NHS number, postcode.",
+      "fr": "Royaume-Uni : numéro d'assurance nationale, numéro NHS, code postal."
+    },
+    "tags": [
+      "uk",
+      "government-id",
+      "health",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/uk-nino",
+        "commit": "3f033fc3",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-nhs",
+        "commit": "1dfa5fba",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-postcode",
+        "commit": "0a6bed51",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

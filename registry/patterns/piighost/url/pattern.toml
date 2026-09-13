@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "url"
+label = "URL"
+tags = ["international", "network"]
+regex = "https?://[^\\s<>\"']*[^\\s<>\"'.,;:!?)\\]]"
+
+[pattern.description]
+en = "HTTP or HTTPS URL. The body runs until whitespace, a quote or an angle bracket, and the last character may not be trailing punctuation, so a URL at the end of a sentence or inside parentheses is captured without the closing mark. Other schemes (ftp, mailto) and bare domains are not matched."
+fr = "URL HTTP ou HTTPS. Le corps court jusqu'à un espace, un guillemet ou un chevron, et le dernier caractère ne peut pas être une ponctuation finale, donc une URL en fin de phrase ou entre parenthèses est capturée sans le signe de clôture. Les autres schémas (ftp, mailto) et les domaines nus ne sont pas détectés."
+
+
+# Domaines réservés à la documentation uniquement (example.com, example.org).
+[[examples.match]]
+text = "See https://www.example.com/docs?page=2 for details."
+value = "https://www.example.com/docs?page=2"
+
+[[examples.match]]
+text = "Source: http://example.org/a/b#frag"
+value = "http://example.org/a/b#frag"
+
+# Autre schéma : ignoré.
+[[examples.no_match]]
+text = "ftp://example.com/file"
+
+# Domaine nu sans schéma.
+[[examples.no_match]]
+text = "visit example.com today"
+
+[redos]
+prefix = "https://"
+filler = "."
+suffix = "."

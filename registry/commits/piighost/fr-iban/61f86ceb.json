@@ -1,0 +1,47 @@
+{
+  "digest": "61f86ceb97f567946973e3bdd2f1c3352beb1e9f25a2ad587c221400546712ff",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fr-iban",
+    "schema_version": 1,
+    "label": "FR_IBAN",
+    "regex": "\\bFR\\d{2}(?:[\\s-]?[A-Z0-9]){23}\\b",
+    "description": {
+      "en": "French IBAN: FR, two check digits, then exactly 23 alphanumerics (bank, branch, account, RIB key) with optional spaces or hyphens between them. Shape only, no mod-97 verification.",
+      "fr": "IBAN français : FR, deux chiffres de contrôle, puis exactement 23 caractères alphanumériques (banque, guichet, compte, clé RIB) avec espaces ou tirets optionnels. Forme seule, sans vérification mod 97."
+    },
+    "tags": [
+      "fr",
+      "finance",
+      "banking"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "IBAN FR76 3000 6000 0112 3456 7890 189 pour le virement.",
+          "value": "FR76 3000 6000 0112 3456 7890 189"
+        },
+        {
+          "text": "RIB : FR7630006000011234567890189",
+          "value": "FR7630006000011234567890189"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "FR76 3000 6000 0112"
+        },
+        {
+          "text": "GB82WEST12345698765432"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "FR76 ",
+      "filler": "3000--",
+      "suffix": "x"
+    }
+  }
+}

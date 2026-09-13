@@ -1,0 +1,47 @@
+{
+  "digest": "d9f75c1a5958aa07b37be35e11ea399e0d4e22783d267d84d535dd0d76b7c655",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fr-zip",
+    "schema_version": 1,
+    "label": "FR_ZIP",
+    "regex": "\\b(?:0[1-9]|[1-8]\\d|9[0-8])\\d{3}\\b",
+    "description": {
+      "en": "French postal code, five digits whose first two form a department number from 01 to 98. A postal code identifies nobody alone, but it narrows a person down when combined with other values. It collides span for span with a US or German postal code: never put two of them in one detector.",
+      "fr": "Code postal français, cinq chiffres dont les deux premiers forment un numéro de département de 01 à 98. Un code postal n'identifie personne seul, mais il restreint fortement quand il accompagne d'autres valeurs. Il entre en collision span pour span avec un code postal américain ou allemand : n'en mettez jamais deux dans un même détecteur."
+    },
+    "tags": [
+      "fr",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Paris 8e, 75008 France.",
+          "value": "75008"
+        },
+        {
+          "text": "Adresse à Lyon, 69003 exactement.",
+          "value": "69003"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "99123"
+        },
+        {
+          "text": "7500"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "7",
+      "suffix": "x"
+    }
+  }
+}

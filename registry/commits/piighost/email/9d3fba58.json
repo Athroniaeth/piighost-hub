@@ -1,0 +1,46 @@
+{
+  "digest": "9d3fba5864357cbbc39e18f86b13d2fdd57fde59e091898eec65dddedfcbe996",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "email",
+    "schema_version": 1,
+    "label": "EMAIL",
+    "regex": "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}",
+    "description": {
+      "en": "Email address, simplified RFC 5322. The lookbehind pins the start of the local part and the domain is segmented label by label, which keeps the scan linear.",
+      "fr": "Adresse e-mail, RFC 5322 simplifiée. Le lookbehind ancre le début de la partie locale et le domaine est segmenté label par label, ce qui garde le balayage linéaire."
+    },
+    "tags": [
+      "international",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Write to john.doe@example.com for any question.",
+          "value": "john.doe@example.com"
+        },
+        {
+          "text": "Contact : support+billing@mail.example.org",
+          "value": "support+billing@mail.example.org"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "not an email"
+        },
+        {
+          "text": "john@doe"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "john.doe@example.com ",
+      "filler": "a.",
+      "suffix": "@"
+    }
+  }
+}

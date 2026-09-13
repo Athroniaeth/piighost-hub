@@ -1,0 +1,48 @@
+{
+  "digest": "fc4a1e8375603f34b426095f59e7a699c0c831ae66ad1ef7786c8f0b33661bd9",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "credit-card",
+    "schema_version": 1,
+    "label": "CREDIT_CARD",
+    "regex": "\\b(?:\\d[ -]?){12,18}\\d\\b",
+    "description": {
+      "en": "Payment card number: 13 to 19 digits, each optionally followed by a space or a hyphen. Shape only, no Luhn check and no issuer prefix, so any long digit run (order numbers, tracking codes) is also reported.",
+      "fr": "Numéro de carte de paiement : 13 à 19 chiffres, chacun éventuellement suivi d'un espace ou d'un tiret. Forme seule, sans clé de Luhn ni préfixe d'émetteur, donc toute longue suite de chiffres (numéros de commande, codes de suivi) est aussi signalée."
+    },
+    "tags": [
+      "international",
+      "finance",
+      "banking",
+      "ecommerce"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Card 4111 1111 1111 1111 declined.",
+          "value": "4111 1111 1111 1111"
+        },
+        {
+          "text": "Paid with 5555-5555-5555-4444 yesterday.",
+          "value": "5555-5555-5555-4444"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Order 12345678"
+        },
+        {
+          "text": "4111 1111 1111"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "4111 1111 1111 1111 ",
+      "filler": "1-",
+      "suffix": "-"
+    }
+  }
+}

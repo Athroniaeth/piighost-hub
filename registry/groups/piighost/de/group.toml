@@ -1,0 +1,12 @@
+schema_version = 1
+
+[group]
+name = "de"
+description = { en = "Germany: phone and postal code.", fr = "Allemagne : téléphone et code postal." }
+tags = ["de", "contact", "location"]
+
+[[sources]]
+ref = "piighost/de-phone"
+
+[[sources]]
+ref = "piighost/de-zip"

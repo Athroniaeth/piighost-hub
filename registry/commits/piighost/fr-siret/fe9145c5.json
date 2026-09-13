@@ -1,0 +1,48 @@
+{
+  "digest": "fe9145c550e2e379f552e4ea66f250416e8ebd94aa600dc60e5563a30107defa",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fr-siret",
+    "schema_version": 1,
+    "label": "FR_SIRET",
+    "regex": "\\b\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{3}[\\s-]?\\d{5}\\b",
+    "description": {
+      "en": "French SIRET establishment identifier: 9-digit SIREN plus a 5-digit NIC, written 3-3-3-5 with optional spaces or hyphens or as 14 contiguous digits. No Luhn check, so any 14-digit number of that shape is reported.",
+      "fr": "Identifiant d'établissement SIRET : SIREN de 9 chiffres suivi d'un NIC de 5 chiffres, écrit 3-3-3-5 avec espaces ou tirets optionnels ou en 14 chiffres accolés. Sans clé de Luhn, tout nombre de 14 chiffres de cette forme est signalé."
+    },
+    "tags": [
+      "fr",
+      "business",
+      "accounting",
+      "legal"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "SIRET 732 829 320 00074 de l'établissement.",
+          "value": "732 829 320 00074"
+        },
+        {
+          "text": "Établissement n° 73282932000074",
+          "value": "73282932000074"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "SIREN 732 829 320"
+        },
+        {
+          "text": "Code 75008"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "732 829 320 00074 ",
+      "filler": "123 ",
+      "suffix": "x"
+    }
+  }
+}

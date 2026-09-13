@@ -4,10 +4,19 @@ from litestar.status_codes import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_E
 
 
 class AppError(Exception):
-    """Base for domain errors. Subclass per failure, set status_code + detail."""
+    """Base for domain errors. Subclass per failure, set status_code + detail.
+
+    A message passed at raise time replaces the class default, so a handler can
+    say which object was not found rather than only that something was.
+    """
 
     status_code: int = HTTP_500_INTERNAL_SERVER_ERROR
     detail: str = "Internal Server Error"
+
+    def __init__(self, detail: str | None = None) -> None:
+        if detail is not None:
+            self.detail = detail
+        super().__init__(self.detail)
 
 
 class NotFoundError(AppError):

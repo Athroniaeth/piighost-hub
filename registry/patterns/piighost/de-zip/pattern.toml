@@ -1,0 +1,32 @@
+schema_version = 1
+
+[pattern]
+name = "de-zip"
+label = "DE_ZIP"
+tags = ["de", "location", "contact"]
+regex = '\b(?:0[1-9]|[1-9]\d)\d{3}\b'
+
+[pattern.description]
+en = "German postal code, five digits, the first pair never 00. It collides span for span with the French and US postal codes, which have the same length: pick one per detector."
+fr = "Code postal allemand, cinq chiffres dont la première paire n'est jamais 00. Il entre en collision span pour span avec les codes postaux français et américain, de même longueur : n'en retenez qu'un par détecteur."
+
+[[examples.match]]
+text = "Berlin, 10115 Mitte."
+value = "10115"
+
+[[examples.match]]
+text = "München 80331 Innenstadt"
+value = "80331"
+
+# 00 en tête.
+[[examples.no_match]]
+text = "00123"
+
+# Six chiffres.
+[[examples.no_match]]
+text = "101150"
+
+[redos]
+prefix = ""
+filler = "1"
+suffix = "x"

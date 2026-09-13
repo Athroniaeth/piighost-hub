@@ -1,0 +1,37 @@
+schema_version = 1
+
+[pattern]
+name = "phone-international"
+label = "PHONE_INTERNATIONAL"
+tags = ["international", "contact"]
+regex = '(?<![\w+])\+\d{1,3}[\s.-]?(?:\(\d{1,4}\)|\d{1,4})(?:[\s.-]?\d{1,4}){1,4}(?!\d)'
+
+[pattern.description]
+en = "Phone number in international form: a + sign, a country code, then groups of digits. The area code may be parenthesised, and the parentheses are paired so a number written inside brackets does not swallow one. Deliberately loose about grouping, so it overlaps with every national phone pattern: do not put both in the same detector."
+fr = "Numéro de téléphone en forme internationale : un signe +, un indicatif pays, puis des groupes de chiffres. L'indicatif régional peut être entre parenthèses, appariées pour qu'un numéro écrit entre crochets n'en avale pas une. Volontairement souple sur le découpage, donc il recouvre tous les motifs nationaux : ne les mettez pas dans le même détecteur."
+
+# +44 20 7946 0958 : plage réservée à la fiction par l'Ofcom.
+[[examples.match]]
+text = "Call +44 20 7946 0958 during office hours."
+value = "+44 20 7946 0958"
+
+[[examples.match]]
+text = "Fax: +49 (30) 1234567"
+value = "+49 (30) 1234567"
+
+[[examples.match]]
+text = "Mobile +33 6 39 98 01"
+value = "+33 6 39 98 01"
+
+# Sans le signe +, la forme n'est pas internationale.
+[[examples.no_match]]
+text = "Call 44 20 7946 0958 now"
+
+# Un signe + collé à un mot n'ouvre pas un numéro.
+[[examples.no_match]]
+text = "version C+42 1234"
+
+[redos]
+prefix = "+44 "
+filler = "20 "
+suffix = "x"

@@ -1,0 +1,15 @@
+schema_version = 1
+
+[group]
+name = "international"
+description = { en = "The `generic` group plus IPv6 and international phone numbers. Do not combine with a country phone pattern: a +33 or +1 number collides on the same span.", fr = "Le groupe `generic` plus IPv6 et téléphones internationaux. À ne pas combiner avec un motif de téléphone national : un numéro en +33 ou +1 entre en collision sur le même span." }
+tags = ["international", "contact", "network"]
+
+[[sources]]
+ref = "piighost/generic"
+
+[[sources]]
+ref = "piighost/ipv6"
+
+[[sources]]
+ref = "piighost/phone-international"

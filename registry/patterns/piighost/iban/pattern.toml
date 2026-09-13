@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "iban"
+label = "IBAN"
+tags = ["international", "finance", "banking"]
+regex = '\b[A-Z]{2}\d{2}(?:[\s-]?[A-Z0-9]){11,30}\b'
+
+[pattern.description]
+en = "International Bank Account Number: two-letter country code, two check digits, then 11 to 30 alphanumerics with optional spaces or hyphens. No per-country length table and no mod-97 check, so uppercase reference codes of the same shape are also reported. A country pattern such as fr-iban covers the same span exactly, so whichever is declared first wins: the examples here stay non-French on purpose."
+fr = "Numéro de compte bancaire international (IBAN) : code pays de deux lettres, deux chiffres de contrôle, puis 11 à 30 caractères alphanumériques avec espaces ou tirets optionnels. Sans table de longueurs par pays ni contrôle mod 97, les codes de référence en majuscules de même forme sont aussi signalés. Un motif national comme fr-iban couvre exactement le même span, donc le premier déclaré l'emporte : les exemples restent ici volontairement non français."
+
+
+# IBAN de test publiés par les banques et les organismes de normalisation.
+[[examples.match]]
+text = "Transfer to GB82 WEST 1234 5698 7654 32 before Friday."
+value = "GB82 WEST 1234 5698 7654 32"
+
+[[examples.match]]
+text = "Beneficiary account: DE89370400440532013000"
+value = "DE89370400440532013000"
+
+# Trop court.
+[[examples.no_match]]
+text = "Reference AB12 3456"
+
+# Minuscules : rejeté.
+[[examples.no_match]]
+text = "gb82 west 1234 5698 7654 32"
+
+[redos]
+prefix = "GB82 "
+filler = "WEST--"
+suffix = "x"

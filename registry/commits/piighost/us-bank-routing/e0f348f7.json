@@ -1,0 +1,47 @@
+{
+  "digest": "e0f348f77dcae9e1189ecb10562e8945681b42ba0ee60ad4dab33fc4eef0b6ae",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-bank-routing",
+    "schema_version": 1,
+    "label": "US_BANK_ROUTING",
+    "regex": "\\b\\d{9}\\b",
+    "description": {
+      "en": "US bank routing number, nine digits. Very noisy: any nine-digit run matches, an order number, a part reference, a truncated identifier. Use it only in a banking context, and expect it to take spans a narrower pattern would have claimed if it is declared first.",
+      "fr": "Numéro de routage bancaire américain, neuf chiffres. Très bruyant : toute suite de neuf chiffres correspond, un numéro de commande, une référence de pièce, un identifiant tronqué. À n'utiliser qu'en contexte bancaire, en sachant qu'il prendra les spans d'un motif plus étroit s'il est déclaré avant lui."
+    },
+    "tags": [
+      "us",
+      "finance",
+      "banking"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Routing 021000021 for the wire.",
+          "value": "021000021"
+        },
+        {
+          "text": "ABA number 011401533 confirmed.",
+          "value": "011401533"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "12345678"
+        },
+        {
+          "text": "1234567890"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

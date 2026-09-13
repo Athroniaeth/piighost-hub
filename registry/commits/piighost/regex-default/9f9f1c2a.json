@@ -1,0 +1,76 @@
+{
+  "digest": "9f9f1c2ada9d9607b715c733e9a944834c381d2d12dc5daf8445c56a5a971b0d",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "regex-default",
+    "schema_version": 1,
+    "description": {
+      "en": "Regex only, no model, no network: the four built-in catalogs of piighost, France first so a SIRET or a NIR is not taken for a card number. The default of piighost-api.",
+      "fr": "Regex seul, sans modèle ni réseau : les quatre catalogues intégrés de piighost, la France d'abord pour qu'un SIRET ou un NIR ne soit pas pris pour une carte bancaire. Le défaut de piighost-api."
+    },
+    "tags": [
+      "international",
+      "fr",
+      "eu",
+      "us",
+      "chat",
+      "tool-agent"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [],
+    "detectors": [
+      {
+        "name": "regex-fr",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/fr",
+            "commit": "5b4901d5"
+          }
+        ]
+      },
+      {
+        "name": "regex-eu",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/eu",
+            "commit": "b0303ae6"
+          }
+        ]
+      },
+      {
+        "name": "regex-us",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/us",
+            "commit": "fc7be4d5"
+          }
+        ]
+      },
+      {
+        "name": "regex-generic",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/generic",
+            "commit": "e9f9b4fa"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "linker": {
+        "type": "exact"
+      },
+      "anonymizer": {
+        "placeholder": {
+          "type": "label_counter"
+        }
+      }
+    }
+  }
+}

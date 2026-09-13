@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "uk-postcode"
+label = "UK_POSTCODE"
+tags = ["uk", "location", "contact"]
+regex = '\b[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}\b'
+
+[pattern.description]
+en = "UK postcode, the outward code then the inward code, the space between them optional. A UK postcode is far narrower than a continental one, often a handful of addresses, so it identifies much more than five digits elsewhere."
+fr = "Code postal britannique, le code sortant puis le code entrant, l'espace entre les deux étant optionnel. Un code postal britannique est bien plus étroit que son équivalent continental, souvent quelques adresses, donc il identifie bien davantage que cinq chiffres ailleurs."
+
+# SW1A 1AA est l'adresse de Downing Street, publique et non personnelle.
+[[examples.match]]
+text = "Deliver to SW1A 1AA please."
+value = "SW1A 1AA"
+
+[[examples.match]]
+text = "Office at EC1A1BB in the City."
+value = "EC1A1BB"
+
+# Trois lettres en tête.
+[[examples.no_match]]
+text = "ABC1 1AA"
+
+# Le code entrant demande deux lettres.
+[[examples.no_match]]
+text = "SW1A 1A"
+
+[redos]
+prefix = "SW"
+filler = "1"
+suffix = "!"

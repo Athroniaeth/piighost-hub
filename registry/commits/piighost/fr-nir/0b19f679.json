@@ -1,0 +1,53 @@
+{
+  "digest": "0b19f6796cd2f3319713cb381ff167decb92726f2c202430a7f9d172f8801b4e",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fr-nir",
+    "schema_version": 1,
+    "label": "FR_NIR",
+    "regex": "\\b[12][\\s.-]?\\d{2}[\\s.-]?(?:0[1-9]|1[0-2])[\\s.-]?(?:2A|2B|\\d{2})[\\s.-]?\\d{3}[\\s.-]?\\d{3}[\\s.-]?\\d{2}\\b",
+    "description": {
+      "en": "French social security number (NIR): sex, year, month, department, commune, order, key. Shape only, no checksum, so an OCR-mangled value is still caught.",
+      "fr": "Numéro de sécurité sociale français (NIR) : sexe, année, mois, département, commune, ordre, clé. Forme seule, sans clé de contrôle, pour ne pas laisser passer une valeur abîmée par l'OCR."
+    },
+    "tags": [
+      "fr",
+      "government-id",
+      "health",
+      "healthcare",
+      "hr"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "NIR : 1 85 05 78 006 084 36.",
+          "value": "1 85 05 78 006 084 36"
+        },
+        {
+          "text": "Assuré n° 180057505600157",
+          "value": "180057505600157"
+        },
+        {
+          "text": "Née en Corse : 2 90 12 2A 004 123 45",
+          "value": "2 90 12 2A 004 123 45"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "180137505600157"
+        },
+        {
+          "text": "SIRET 73282932000074"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "1 85 01 ",
+      "filler": "75 ",
+      "suffix": "x"
+    }
+  }
+}

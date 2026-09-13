@@ -67,6 +67,17 @@ format:
 test:
     uv run pytest
 
+# The registry is data with tests of its own: examples, backtracking bounds,
+# composition, recorded commits. See docs/hub/resolution.md.
+
+# Validate the hub registry (registry/).
+hub-check:
+    uv run python -m backend.hub check
+
+# Record every unrecorded head of the registry as an immutable commit.
+hub-record:
+    uv run python -m backend.hub record
+
 # Build the production frontend bundle into frontend/dist (no Python needed).
 build:
     pnpm -C frontend build
@@ -77,5 +88,5 @@ build:
 check-types: types
     git diff --exit-code openapi.json
 
-# Full gate before pushing (what CI runs): contract check + lint + tests.
-check: check-types lint test
+# Full gate before pushing (what CI runs): contract check + lint + tests + registry.
+check: check-types lint test hub-check

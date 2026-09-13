@@ -1,0 +1,46 @@
+{
+  "digest": "e9f9b4fa4def9cc17c9586e529010f737727fb2ff0b0d0b947653d26488cc725",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "generic",
+    "schema_version": 1,
+    "description": {
+      "en": "Country-agnostic shapes: email, URL, IPv4, card number. Mirrors piighost's built-in `generic` catalog.",
+      "fr": "Formes indépendantes du pays : e-mail, URL, IPv4, numéro de carte. Miroir du catalogue intégré `generic` de piighost."
+    },
+    "tags": [
+      "international",
+      "contact",
+      "finance",
+      "network"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/email",
+        "commit": "9d3fba58",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/url",
+        "commit": "cf209031",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/ipv4",
+        "commit": "176336bd",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/credit-card",
+        "commit": "fc4a1e83",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

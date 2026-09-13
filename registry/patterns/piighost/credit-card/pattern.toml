@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "credit-card"
+label = "CREDIT_CARD"
+tags = ["international", "finance", "banking", "ecommerce"]
+regex = '\b(?:\d[ -]?){12,18}\d\b'
+
+[pattern.description]
+en = "Payment card number: 13 to 19 digits, each optionally followed by a space or a hyphen. Shape only, no Luhn check and no issuer prefix, so any long digit run (order numbers, tracking codes) is also reported."
+fr = "Numéro de carte de paiement : 13 à 19 chiffres, chacun éventuellement suivi d'un espace ou d'un tiret. Forme seule, sans clé de Luhn ni préfixe d'émetteur, donc toute longue suite de chiffres (numéros de commande, codes de suivi) est aussi signalée."
+
+
+# Numéros de test publics des réseaux de cartes, jamais attribués.
+[[examples.match]]
+text = "Card 4111 1111 1111 1111 declined."
+value = "4111 1111 1111 1111"
+
+[[examples.match]]
+text = "Paid with 5555-5555-5555-4444 yesterday."
+value = "5555-5555-5555-4444"
+
+# Huit chiffres : trop court.
+[[examples.no_match]]
+text = "Order 12345678"
+
+# Douze chiffres : encore trop court.
+[[examples.no_match]]
+text = "4111 1111 1111"
+
+[redos]
+prefix = "4111 1111 1111 1111 "
+filler = "1-"
+suffix = "-"

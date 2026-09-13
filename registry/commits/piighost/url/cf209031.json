@@ -1,0 +1,46 @@
+{
+  "digest": "cf2090319ae22f191325a0c46faee38995fd9ebd6168335bd4f78d5ab8293760",
+  "recorded_at": "2026-09-13T04:37:47+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "url",
+    "schema_version": 1,
+    "label": "URL",
+    "regex": "https?://[^\\s<>\"']*[^\\s<>\"'.,;:!?)\\]]",
+    "description": {
+      "en": "HTTP or HTTPS URL. The body runs until whitespace, a quote or an angle bracket, and the last character may not be trailing punctuation, so a URL at the end of a sentence or inside parentheses is captured without the closing mark. Other schemes (ftp, mailto) and bare domains are not matched.",
+      "fr": "URL HTTP ou HTTPS. Le corps court jusqu'à un espace, un guillemet ou un chevron, et le dernier caractère ne peut pas être une ponctuation finale, donc une URL en fin de phrase ou entre parenthèses est capturée sans le signe de clôture. Les autres schémas (ftp, mailto) et les domaines nus ne sont pas détectés."
+    },
+    "tags": [
+      "international",
+      "network"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "See https://www.example.com/docs?page=2 for details.",
+          "value": "https://www.example.com/docs?page=2"
+        },
+        {
+          "text": "Source: http://example.org/a/b#frag",
+          "value": "http://example.org/a/b#frag"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ftp://example.com/file"
+        },
+        {
+          "text": "visit example.com today"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "https://",
+      "filler": ".",
+      "suffix": "."
+    }
+  }
+}
