@@ -1,0 +1,23 @@
+schema_version = 1
+
+[config]
+name = "uk-default"
+description = { en = "United Kingdom without a model: National Insurance and NHS numbers, postcodes, plus the generic shapes. The NHS number and a US phone number have the same shape, so the US pack is deliberately absent.", fr = "Royaume-Uni sans modèle : numéros d'assurance nationale et NHS, codes postaux, plus les formes génériques. Le numéro NHS et un numéro de téléphone américain ont la même forme, donc le pack américain est volontairement absent." }
+tags = ["uk", "lang-en", "hr", "healthcare", "document"]
+piighost = ">=1.7,<2"
+
+[[detectors]]
+name = "regex-uk"
+type = "regex"
+groups = ["piighost/uk"]
+
+[[detectors]]
+name = "regex-generic"
+type = "regex"
+groups = ["piighost/generic"]
+
+[stages.linker]
+type = "exact"
+
+[stages.anonymizer.placeholder]
+type = "label_counter"

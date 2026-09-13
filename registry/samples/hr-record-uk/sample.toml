@@ -1,0 +1,37 @@
+schema_version = 1
+
+[sample]
+name = "hr-record-uk"
+title = { en = "HR record (United Kingdom)", fr = "Dossier RH (Royaume-Uni)" }
+tags = ["uk", "lang-en", "hr", "document"]
+text = """
+Employee record - onboarding
+
+Name: Oliver Bennett
+NI number: AB123456C
+NHS number: 943 476 5919
+Home address: 221B Baker Street, London, SW1A 1AA
+Personal email: oliver.bennett@example.co.uk
+
+Contract starts on 1 October. Payroll has been notified.
+"""
+
+[[annotations]]
+value = "Oliver Bennett"
+label = "PERSON"
+
+[[annotations]]
+value = "AB123456C"
+label = "UK_NINO"
+
+[[annotations]]
+value = "943 476 5919"
+label = "UK_NHS"
+
+[[annotations]]
+value = "SW1A 1AA"
+label = "UK_POSTCODE"
+
+[[annotations]]
+value = "oliver.bennett@example.co.uk"
+label = "EMAIL"

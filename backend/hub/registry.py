@@ -28,6 +28,7 @@ from backend.hub.manifests import (
     load_toml,
 )
 from backend.hub.refs import LATEST, Ref, is_valid_name, is_valid_tag, parse_ref
+from backend.hub.samples import Sample, load_samples
 from backend.hub.store import CommitStore, Kind, Snapshot
 
 VOCABULARY_FILE = "vocabulary.toml"
@@ -82,6 +83,7 @@ class Registry:
         self.root = root
         self.vocabulary: Vocabulary = {}
         self.objects: dict[str, HubObject] = {}
+        self.samples: dict[str, Sample] = {}
         self.store = CommitStore(root)
         self.heads: dict[str, Snapshot] = {}
 
@@ -100,6 +102,7 @@ class Registry:
         registry._load_vocabulary(problems)
         for kind in KIND_DIRS:
             registry._load_kind(kind, problems)
+        registry.samples = load_samples(root, set(registry.vocabulary), problems)
         if problems:
             raise ManifestError("\n".join(problems))
         registry.freeze()

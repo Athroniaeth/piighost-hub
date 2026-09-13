@@ -1,0 +1,49 @@
+schema_version = 1
+
+[sample]
+name = "dev-traceback"
+title = { en = "Traceback pasted into a coding assistant", fr = "Trace d'erreur collée dans un assistant de code" }
+tags = ["international", "lang-en", "software-dev", "code-assistant", "logs"]
+text = """
+Why does this fail? Here is my config and the traceback.
+
+OPENAI_API_KEY=sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD
+STRIPE_SECRET_KEY=sk_test_abcdefghijklmnopqrstuvwx
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+GITHUB_TOKEN=ghp_abcdefghijklmnopqrstuvwxyz0123456789
+
+Connecting to 198.51.100.7 and 2001:db8::1 both time out. The ops contact is
+ops@example.net if that matters.
+
+  File "app.py", line 42, in connect
+    raise TimeoutError(host)
+TimeoutError: 198.51.100.7
+"""
+
+[[annotations]]
+value = "sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD"
+label = "OPENAI_API_KEY"
+
+[[annotations]]
+value = "sk_test_abcdefghijklmnopqrstuvwx"
+label = "STRIPE_KEY"
+
+[[annotations]]
+value = "AKIAIOSFODNN7EXAMPLE"
+label = "AWS_ACCESS_KEY"
+
+[[annotations]]
+value = "ghp_abcdefghijklmnopqrstuvwxyz0123456789"
+label = "GITHUB_TOKEN"
+
+[[annotations]]
+value = "198.51.100.7"
+label = "IPV4"
+
+[[annotations]]
+value = "2001:db8::1"
+label = "IPV6"
+
+[[annotations]]
+value = "ops@example.net"
+label = "EMAIL"

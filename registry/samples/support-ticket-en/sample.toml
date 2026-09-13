@@ -1,0 +1,51 @@
+schema_version = 1
+
+[sample]
+name = "support-ticket-en"
+title = { en = "Support ticket (English)", fr = "Ticket de support (anglais)" }
+tags = ["us", "lang-en", "customer-support", "chat"]
+text = """
+Ticket #4821 - payment declined
+
+Reporter: Jane Miller (jane.miller@example.org, +1 415-555-0123)
+Account: 94103, billing ZIP 94103-1234
+
+The customer says her card 4111 1111 1111 1111 was declined twice this
+morning. She tried again from 203.0.113.42 with the same result. Her SSN on
+file is 123-45-6789, which matches our records.
+
+Escalating to billing. See https://status.example.com/incidents/4821 for the
+provider status page.
+"""
+
+[[annotations]]
+value = "Jane Miller"
+label = "PERSON"
+
+[[annotations]]
+value = "jane.miller@example.org"
+label = "EMAIL"
+
+[[annotations]]
+value = "+1 415-555-0123"
+label = "US_PHONE"
+
+[[annotations]]
+value = "94103-1234"
+label = "US_ZIP"
+
+[[annotations]]
+value = "4111 1111 1111 1111"
+label = "CREDIT_CARD"
+
+[[annotations]]
+value = "203.0.113.42"
+label = "IPV4"
+
+[[annotations]]
+value = "123-45-6789"
+label = "US_SSN"
+
+[[annotations]]
+value = "https://status.example.com/incidents/4821"
+label = "URL"

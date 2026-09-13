@@ -20,14 +20,19 @@ from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_E
 from backend import REGISTRY_ROOT
 from backend.exceptions import AppError, NotFoundError
 from backend.hub.errors import RefError, ResolutionError
+from backend.hub.evaluate import diff_commits, score_config
+from backend.hub.exports import FORMATS, export, snippets
 from backend.hub.refs import Ref, is_commit, parse_ref
 from backend.hub.registry import Registry
 from backend.hub.render import render_labels_pipeline, render_pipeline, to_toml
 from backend.hub.resolve import resolve_config, resolve_labels
+from backend.hub.samples import Sample
+from backend.hub.search import Index
 from backend.hub.store import Snapshot
 
 REGISTRY_DIR_ENV_VAR = "HUB_REGISTRY_DIR"
 STATE_KEY = "hub_registry"
+INDEX_KEY = "hub_index"
 
 IMMUTABLE = "public, max-age=31536000, immutable"
 REVALIDATE = "public, no-cache"
@@ -127,6 +132,102 @@ class VocabularyOut(msgspec.Struct):
     items: list[VocabularyEntry]
 
 
+class SearchHit(msgspec.Struct):
+    key: str
+    kind: str
+    namespace: str
+    name: str
+    commit: str
+    tags: list[str]
+    labels: list[str]
+    used_by: list[str]
+
+
+class FacetOut(msgspec.Struct):
+    tag: str
+    kind: str
+    count: int
+
+
+class SearchOut(msgspec.Struct):
+    items: list[SearchHit]
+    facets: list[FacetOut]
+    total: int
+
+
+class LabelOut(msgspec.Struct):
+    label: str
+    patterns: list[str]
+
+
+class LabelsOut(msgspec.Struct):
+    items: list[LabelOut]
+
+
+class AnnotationOut(msgspec.Struct):
+    value: str
+    label: str
+
+
+class SampleOut(msgspec.Struct):
+    name: str
+    title: Localized
+    tags: list[str]
+    text: str
+    annotations: list[AnnotationOut]
+
+
+class SamplesOut(msgspec.Struct):
+    items: list[SampleOut]
+
+
+class ScoreOut(msgspec.Struct):
+    """How a config did against the annotated corpus."""
+
+    ref: str
+    exact: int
+    mislabelled: int
+    missed: int
+    extra: int
+    annotated: int
+    recall: float
+    protected: float
+    per_sample: dict[str, list[int]]
+    scope: str
+
+
+class ChangeOut(msgspec.Struct):
+    text: str
+    start: int
+    end: int
+    before: str | None
+    after: str | None
+    sample: str
+
+
+class DiffOut(msgspec.Struct):
+    before: str
+    after: str
+    labels_added: list[str]
+    labels_removed: list[str]
+    changes: list[ChangeOut]
+    behavioural: bool
+
+
+class SnippetsOut(msgspec.Struct):
+    ref: str
+    items: dict[str, str]
+
+
+class BadgeOut(msgspec.Struct):
+    """The shields.io endpoint shape, so a README can show a live commit."""
+
+    schemaVersion: int
+    label: str
+    message: str
+    color: str
+
+
 # ------------------------------------------------------------------ startup
 
 
@@ -137,11 +238,19 @@ def load_hub_registry(app: Litestar) -> None:
     the app at a fixture tree before the lifespan runs.
     """
     root = os.getenv(REGISTRY_DIR_ENV_VAR)
-    app.state[STATE_KEY] = Registry.load(REGISTRY_ROOT if root is None else Path(root))
+    registry = Registry.load(REGISTRY_ROOT if root is None else Path(root))
+    app.state[STATE_KEY] = registry
+    # Built once: a registry is read far more often than it is published, and
+    # nothing about it changes between two requests.
+    app.state[INDEX_KEY] = Index(registry)
 
 
 def registry_of(state: State) -> Registry:
     return state[STATE_KEY]
+
+
+def index_of(state: State) -> Index:
+    return state[INDEX_KEY]
 
 
 # ---------------------------------------------------------------- controller
@@ -287,6 +396,211 @@ class HubController(Controller):
             headers=_cache_headers(selector, snapshot),
         )
 
+    @get("/search", name="hub:search")
+    async def search(
+        self,
+        state: State,
+        q: Annotated[
+            str,
+            QueryParameter(
+                description="Free text over names, labels, tags and descriptions."
+            ),
+        ] = "",
+        kind: Annotated[
+            Literal["pattern", "group", "config"] | None, QueryParameter()
+        ] = None,
+        tag: Annotated[
+            list[str] | None,
+            QueryParameter(description="Repeatable. Tags combine with AND."),
+        ] = None,
+        label: Annotated[str | None, QueryParameter()] = None,
+    ) -> SearchOut:
+        """Search the registry and return the facet counts of the result set."""
+        index = index_of(state)
+        entries = index.search(q, kind=kind, tags=tag, label=label)
+        return SearchOut(
+            items=[
+                SearchHit(
+                    key=e.key,
+                    kind=e.kind,
+                    namespace=e.namespace,
+                    name=e.name,
+                    commit=e.commit,
+                    tags=e.tags,
+                    labels=e.labels,
+                    used_by=e.used_by,
+                )
+                for e in entries
+            ],
+            facets=[
+                FacetOut(tag=f.tag, kind=f.kind, count=f.count)
+                for f in index.facets(entries)
+            ],
+            total=len(entries),
+        )
+
+    @get("/labels", name="hub:labels")
+    async def labels(self, state: State) -> LabelsOut:
+        """Every label the registry can emit, with the patterns that define it."""
+        found = index_of(state).labels()
+        return LabelsOut(
+            items=[
+                LabelOut(label=label, patterns=patterns)
+                for label, patterns in found.items()
+            ]
+        )
+
+    @get("/samples", name="hub:samples")
+    async def samples(self, state: State) -> SamplesOut:
+        """The annotated texts the playground offers and the scores are measured on."""
+        return SamplesOut(
+            items=[_sample_out(s) for s in registry_of(state).samples.values()]
+        )
+
+    @get("/refs/{namespace:str}/{name:str}/{selector:str}/export", name="hub:export")
+    async def export_labels(
+        self,
+        state: State,
+        namespace: FromPath[str],
+        name: FromPath[str],
+        selector: FromPath[str],
+        format: Annotated[
+            Literal["json", "presidio", "spacy"],
+            QueryParameter(description="Target tool."),
+        ] = "json",
+    ) -> Response[str]:
+        """Export a pattern or a group to another tool."""
+        registry = registry_of(state)
+        snapshot = _snapshot(registry, _ref(namespace, name, selector))
+        if snapshot.kind == "config":
+            raise BadRequestError("export takes a pattern or a group, not a config")
+        if format not in FORMATS:
+            raise BadRequestError(f"unknown format {format!r}")
+        try:
+            body, media_type = export(resolve_labels(registry, snapshot), format)
+        except ResolutionError as exc:
+            raise UnprocessableError(str(exc)) from exc
+        return Response(
+            body, media_type=media_type, headers=_cache_headers(selector, snapshot)
+        )
+
+    @get(
+        "/refs/{namespace:str}/{name:str}/{selector:str}/snippets", name="hub:snippets"
+    )
+    async def snippets_for(
+        self,
+        state: State,
+        namespace: FromPath[str],
+        name: FromPath[str],
+        selector: FromPath[str],
+    ) -> SnippetsOut:
+        """Ready-to-paste ways to use this reference, one per target."""
+        snapshot = _snapshot(registry_of(state), _ref(namespace, name, selector))
+        return SnippetsOut(
+            ref=snapshot.ref, items=snippets(snapshot.ref, snapshot.kind)
+        )
+
+    @get("/refs/{namespace:str}/{name:str}/{selector:str}/score", name="hub:score")
+    async def score(
+        self,
+        state: State,
+        namespace: FromPath[str],
+        name: FromPath[str],
+        selector: FromPath[str],
+    ) -> Response[ScoreOut]:
+        """Measure this reference against the annotated corpus.
+
+        Read it as coverage, not as a grade: the corpus is this registry's own
+        samples, so it says what a config catches on texts the maintainers wrote,
+        not how it behaves on yours.
+        """
+        registry = registry_of(state)
+        snapshot = _snapshot(registry, _ref(namespace, name, selector))
+        try:
+            result = await score_config(
+                registry,
+                snapshot,
+                list(registry.samples.values()),
+                scoped=snapshot.kind != "config",
+            )
+        except ResolutionError as exc:
+            raise UnprocessableError(str(exc)) from exc
+        body = ScoreOut(
+            ref=snapshot.ref,
+            exact=result.exact,
+            mislabelled=result.mislabelled,
+            missed=result.missed,
+            extra=result.extra,
+            annotated=result.annotated,
+            recall=round(result.recall, 4),
+            protected=round(result.protected, 4),
+            per_sample={k: list(v) for k, v in result.per_sample.items()},
+            scope=result.scope,
+        )
+        return Response(body, headers=_cache_headers(selector, snapshot))
+
+    @get("/diff/{namespace:str}/{name:str}", name="hub:diff")
+    async def diff(
+        self,
+        state: State,
+        namespace: FromPath[str],
+        name: FromPath[str],
+        before: Annotated[str, QueryParameter(description="Older tag or commit.")],
+        after: Annotated[
+            str, QueryParameter(description="Newer tag or commit.")
+        ] = "latest",
+    ) -> DiffOut:
+        """Compare two commits by what they detect on the corpus.
+
+        A text diff of a regex says nothing actionable: one character can widen a
+        pattern across half the corpus, or change nothing at all.
+        """
+        registry = registry_of(state)
+        old = _snapshot(registry, _ref(namespace, name, before))
+        new = _snapshot(registry, _ref(namespace, name, after))
+        try:
+            result = await diff_commits(
+                registry, old, new, list(registry.samples.values())
+            )
+        except ResolutionError as exc:
+            raise UnprocessableError(str(exc)) from exc
+        return DiffOut(
+            before=result.before,
+            after=result.after,
+            labels_added=result.labels_added,
+            labels_removed=result.labels_removed,
+            changes=[
+                ChangeOut(
+                    text=c.text,
+                    start=c.start,
+                    end=c.end,
+                    before=c.before,
+                    after=c.after,
+                    sample=c.sample,
+                )
+                for c in result.changes
+            ],
+            behavioural=result.behavioural,
+        )
+
+    @get("/badge/{namespace:str}/{name:str}", name="hub:badge")
+    async def badge(
+        self,
+        state: State,
+        namespace: FromPath[str],
+        name: FromPath[str],
+        tag: Annotated[str, QueryParameter(description="Tag to report.")] = "latest",
+    ) -> Response[BadgeOut]:
+        """A shields.io endpoint, so a README can show the commit it pins."""
+        snapshot = _snapshot(registry_of(state), _ref(namespace, name, tag))
+        body = BadgeOut(
+            schemaVersion=1,
+            label=f"piighost hub {tag}",
+            message=f"{namespace}/{name}:{snapshot.short}",
+            color="5865F2",
+        )
+        return Response(body, headers={"Cache-Control": REVALIDATE})
+
 
 # ------------------------------------------------------------------ helpers
 
@@ -354,6 +668,18 @@ def _resolve(registry: Registry, snapshot: Snapshot) -> Resolved:
         detectors=None,
         stages=None,
         pipeline=render_labels_pipeline(labels),
+    )
+
+
+def _sample_out(sample: Sample) -> SampleOut:
+    return SampleOut(
+        name=sample.name,
+        title=Localized(en=sample.title.en, fr=sample.title.fr),
+        tags=list(sample.tags),
+        text=sample.text,
+        annotations=[
+            AnnotationOut(value=a.value, label=a.label) for a in sample.annotations
+        ],
     )
 
 

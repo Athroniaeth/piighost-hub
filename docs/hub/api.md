@@ -15,9 +15,44 @@ taille de corps s'appliquent comme au reste de l'API. Le contrat exact est
 | `GET /api/v1/refs/{ns}/{name}/{selector}` | un commit : digest, date, contenu figé |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/resolved` | la résolution : labels et provenance pour un motif ou un groupe, détecteurs et étages pour une config, et le pipeline rendu |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/pipeline.toml?memory=&keep_refs=` | le pipeline piighost en TOML, `application/toml` |
+| `GET /api/v1/refs/{ns}/{name}/{selector}/export?format=` | le jeu de labels pour un autre outil : `json`, `presidio`, `spacy` |
+| `GET /api/v1/refs/{ns}/{name}/{selector}/snippets` | des extraits prêts à coller, un par cible |
+| `GET /api/v1/refs/{ns}/{name}/{selector}/score` | la couverture mesurée sur les textes annotés |
+| `GET /api/v1/search?q=&kind=&tag=&label=` | la recherche et les compteurs de facettes du résultat |
+| `GET /api/v1/labels` | tous les labels que le registre peut émettre |
+| `GET /api/v1/samples` | les textes annotés, avec leurs annotations |
+| `GET /api/v1/diff/{ns}/{name}?before=&after=` | ce que deux commits détectent différemment |
+| `GET /api/v1/badge/{ns}/{name}?tag=` | un endpoint shields.io, pour afficher un commit dans un README |
 
 `{selector}` est un tag, `latest` compris, ou un commit de huit caractères
-hexadécimaux.
+hexadécimaux. Les tags d'une recherche se combinent en ET : cocher deux facettes
+restreint, ce qui est ce que les compteurs annoncent.
+
+## Routes interactives
+
+Elles prennent un corps JSON et renvoient 200 : rien n'est créé, rien n'est
+stocké. Le texte d'un appel n'est ni journalisé ni conservé, puisque c'est
+précisément la donnée que le pipeline sert à cacher.
+
+| Route | Corps | Rôle |
+|---|---|---|
+| `POST /api/v1/playground` | `{ref, text}` | lance un objet du registre sur un texte |
+| `POST /api/v1/playground/candidate` | `{regex, text, label}` | essaie un regex qui n'est pas encore dans le registre |
+| `POST /api/v1/playground/chat` | `{ref, messages}` | rejoue une conversation avec un assistant scripté |
+| `POST /api/v1/compare` | `{refs, text}` | lance deux à quatre objets sur un texte et dit où ils divergent |
+| `POST /api/v1/submissions/check` | `{kind, namespace, name, manifest}` | valide un manifeste et renvoie une pull request prête |
+
+Deux chemins d'exécution, parce que le risque n'est pas le même. Un motif du
+registre a passé la borne de backtracking, donc il tourne dans le processus, sur
+un texte plafonné à 20 000 caractères. Un regex tapé par un visiteur n'a rien
+passé, donc il tourne dans un sous-processus tué au bout de deux secondes : cela
+coûte un démarrage de processus et ne peut pas bloquer le serveur.
+
+Le chat est sans état : le client renvoie toute la conversation à chaque appel,
+donc deux workers répondent pareil et rien n'a besoin d'être stocké entre deux
+requêtes. La réponse de l'assistant est scriptée, ce qui rend la démo gratuite et
+reproductible ; elle démontre l'aller-retour, la restauration et un jeton par
+valeur, qu'un vrai modèle ne prouverait pas mieux.
 
 ## Cache
 
@@ -34,7 +69,7 @@ Corps `application/problem+json`.
 |---|---|
 | 400 | un espace de noms, un nom ou un sélecteur ne suit pas la grammaire |
 | 404 | objet, tag ou commit inconnu |
-| 422 | la résolution échoue sur un commit servi, par exemple une collision de labels dans une tête non encore vérifiée |
+| 422 | la résolution échoue sur un commit servi, une collision de labels par exemple, ou un regex candidat qui ne compile pas ou qui dépasse son délai |
 
 ## Exemples
 

@@ -14,6 +14,7 @@ from litestar_vite.config import PathConfig, RuntimeConfig
 
 from backend import DOCS_ENABLED, FRONTEND_ROOT, OPENAPI_SCHEMA
 from backend.exceptions import AppError, app_error_handler
+from backend.hub.interact import PlaygroundController
 from backend.hub.routes import HubController, load_hub_registry
 from backend.routes import ApiController
 from backend.security import API_KEY_HEADER, ensure_api_key_configured, identify_client
@@ -78,7 +79,9 @@ plugins = [
 
 # All Python routes live under /api to avoid collisions with the Svelte SPA (served
 # at / by the Vite plugin). Register every controller here, not with a hardcoded prefix.
-api_router = Router(path="/api", route_handlers=[ApiController, HubController])
+api_router = Router(
+    path="/api", route_handlers=[ApiController, HubController, PlaygroundController]
+)
 
 
 def build_openapi_config(*, docs_enabled: bool) -> OpenAPIConfig | None:

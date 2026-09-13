@@ -1,0 +1,45 @@
+schema_version = 1
+
+[sample]
+name = "email-pro-fr"
+title = { en = "Business email (French)", fr = "E-mail professionnel (français)" }
+tags = ["fr", "lang-fr", "customer-support", "chat"]
+text = """
+Bonjour,
+
+Je suis Patrick Dupont, client depuis 2019. Je vous écris au sujet de mon
+dossier n° 732 829 320 00074.
+
+Vous pouvez me joindre au 06 39 98 12 34 ou par retour de mail à
+patrick.dupont@example.com. Mon adresse reste le 12 rue des Lilas, 75008 Paris.
+
+Le prélèvement du mois dernier n'est pas passé sur mon compte
+FR76 3000 6000 0112 3456 7890 189. Merci de vérifier.
+
+Cordialement,
+Patrick Dupont
+"""
+
+[[annotations]]
+value = "Patrick Dupont"
+label = "PERSON"
+
+[[annotations]]
+value = "732 829 320 00074"
+label = "FR_SIRET"
+
+[[annotations]]
+value = "06 39 98 12 34"
+label = "FR_PHONE"
+
+[[annotations]]
+value = "patrick.dupont@example.com"
+label = "EMAIL"
+
+[[annotations]]
+value = "75008"
+label = "FR_ZIP"
+
+[[annotations]]
+value = "FR76 3000 6000 0112 3456 7890 189"
+label = "FR_IBAN"

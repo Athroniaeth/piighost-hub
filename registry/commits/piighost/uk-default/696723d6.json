@@ -1,0 +1,55 @@
+{
+  "digest": "696723d67f4289f6cbb7b711bf647568ded51f47ea7c017d1f15ce7da228fe57",
+  "recorded_at": "2026-09-13T16:57:21+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "uk-default",
+    "schema_version": 1,
+    "description": {
+      "en": "United Kingdom without a model: National Insurance and NHS numbers, postcodes, plus the generic shapes. The NHS number and a US phone number have the same shape, so the US pack is deliberately absent.",
+      "fr": "Royaume-Uni sans modèle : numéros d'assurance nationale et NHS, codes postaux, plus les formes génériques. Le numéro NHS et un numéro de téléphone américain ont la même forme, donc le pack américain est volontairement absent."
+    },
+    "tags": [
+      "uk",
+      "lang-en",
+      "hr",
+      "healthcare",
+      "document"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [],
+    "detectors": [
+      {
+        "name": "regex-uk",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/uk",
+            "commit": "2c08278f"
+          }
+        ]
+      },
+      {
+        "name": "regex-generic",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/generic",
+            "commit": "e9f9b4fa"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "linker": {
+        "type": "exact"
+      },
+      "anonymizer": {
+        "placeholder": {
+          "type": "label_counter"
+        }
+      }
+    }
+  }
+}

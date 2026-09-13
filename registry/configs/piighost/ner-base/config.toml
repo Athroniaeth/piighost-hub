@@ -1,0 +1,20 @@
+schema_version = 1
+
+[config]
+name = "ner-base"
+description = { en = "The names a regex cannot find: people, addresses, organisations. GLiNER2 runs locally, so no text leaves the machine, but it needs the gliner2 extra and a model download on first use. Meant to be inherited, not used alone: it carries no regex detector.", fr = "Ce qu'un regex ne trouve pas : personnes, adresses, organisations. GLiNER2 tourne en local, donc aucun texte ne quitte la machine, mais il demande l'extra gliner2 et un téléchargement de modèle au premier usage. Fait pour être hérité, pas utilisé seul : il ne porte aucun détecteur regex." }
+tags = ["international", "identity", "location", "document"]
+piighost = ">=1.7,<2"
+
+[[detectors]]
+name = "ner"
+type = "gliner2"
+model = "fastino/gliner2-multi-v1"
+labels = ["PERSON", "ADDRESS", "ORGANIZATION"]
+threshold = 0.5
+
+[stages.linker]
+type = "exact"
+
+[stages.anonymizer.placeholder]
+type = "label_counter"

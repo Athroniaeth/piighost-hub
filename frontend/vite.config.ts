@@ -46,7 +46,7 @@ export default defineConfig({
     svelte(),
     // Kept for type generation only; it no longer serves the frontend.
     litestar({
-      input: ["src/main.ts", "src/tailwind.css"],
+      input: ["src/main.ts"],
 
       types: "auto",
     }),

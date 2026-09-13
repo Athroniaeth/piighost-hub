@@ -11,6 +11,7 @@ registry/
   patterns/<ns>/<name>/pattern.toml
   groups/<ns>/<name>/group.toml
   configs/<ns>/<name>/config.toml
+  samples/<name>/sample.toml      textes annotés, non versionnés
   <kind>/<ns>/<name>/tags.toml    pointeurs de tags, facultatif
   commits/<ns>/<name>/<short>.json  instantanés immuables, écrits par `hub record`
 ```
@@ -189,3 +190,40 @@ Un tag est en kebab-case, n'est pas `latest`, et n'est pas composé uniquement d
 caractères hexadécimaux. Il pointe un commit enregistré dans `commits/`. Le tag
 `latest` n'y figure jamais : il est calculé et désigne toujours la tête de
 travail.
+
+## `sample.toml`
+
+Un texte annoté. Les samples alimentent le bac à sable et servent de corpus de
+mesure. Ce sont des données, pas des artefacts publiés : personne n'épingle un
+sample, donc contrairement à un motif il ne porte ni commit ni tag, et il vit
+dans un seul espace de noms.
+
+```toml
+schema_version = 1
+
+[sample]
+name = "email-pro-fr"
+title = { en = "Business email (French)", fr = "E-mail professionnel (français)" }
+tags = ["fr", "lang-fr", "customer-support"]
+text = """
+Bonjour, je suis joignable au 06 39 98 12 34.
+"""
+
+[[annotations]]
+value = "06 39 98 12 34"
+label = "FR_PHONE"
+```
+
+| Clé | Règle |
+|---|---|
+| `text` | le texte, en chaîne multiligne |
+| `annotations[].value` | une valeur qu'un bon pipeline doit attraper ; elle doit apparaître dans le texte |
+| `annotations[].label` | le label attendu, en UPPER_SNAKE |
+
+L'annotation se fait par valeur et non par position : une position casse dès
+qu'on corrige une faute de frappe dans le texte, et chaque occurrence d'une
+valeur annotée est attendue.
+
+Les mêmes règles de synthèse s'appliquent qu'aux motifs. Un sample annoté
+`PERSON` sur un nom inventé est utile même si aucun motif regex ne le trouve :
+c'est ce qui montre ce qu'une configuration sans modèle laisse passer.

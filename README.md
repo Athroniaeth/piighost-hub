@@ -154,22 +154,39 @@ Passer à l'horizontal ensuite ne demande que des répliques d'`api` derrière n
 
 ## Hub de configurations
 
-Ce dépôt porte le **piighost hub** : un registre de motifs regex, de groupes de
-motifs et de configs de pipeline pour [piighost](https://github.com/Athroniaeth/piighost),
-servi en lecture par l'API sous `/api/v1`. Les manifestes vivent dans `registry/`,
-le code dans `backend/hub/`.
+Ce dépôt porte le **piighost hub** : un registre de motifs regex, de groupes et
+de configurations de pipeline pour [piighost](https://github.com/Athroniaeth/piighost),
+avec le site qui les expose. Les manifestes sont dans `registry/`, le moteur dans
+`backend/hub/`, le site dans `frontend/src/`.
 
-- [Format des manifestes](docs/hub/manifest.md) : motifs, groupes, configs, tags.
-- [Références, commits et résolution](docs/hub/resolution.md) : `ns/name:tag`,
-  `ns/name:3fa9c2e1`, commits immuables, règles de composition, rendu piighost.
-- [API HTTP](docs/hub/api.md) : les routes, le cache, les erreurs.
+Un objet est versionné par son contenu : son identifiant est le sha256 de son
+manifeste figé, et on l'épingle par commit (`piighost/fr-default:240a672d`) ou
+par tag mobile (`:prod`). Chaque motif porte ses exemples, et la CI rejoue ces
+exemples une fois les motifs composés, ce qui attrape une valeur volée par un
+motif voisin avant qu'elle n'arrive chez un utilisateur.
 
 ```bash
-just hub-check                                  # valide le registre (dans `just check`)
-just hub-record                                 # enregistre les têtes comme commits
-uv run python -m backend.hub resolve piighost/fr
+just hub-check                                   # valide le registre (inclus dans `just check`)
+just hub-record                                  # enregistre les têtes comme commits
+uv run python -m backend.hub resolve piighost/fr # ce que la référence contient
 uv run python -m backend.hub render piighost/fr-default --memory redis
+just dev                                         # le site sur http://127.0.0.1:5173
 ```
+
+| Document | Contenu |
+|---|---|
+| [Format des manifestes](docs/hub/manifest.md) | motifs, groupes, configurations, samples, tags |
+| [Références, commits, résolution](docs/hub/resolution.md) | la grammaire, les commits, les règles de composition, les checks |
+| [API HTTP](docs/hub/api.md) | les routes, le cache, les limites du bac à sable |
+| [Le site](docs/hub/site.md) | les pages et les choix qui se voient |
+| [Ce qui revient à piighost](docs/hub/library-support.md) | le contrat pour le support `hub:` dans la bibliothèque |
+
+Deux choses valent d'être sues avant de s'en servir. Les détecteurs à modèle ne
+tournent pas dans le bac à sable, parce qu'il faudrait charger des poids à chaque
+requête ; les configurations qui en portent restent exécutables pour leur partie
+regex et la réponse nomme ce qui a été sauté. Et publier passe par une pull
+request : le site vérifie un manifeste avec les mêmes tests que les mainteneurs,
+puis renvoie un lien GitHub prérempli, sans qu'aucun jeton n'existe ici.
 
 ## Clé d'API
 

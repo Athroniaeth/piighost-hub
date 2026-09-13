@@ -19,7 +19,9 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.svelte"],
+    // Svelte 5 rune modules (.svelte.ts) go through the Svelte parser as well, and
+    // without the TypeScript sub-parser a plain `export type` fails to parse.
+    files: ["**/*.svelte", "**/*.svelte.ts", "**/*.svelte.js"],
     languageOptions: {
       parserOptions: { parser: ts.parser },
     },

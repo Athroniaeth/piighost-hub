@@ -1,0 +1,42 @@
+schema_version = 1
+
+[sample]
+name = "invoice-eu"
+title = { en = "Cross-border invoice", fr = "Facture transfrontalière" }
+tags = ["eu", "de", "lang-en", "accounting", "document"]
+text = """
+INVOICE 2026-0042
+
+Bill to: Muster GmbH, Hauptstrasse 4, 10115 Berlin
+VAT number DE123456789
+Contact: buchhaltung@example.de, +49 30 1234567
+
+Supplier: Exemple SARL, VAT FR12345678901
+Bank: DE89370400440532013000
+
+Amount due: 4 200,00 EUR. Payment within 30 days.
+"""
+
+[[annotations]]
+value = "10115"
+label = "DE_ZIP"
+
+[[annotations]]
+value = "DE123456789"
+label = "EU_VAT"
+
+[[annotations]]
+value = "buchhaltung@example.de"
+label = "EMAIL"
+
+[[annotations]]
+value = "+49 30 1234567"
+label = "DE_PHONE"
+
+[[annotations]]
+value = "FR12345678901"
+label = "EU_VAT"
+
+[[annotations]]
+value = "DE89370400440532013000"
+label = "IBAN"

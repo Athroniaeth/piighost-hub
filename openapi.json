@@ -1,6 +1,157 @@
 {
   "components": {
     "schemas": {
+      "AnnotationOut": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "title": "AnnotationOut",
+        "type": "object"
+      },
+      "BadgeOut": {
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "color",
+          "label",
+          "message",
+          "schemaVersion"
+        ],
+        "title": "BadgeOut",
+        "type": "object"
+      },
+      "CandidateRequest": {
+        "properties": {
+          "label": {
+            "default": "CANDIDATE",
+            "type": "string"
+          },
+          "regex": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex",
+          "text"
+        ],
+        "title": "CandidateRequest",
+        "type": "object"
+      },
+      "ChangeOut": {
+        "properties": {
+          "after": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "before": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "end": {
+            "type": "integer"
+          },
+          "sample": {
+            "type": "string"
+          },
+          "start": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "after",
+          "before",
+          "end",
+          "sample",
+          "start",
+          "text"
+        ],
+        "title": "ChangeOut",
+        "type": "object"
+      },
+      "ChatOut": {
+        "properties": {
+          "mapping": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "turns": {
+            "items": {
+              "$ref": "#/components/schemas/TurnOut"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "mapping",
+          "ref",
+          "turns"
+        ],
+        "title": "ChatOut",
+        "type": "object"
+      },
+      "ChatRequest": {
+        "properties": {
+          "messages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "messages",
+          "ref"
+        ],
+        "title": "ChatRequest",
+        "type": "object"
+      },
       "CommitDetail": {
         "properties": {
           "commit": {
@@ -73,6 +224,140 @@
         "title": "CommitSummary",
         "type": "object"
       },
+      "CompareOut": {
+        "properties": {
+          "agreed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "disputed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "agreed",
+          "disputed",
+          "runs"
+        ],
+        "title": "CompareOut",
+        "type": "object"
+      },
+      "CompareRequest": {
+        "properties": {
+          "refs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refs",
+          "text"
+        ],
+        "title": "CompareRequest",
+        "type": "object"
+      },
+      "DiffOut": {
+        "properties": {
+          "after": {
+            "type": "string"
+          },
+          "before": {
+            "type": "string"
+          },
+          "behavioural": {
+            "type": "boolean"
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/ChangeOut"
+            },
+            "type": "array"
+          },
+          "labels_added": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "labels_removed": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "after",
+          "before",
+          "behavioural",
+          "changes",
+          "labels_added",
+          "labels_removed"
+        ],
+        "title": "DiffOut",
+        "type": "object"
+      },
+      "FacetOut": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "count",
+          "kind",
+          "tag"
+        ],
+        "title": "FacetOut",
+        "type": "object"
+      },
+      "Finding": {
+        "properties": {
+          "level": {
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ],
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "level",
+          "message",
+          "subject"
+        ],
+        "title": "Finding",
+        "type": "object"
+      },
       "Greeting": {
         "properties": {
           "message": {
@@ -95,6 +380,83 @@
         },
         "required": [],
         "title": "HealthCheck",
+        "type": "object"
+      },
+      "HitOut": {
+        "properties": {
+          "detector": {
+            "type": "string"
+          },
+          "end": {
+            "type": "integer"
+          },
+          "kept": {
+            "type": "boolean"
+          },
+          "label": {
+            "type": "string"
+          },
+          "pattern": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "start": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "detector",
+          "end",
+          "kept",
+          "label",
+          "pattern",
+          "start",
+          "text"
+        ],
+        "title": "HitOut",
+        "type": "object"
+      },
+      "LabelOut": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "patterns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "label",
+          "patterns"
+        ],
+        "title": "LabelOut",
+        "type": "object"
+      },
+      "LabelsOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LabelOut"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "LabelsOut",
         "type": "object"
       },
       "Localized": {
@@ -367,6 +729,346 @@
         "title": "ResolvedLabelOut",
         "type": "object"
       },
+      "RunOut": {
+        "properties": {
+          "anonymized_text": {
+            "type": "string"
+          },
+          "elapsed_ms": {
+            "type": "number"
+          },
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/HitOut"
+            },
+            "type": "array"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "unsupported": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "anonymized_text",
+          "elapsed_ms",
+          "hits",
+          "ref",
+          "truncated",
+          "unsupported"
+        ],
+        "title": "RunOut",
+        "type": "object"
+      },
+      "RunRequest": {
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref",
+          "text"
+        ],
+        "title": "RunRequest",
+        "type": "object"
+      },
+      "SampleOut": {
+        "properties": {
+          "annotations": {
+            "items": {
+              "$ref": "#/components/schemas/AnnotationOut"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "text": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/Localized"
+          }
+        },
+        "required": [
+          "annotations",
+          "name",
+          "tags",
+          "text",
+          "title"
+        ],
+        "title": "SampleOut",
+        "type": "object"
+      },
+      "SamplesOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SampleOut"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "SamplesOut",
+        "type": "object"
+      },
+      "ScoreOut": {
+        "properties": {
+          "annotated": {
+            "type": "integer"
+          },
+          "exact": {
+            "type": "integer"
+          },
+          "extra": {
+            "type": "integer"
+          },
+          "mislabelled": {
+            "type": "integer"
+          },
+          "missed": {
+            "type": "integer"
+          },
+          "per_sample": {
+            "additionalProperties": {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "type": "object"
+          },
+          "protected": {
+            "type": "number"
+          },
+          "recall": {
+            "type": "number"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "annotated",
+          "exact",
+          "extra",
+          "mislabelled",
+          "missed",
+          "per_sample",
+          "protected",
+          "recall",
+          "ref",
+          "scope"
+        ],
+        "title": "ScoreOut",
+        "type": "object"
+      },
+      "SearchHit": {
+        "properties": {
+          "commit": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "used_by": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "commit",
+          "key",
+          "kind",
+          "labels",
+          "name",
+          "namespace",
+          "tags",
+          "used_by"
+        ],
+        "title": "SearchHit",
+        "type": "object"
+      },
+      "SearchOut": {
+        "properties": {
+          "facets": {
+            "items": {
+              "$ref": "#/components/schemas/FacetOut"
+            },
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SearchHit"
+            },
+            "type": "array"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "facets",
+          "items",
+          "total"
+        ],
+        "title": "SearchOut",
+        "type": "object"
+      },
+      "SnippetsOut": {
+        "properties": {
+          "items": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items",
+          "ref"
+        ],
+        "title": "SnippetsOut",
+        "type": "object"
+      },
+      "SubmissionRequest": {
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "manifest": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "manifest",
+          "name",
+          "namespace"
+        ],
+        "title": "SubmissionRequest",
+        "type": "object"
+      },
+      "SubmissionResult": {
+        "properties": {
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "type": "array"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "pull_request_url": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "findings",
+          "ok",
+          "path",
+          "pull_request_url"
+        ],
+        "title": "SubmissionResult",
+        "type": "object"
+      },
+      "TurnOut": {
+        "properties": {
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/HitOut"
+            },
+            "type": "array"
+          },
+          "reply_received": {
+            "type": "string"
+          },
+          "reply_text": {
+            "type": "string"
+          },
+          "user_sent": {
+            "type": "string"
+          },
+          "user_text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hits",
+          "reply_received",
+          "reply_text",
+          "user_sent",
+          "user_text"
+        ],
+        "title": "TurnOut",
+        "type": "object"
+      },
       "VocabularyEntry": {
         "properties": {
           "kind": {
@@ -461,6 +1163,516 @@
           }
         ],
         "summary": "Hello"
+      }
+    },
+    "/api/v1/badge/{namespace}/{name}": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1BadgeNamespaceBadge",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Tag to report.",
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "default": "latest",
+              "description": "Tag to report.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadgeOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Badge",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/compare": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1CompareCompare",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Compare",
+        "tags": [
+          "playground"
+        ]
+      }
+    },
+    "/api/v1/diff/{namespace}/{name}": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1DiffNamespaceDiff",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Older tag or commit.",
+            "in": "query",
+            "name": "before",
+            "required": true,
+            "schema": {
+              "description": "Older tag or commit.",
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Newer tag or commit.",
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "default": "latest",
+              "description": "Newer tag or commit.",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiffOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Diff",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/labels": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1LabelsLabels",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LabelsOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          }
+        },
+        "summary": "Labels",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/playground": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1PlaygroundPlayground",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Playground",
+        "tags": [
+          "playground"
+        ]
+      }
+    },
+    "/api/v1/playground/candidate": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1PlaygroundCandidateCandidate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CandidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Candidate",
+        "tags": [
+          "playground"
+        ]
+      }
+    },
+    "/api/v1/playground/chat": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1PlaygroundChatChat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Chat",
+        "tags": [
+          "playground"
+        ]
       }
     },
     "/api/v1/refs": {
@@ -739,6 +1951,115 @@
         ]
       }
     },
+    "/api/v1/refs/{namespace}/{name}/{selector}/export": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1RefsNamespaceSelectorExportExportLabels",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "selector",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Target tool.",
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "description": "Target tool.",
+              "enum": [
+                "json",
+                "presidio",
+                "spacy"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "ExportLabels",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
     "/api/v1/refs/{namespace}/{name}/{selector}/pipeline.toml": {
       "get": {
         "deprecated": false,
@@ -952,6 +2273,418 @@
         "summary": "Resolved",
         "tags": [
           "hub"
+        ]
+      }
+    },
+    "/api/v1/refs/{namespace}/{name}/{selector}/score": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1RefsNamespaceSelectorScoreScore",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "selector",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Score",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/refs/{namespace}/{name}/{selector}/snippets": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1RefsNamespaceSelectorSnippetsSnippetsFor",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "selector",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnippetsOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "SnippetsFor",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/samples": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1SamplesSamples",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamplesOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          }
+        },
+        "summary": "Samples",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1SearchSearch",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Free text over names, labels, tags and descriptions.",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "description": "Free text over names, labels, tags and descriptions.",
+              "type": "string"
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pattern",
+                "group",
+                "config",
+                null
+              ],
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Repeatable. Tags combine with AND.",
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "description": "Repeatable. Tags combine with AND.",
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "in": "query",
+            "name": "label",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/submissions/check": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1SubmissionsCheckSubmission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionResult"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Submission",
+        "tags": [
+          "playground"
         ]
       }
     },

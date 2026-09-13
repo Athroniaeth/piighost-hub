@@ -1,0 +1,38 @@
+schema_version = 1
+
+[sample]
+name = "health-record-fr"
+title = { en = "Medical note (French)", fr = "Compte rendu médical (français)" }
+tags = ["fr", "lang-fr", "healthcare", "document"]
+text = """
+COMPTE RENDU DE CONSULTATION
+
+Patiente : Marie Lefevre, née le 12/05/1985
+NIR : 2 85 05 78 006 084 36
+Adresse : 3 avenue du Parc, 69003 Lyon
+Téléphone : 04 99 00 12 34
+
+Motif : suivi post-opératoire. Aucune complication relevée. Prochain rendez-vous
+dans six semaines. Compte rendu transmis au médecin traitant à
+dr.martin@example.org.
+"""
+
+[[annotations]]
+value = "Marie Lefevre"
+label = "PERSON"
+
+[[annotations]]
+value = "2 85 05 78 006 084 36"
+label = "FR_NIR"
+
+[[annotations]]
+value = "69003"
+label = "FR_ZIP"
+
+[[annotations]]
+value = "04 99 00 12 34"
+label = "FR_PHONE"
+
+[[annotations]]
+value = "dr.martin@example.org"
+label = "EMAIL"
