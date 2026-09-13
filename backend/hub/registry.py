@@ -31,6 +31,9 @@ from backend.hub.refs import LATEST, Ref, is_valid_name, is_valid_tag, parse_ref
 from backend.hub.samples import Sample, load_samples
 from backend.hub.store import CommitStore, Kind, Snapshot
 
+REGISTRY_DIR_ENV_VAR = "HUB_REGISTRY_DIR"
+"""Names the directory to load; the routes read it, this is only for the message."""
+
 VOCABULARY_FILE = "vocabulary.toml"
 POINTERS_FILE = "tags.toml"
 KIND_DIRS: dict[Kind, str] = {
@@ -97,6 +100,12 @@ class Registry:
             ManifestError: With every structural problem found, joined.
             ResolutionError: If references cannot be frozen (cycle, unknown).
         """
+        if not root.is_dir():
+            raise ManifestError(
+                f"no registry at {root}. Set {REGISTRY_DIR_ENV_VAR} to the directory "
+                f"holding vocabulary.toml, patterns/, groups/ and configs/ — the "
+                f"Docker image ships it at /app/registry."
+            )
         registry = cls(root)
         problems: list[str] = []
         registry._load_vocabulary(problems)

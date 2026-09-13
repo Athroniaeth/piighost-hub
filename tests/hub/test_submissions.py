@@ -151,3 +151,31 @@ class TestPullRequest:
     def test_paths_follow_the_registry_layout(self) -> None:
         assert submission_path("group", "a", "b") == "groups/a/b/group.toml"
         assert submission_path("config", "a", "b") == "configs/a/b/config.toml"
+
+
+class TestDeployment:
+    async def test_the_pull_request_target_comes_from_the_environment(
+        self, registry: Registry, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("HUB_REGISTRY_REPO", "acme/our-registry")
+        monkeypatch.setenv("HUB_REGISTRY_BRANCH", "main")
+        result = await check_submission(
+            registry, "pattern", "alice", "order-id", MANIFEST
+        )
+        assert result.pull_request_url is not None
+        assert result.pull_request_url.startswith(
+            "https://github.com/acme/our-registry/new/main?"
+        )
+
+    async def test_it_falls_back_to_the_official_registry(
+        self, registry: Registry, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.delenv("HUB_REGISTRY_REPO", raising=False)
+        monkeypatch.delenv("HUB_REGISTRY_BRANCH", raising=False)
+        result = await check_submission(
+            registry, "pattern", "alice", "order-id", MANIFEST
+        )
+        assert result.pull_request_url is not None
+        assert (
+            "/Athroniaeth/piighost-hub-registry/new/develop?" in result.pull_request_url
+        )

@@ -23,14 +23,13 @@ from backend.hub.errors import RefError, ResolutionError
 from backend.hub.evaluate import diff_commits, score_config
 from backend.hub.exports import FORMATS, export, snippets
 from backend.hub.refs import Ref, is_commit, parse_ref
-from backend.hub.registry import Registry
+from backend.hub.registry import REGISTRY_DIR_ENV_VAR, Registry
 from backend.hub.render import render_labels_pipeline, render_pipeline, to_toml
 from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.samples import Sample
 from backend.hub.search import Index
 from backend.hub.store import Snapshot
 
-REGISTRY_DIR_ENV_VAR = "HUB_REGISTRY_DIR"
 STATE_KEY = "hub_registry"
 INDEX_KEY = "hub_index"
 

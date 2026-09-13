@@ -210,3 +210,18 @@ class TestResolvingReferences:
         assert registry.history("piighost/fr") == [head]
         registry.store.record(head)
         assert [s.short for s in registry.history("piighost/fr")] == [head.short]
+
+
+class TestMissingRegistry:
+    def test_a_missing_directory_names_the_variable_to_set(
+        self, tmp_path: Path
+    ) -> None:
+        """The failure an operator meets when the image ships no registry.
+
+        The generic error would blame a missing vocabulary.toml, which sends them
+        looking for a file rather than for the directory they forgot to mount.
+        """
+        with pytest.raises(ManifestError) as info:
+            Registry.load(tmp_path / "absent")
+        assert "HUB_REGISTRY_DIR" in str(info.value)
+        assert "/app/registry" in str(info.value)

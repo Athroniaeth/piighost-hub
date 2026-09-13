@@ -9,6 +9,7 @@ review argues about the pattern rather than about a missing example.
 """
 
 import asyncio
+import os
 import shutil
 import urllib.parse
 from pathlib import Path
@@ -23,8 +24,25 @@ from backend.hub.refs import is_valid_name
 from backend.hub.registry import KIND_DIRS, MANIFEST_FILES, Registry
 from backend.hub.store import Kind
 
+REPO_ENV_VAR = "HUB_REGISTRY_REPO"
+BRANCH_ENV_VAR = "HUB_REGISTRY_BRANCH"
 DEFAULT_REPO = "Athroniaeth/piighost-hub-registry"
 DEFAULT_BRANCH = "develop"
+
+
+def configured_repo() -> tuple[str, str]:
+    """The repository and branch a submission's pull request targets.
+
+    Read from the environment on every call rather than at import, so a fork can
+    point the contribution page at its own registry without rebuilding an image,
+    and so a test can change it without reloading the module.
+    """
+    return (
+        os.getenv(REPO_ENV_VAR) or DEFAULT_REPO,
+        os.getenv(BRANCH_ENV_VAR) or DEFAULT_BRANCH,
+    )
+
+
 KINDS: tuple[Kind, ...] = ("pattern", "group", "config")
 
 
@@ -67,8 +85,8 @@ async def check_submission(
     name: str,
     manifest: str,
     *,
-    repo: str = DEFAULT_REPO,
-    branch: str = DEFAULT_BRANCH,
+    repo: str | None = None,
+    branch: str | None = None,
 ) -> SubmissionResult:
     """Check a submission off the event loop.
 
@@ -76,8 +94,16 @@ async def check_submission(
     and the checks drive the pipeline with asyncio.run, which cannot be called
     from inside a running loop. A worker thread gives both what they need.
     """
+    configured = configured_repo()
     return await asyncio.to_thread(
-        _check_submission, registry, kind, namespace, name, manifest, repo, branch
+        _check_submission,
+        registry,
+        kind,
+        namespace,
+        name,
+        manifest,
+        repo or configured[0],
+        branch or configured[1],
     )
 
 

@@ -22,9 +22,14 @@ RUN useradd -m -u 10001 app
 COPY --from=builder --chown=app:app /python /python
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --chown=app:app backend /app/backend
+# The registry is data the application reads at startup, not a mount: baking it
+# in keeps the image self-contained and pins one image to one registry state, so
+# a rollback of the image rolls the catalogue back with it. Without it the app
+# refuses to start, which is the right failure but an avoidable one.
+COPY --chown=app:app registry /app/registry
 
 ENV PATH="/app/.venv/bin:$PATH" PYTHONPATH=/app PYTHONUNBUFFERED=1 \
-    LITESTAR_APP=backend.app:app
+    LITESTAR_APP=backend.app:app HUB_REGISTRY_DIR=/app/registry
 
 USER app
 WORKDIR /app
