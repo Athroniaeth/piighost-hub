@@ -567,7 +567,8 @@
                         <li class="rounded-md bg-muted/40 p-2">
                           {change.text}
                           <span class="text-muted-foreground"
-                            >{change.before ?? "—"} → {change.after ?? "—"} · {change.sample}</span
+                            >{change.before ?? t("detail.none")} → {change.after ??
+                              t("detail.none")} · {change.sample}</span
                           >
                         </li>
                       {/each}
