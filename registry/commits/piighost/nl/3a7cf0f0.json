@@ -1,0 +1,41 @@
+{
+  "digest": "3a7cf0f0e80de1927e6b25184bdb82eb53f709e54f7871a2d34ce8dd1b8be7bb",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "nl",
+    "schema_version": 1,
+    "description": {
+      "en": "the Netherlands: phone, postal code and the citizen service number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Pays-Bas : téléphone, code postal et le numéro de service au citoyen. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "location",
+      "nl"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/nl-phone",
+        "commit": "0d5dad99",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/nl-postal",
+        "commit": "1a2152e9",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/nl-bsn",
+        "commit": "d24e6d66",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

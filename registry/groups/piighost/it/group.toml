@@ -2,8 +2,17 @@ schema_version = 1
 
 [group]
 name = "it"
-description = { en = "Italy: the codice fiscale, which encodes a person's name, date of birth and place of birth, so it identifies on its own without any other field.", fr = "Italie : le codice fiscale, qui encode le nom, la date et le lieu de naissance, donc il identifie à lui seul sans aucun autre champ." }
-tags = ["it", "government-id", "identity"]
+description = { en = "Italy: phone, postal code, the codice fiscale and the VAT number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Italie : téléphone, code postal, le codice fiscale et le numéro de TVA. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["business", "contact", "government-id", "identity", "it", "location"]
+
+[[sources]]
+ref = "piighost/it-phone"
+
+[[sources]]
+ref = "piighost/it-cap"
 
 [[sources]]
 ref = "piighost/it-codice-fiscale"
+
+[[sources]]
+ref = "piighost/it-partita-iva"

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "es-postal"
+label = "ES_POSTAL"
+tags = ["es", "location", "contact"]
+regex = '(?<!\d)(?:0[1-9]|[1-4]\d|5[0-2])\d{3}(?!\d)'
+
+[pattern.description]
+en = "Spanish postal code: five digits whose first two are a province from 01 to 52. Identical in length to the French, German, Italian and US codes, so two of them in one detector fight for the same span and the first declared wins."
+fr = "Code postal espagnol : cinq chiffres dont les deux premiers sont une province de 01 à 52. De même longueur que les codes français, allemand, italien et américain, donc deux d'entre eux dans un même détecteur se disputent le même span et le premier déclaré l'emporte."
+
+[[examples.match]]
+text = "Vive en Madrid, 28001 exactamente."
+value = "28001"
+
+[[examples.match]]
+text = "Codigo postal 08013 en Barcelona."
+value = "08013"
+
+[[examples.no_match]]
+text = "Codigo postal 53001"
+
+[[examples.no_match]]
+text = "Codigo 2800"
+
+[redos]
+prefix = ""
+filler = "2"
+suffix = "x"

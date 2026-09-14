@@ -1,0 +1,47 @@
+{
+  "digest": "5dbd5fb253c90c6f8b39c58f37694120fdb2a19b0ce84d21e2c505578dbbed81",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "ca-postal",
+    "schema_version": 1,
+    "label": "CA_POSTAL",
+    "regex": "(?<!\\w)[A-CEGHJ-NPR-TVXY]\\d[A-CEGHJ-NPR-TV-Z]\\s?\\d[A-CEGHJ-NPR-TV-Z]\\d(?!\\w)",
+    "description": {
+      "en": "Canadian postal code, letter digit letter then digit letter digit. The letter classes drop D, F, I, O, Q and U, which Canada Post never uses because they read as digits, so the shape alone is already selective.",
+      "fr": "Code postal canadien, lettre chiffre lettre puis chiffre lettre chiffre. Les classes de lettres écartent D, F, I, O, Q et U, que Postes Canada n'utilise jamais car elles se lisent comme des chiffres, donc la forme seule est déjà sélective."
+    },
+    "tags": [
+      "ca",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ottawa, K1A 0B1 for the mail room.",
+          "value": "K1A 0B1"
+        },
+        {
+          "text": "Postal code H3Z2Y7 in Montreal.",
+          "value": "H3Z2Y7"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Postal code D1A 0B1"
+        },
+        {
+          "text": "Postal code K1A 0B"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "K1A",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "nl-postal"
+label = "NL_POSTAL"
+tags = ["nl", "location", "contact"]
+regex = '(?<!\w)\d{4}\s?[A-Z]{2}(?!\w)'
+
+[pattern.description]
+en = "Dutch postal code: four digits then two letters, the shape that makes it unmistakable. It collides with nothing else in the registry, which is what a well-designed postal code looks like."
+fr = "Code postal néerlandais : quatre chiffres puis deux lettres, la forme qui le rend reconnaissable sans ambiguïté. Il n'entre en collision avec rien d'autre dans le registre, ce à quoi ressemble un code postal bien conçu."
+
+[[examples.match]]
+text = "Amsterdam, 1012 AB bij de gracht."
+value = "1012 AB"
+
+[[examples.match]]
+text = "Postcode 3011AA in Rotterdam."
+value = "3011AA"
+
+[[examples.no_match]]
+text = "Postcode 1012"
+
+[[examples.no_match]]
+text = "Postcode AB 1012"
+
+[redos]
+prefix = ""
+filler = "1012"
+suffix = "x"

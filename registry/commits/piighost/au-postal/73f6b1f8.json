@@ -1,0 +1,47 @@
+{
+  "digest": "73f6b1f8444bf95b8c2901550b07306bfd8f4a4fe0163f2a02ce6b71543f5f82",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "au-postal",
+    "schema_version": 1,
+    "label": "AU_POSTAL",
+    "regex": "(?<!\\w)(?:NSW|VIC|QLD|WA|SA|TAS|ACT|NT)[\\s.]?\\d{4}(?!\\d)",
+    "description": {
+      "en": "Australian postal code, anchored on the state or territory abbreviation that precedes it in an address. Four bare digits alone would be unusable: they cut a phone number and a card number into four-digit pieces, which is what the composition check reported before this anchor was added. The span therefore covers the state as well, as the AWS secret key pattern covers its assignment prefix.",
+      "fr": "Code postal australien, ancré sur l'abréviation d'État ou de territoire qui le précède dans une adresse. Quatre chiffres nus seraient inutilisables : ils découpent un numéro de téléphone et un numéro de carte en morceaux de quatre chiffres, ce que le check de composition a signalé avant l'ajout de cet ancrage. Le span couvre donc aussi l'État, comme le motif de clé secrète AWS couvre son préfixe d'affectation."
+    },
+    "tags": [
+      "au",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Sydney CBD, NSW 2000 for the office.",
+          "value": "NSW 2000"
+        },
+        {
+          "text": "Melbourne office at VIC 3000 since March.",
+          "value": "VIC 3000"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Postcode 2000"
+        },
+        {
+          "text": "NSW 20000"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "NSW ",
+      "filler": "2",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "pl-postal"
+label = "PL_POSTAL"
+tags = ["pl", "location", "contact"]
+regex = '(?<!\d)\d{2}-\d{3}(?!\d)'
+
+[pattern.description]
+en = "Polish postal code, two digits, a hyphen, then three. The hyphen keeps it clear of the five-digit codes, but it has the shape of the US employer identification number written short, so check the context in an accounting corpus."
+fr = "Code postal polonais, deux chiffres, un tiret, puis trois. Le tiret le distingue des codes à cinq chiffres, mais il a la forme d'un numéro d'employeur américain écrit court, donc vérifiez le contexte dans un corpus comptable."
+
+[[examples.match]]
+text = "Warszawa, 00-950 w centrum."
+value = "00-950"
+
+[[examples.match]]
+text = "Kod pocztowy 31-042 dla Krakowa."
+value = "31-042"
+
+[[examples.no_match]]
+text = "Kod 00950"
+
+[[examples.no_match]]
+text = "Kod 000-950"
+
+[redos]
+prefix = ""
+filler = "00-"
+suffix = "x"

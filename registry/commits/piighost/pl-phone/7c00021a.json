@@ -1,0 +1,46 @@
+{
+  "digest": "7c00021a838a4f93789e68d98db29b2401c5d73042d3158bd1ff4b8e25ef11e3",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "pl-phone",
+    "schema_version": 1,
+    "label": "PL_PHONE",
+    "regex": "(?<![\\w+])(?:\\+48[\\s.-]?)?\\d(?:[\\s.-]?\\d){8}(?!\\w)",
+    "description": {
+      "en": "Polish phone number: an optional +48, then nine digits usually written in three groups of three. Nine bare digits also match, so it competes with the Spanish phone number and the US bank routing number.",
+      "fr": "Numéro de téléphone polonais : un +48 optionnel, puis neuf chiffres généralement écrits en trois groupes de trois. Neuf chiffres nus correspondent aussi, donc il entre en concurrence avec le téléphone espagnol et le numéro de routage bancaire américain."
+    },
+    "tags": [
+      "pl",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Zadzwon pod +48 12 345 67 89 rano.",
+          "value": "+48 12 345 67 89"
+        },
+        {
+          "text": "Biuro 601 234 567 w dni robocze.",
+          "value": "601 234 567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Zadzwon pod 12 345"
+        },
+        {
+          "text": "1234567890"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+48 ",
+      "filler": "12 ",
+      "suffix": "x"
+    }
+  }
+}

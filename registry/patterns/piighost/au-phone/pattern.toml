@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "au-phone"
+label = "AU_PHONE"
+tags = ["au", "contact"]
+regex = '(?<![\w+])(?:\+61[\s.-]?|0)[2-478](?:[\s.-]?\d){8}(?!\w)'
+
+[pattern.description]
+en = "Australian phone number: the +61 or leading 0 prefix, a single area or service digit, then eight digits. The 04 range is mobile, 02, 03, 07 and 08 are the landline regions."
+fr = "Numéro de téléphone australien : le préfixe +61 ou un 0 initial, un chiffre de zone ou de service, puis huit chiffres. La plage 04 est mobile, 02, 03, 07 et 08 sont les régions fixes."
+
+[[examples.match]]
+text = "Call +61 2 5550 1234 during business hours."
+value = "+61 2 5550 1234"
+
+[[examples.match]]
+text = "Mobile 0455 501 234 is the best number."
+value = "0455 501 234"
+
+[[examples.no_match]]
+text = "Call 09 5550 1234"
+
+[[examples.no_match]]
+text = "Call 02 5550"
+
+[redos]
+prefix = "+61 2 "
+filler = "55"
+suffix = "x"

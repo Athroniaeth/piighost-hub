@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "au-postal"
+label = "AU_POSTAL"
+tags = ["au", "location", "contact"]
+regex = '(?<!\w)(?:NSW|VIC|QLD|WA|SA|TAS|ACT|NT)[\s.]?\d{4}(?!\d)'
+
+[pattern.description]
+en = "Australian postal code, anchored on the state or territory abbreviation that precedes it in an address. Four bare digits alone would be unusable: they cut a phone number and a card number into four-digit pieces, which is what the composition check reported before this anchor was added. The span therefore covers the state as well, as the AWS secret key pattern covers its assignment prefix."
+fr = "Code postal australien, ancré sur l'abréviation d'État ou de territoire qui le précède dans une adresse. Quatre chiffres nus seraient inutilisables : ils découpent un numéro de téléphone et un numéro de carte en morceaux de quatre chiffres, ce que le check de composition a signalé avant l'ajout de cet ancrage. Le span couvre donc aussi l'État, comme le motif de clé secrète AWS couvre son préfixe d'affectation."
+
+[[examples.match]]
+text = "Sydney CBD, NSW 2000 for the office."
+value = "NSW 2000"
+
+[[examples.match]]
+text = "Melbourne office at VIC 3000 since March."
+value = "VIC 3000"
+
+[[examples.no_match]]
+text = "Postcode 2000"
+
+[[examples.no_match]]
+text = "NSW 20000"
+
+[redos]
+prefix = "NSW "
+filler = "2"
+suffix = "x"

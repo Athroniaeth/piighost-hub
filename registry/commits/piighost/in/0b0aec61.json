@@ -1,0 +1,41 @@
+{
+  "digest": "0b0aec61f4675769819b8fb3260838038387cf3431b5501fc6b562df8ec195c6",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "in",
+    "schema_version": 1,
+    "description": {
+      "en": "India: phone, PIN code and the PAN tax number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Inde : téléphone, code PIN et le numéro fiscal PAN. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "in",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/in-phone",
+        "commit": "3e8115c9",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-pin",
+        "commit": "3642cb95",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-pan",
+        "commit": "39352a4c",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

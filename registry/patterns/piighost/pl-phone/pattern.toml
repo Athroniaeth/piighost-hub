@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "pl-phone"
+label = "PL_PHONE"
+tags = ["pl", "contact"]
+regex = '(?<![\w+])(?:\+48[\s.-]?)?\d(?:[\s.-]?\d){8}(?!\w)'
+
+[pattern.description]
+en = "Polish phone number: an optional +48, then nine digits usually written in three groups of three. Nine bare digits also match, so it competes with the Spanish phone number and the US bank routing number."
+fr = "Numéro de téléphone polonais : un +48 optionnel, puis neuf chiffres généralement écrits en trois groupes de trois. Neuf chiffres nus correspondent aussi, donc il entre en concurrence avec le téléphone espagnol et le numéro de routage bancaire américain."
+
+[[examples.match]]
+text = "Zadzwon pod +48 12 345 67 89 rano."
+value = "+48 12 345 67 89"
+
+[[examples.match]]
+text = "Biuro 601 234 567 w dni robocze."
+value = "601 234 567"
+
+[[examples.no_match]]
+text = "Zadzwon pod 12 345"
+
+[[examples.no_match]]
+text = "1234567890"
+
+[redos]
+prefix = "+48 "
+filler = "12 "
+suffix = "x"

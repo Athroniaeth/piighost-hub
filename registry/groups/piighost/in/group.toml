@@ -2,8 +2,14 @@ schema_version = 1
 
 [group]
 name = "in"
-description = { en = "India: the PAN, the permanent account number used for tax.", fr = "Inde : le PAN, le numéro de compte permanent utilisé pour la fiscalité." }
-tags = ["in", "government-id", "identity", "accounting"]
+description = { en = "India: phone, PIN code and the PAN tax number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Inde : téléphone, code PIN et le numéro fiscal PAN. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["contact", "government-id", "identity", "in", "location"]
+
+[[sources]]
+ref = "piighost/in-phone"
+
+[[sources]]
+ref = "piighost/in-pin"
 
 [[sources]]
 ref = "piighost/in-pan"

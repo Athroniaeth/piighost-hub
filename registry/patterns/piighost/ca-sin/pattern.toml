@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ca-sin"
+label = "CA_SIN"
+tags = ["ca", "government-id", "identity"]
+regex = '(?<!\d)\d{3}[\s-]\d{3}[\s-]\d{3}(?!\d)'
+
+[pattern.description]
+en = "Canadian social insurance number: nine digits in three groups of three, separated by a space or a hyphen. The separator is required here on purpose: without it the pattern would be the same nine bare digits as the US bank routing number and the Dutch BSN."
+fr = "Numéro d'assurance sociale canadien : neuf chiffres en trois groupes de trois, séparés par une espace ou un tiret. Le séparateur est exigé ici volontairement : sans lui, le motif serait les mêmes neuf chiffres nus que le numéro de routage bancaire américain et le BSN néerlandais."
+
+[[examples.match]]
+text = "SIN 046 454 286 on the tax slip."
+value = "046 454 286"
+
+[[examples.match]]
+text = "Numero 130-692-544 sur le formulaire."
+value = "130-692-544"
+
+[[examples.no_match]]
+text = "SIN 046454286"
+
+[[examples.no_match]]
+text = "SIN 046 454 28"
+
+[redos]
+prefix = "046 "
+filler = "454 "
+suffix = "x"

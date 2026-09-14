@@ -1,0 +1,47 @@
+{
+  "digest": "2cbc607cfcf8dc075bf6b5709036a958447efab85a9d6d24451aed8e5aa4a178",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "it-partita-iva",
+    "schema_version": 1,
+    "label": "IT_PARTITA_IVA",
+    "regex": "(?<!\\w)(?:IT)?\\d{11}(?!\\w)",
+    "description": {
+      "en": "Italian VAT number: eleven digits, optionally prefixed IT for intra-community use. Eleven bare digits also match the Polish PESEL and the Australian business number, so those three cannot share a detector.",
+      "fr": "Numéro de TVA italien : onze chiffres, éventuellement préfixés IT pour l'usage intracommunautaire. Onze chiffres nus correspondent aussi au PESEL polonais et au numéro d'entreprise australien, donc ces trois-là ne peuvent pas partager un détecteur."
+    },
+    "tags": [
+      "it",
+      "business",
+      "accounting"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Partita IVA 12345678903 in fattura.",
+          "value": "12345678903"
+        },
+        {
+          "text": "Codice IT12345678903 per l'estero.",
+          "value": "IT12345678903"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Partita IVA 1234567890"
+        },
+        {
+          "text": "Partita IVA 123456789034"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

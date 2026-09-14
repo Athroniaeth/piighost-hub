@@ -1,0 +1,46 @@
+{
+  "digest": "3e8115c9a2b6d45f8813b92b2055f8f9cf939dea65b969c80b5460445f13e0c1",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "in-phone",
+    "schema_version": 1,
+    "label": "IN_PHONE",
+    "regex": "(?<![\\w+])(?:\\+91[\\s.-]?)?[6-9]\\d{4}[\\s.-]?\\d{5}(?!\\w)",
+    "description": {
+      "en": "Indian mobile number: an optional +91, then ten digits starting 6, 7, 8 or 9, the range the regulator allocates to mobiles. Ten bare digits also match, so it competes with the NHS number and the US provider identifier.",
+      "fr": "Numéro de mobile indien : un +91 optionnel, puis dix chiffres commençant par 6, 7, 8 ou 9, la plage que le régulateur attribue aux mobiles. Dix chiffres nus correspondent aussi, donc il entre en concurrence avec le numéro NHS et l'identifiant de praticien américain."
+    },
+    "tags": [
+      "in",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Call +91 98765 43210 after lunch.",
+          "value": "+91 98765 43210"
+        },
+        {
+          "text": "Mobile 9876543210 on the form.",
+          "value": "9876543210"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Call 5876543210"
+        },
+        {
+          "text": "Call 98765 4321"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+91 ",
+      "filler": "98",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+schema_version = 1
+
+[group]
+name = "au"
+description = { en = "Australia: phone, postal code and the business number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Australie : téléphone, code postal et le numéro d'entreprise. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["au", "business", "contact", "government-id", "identity", "location"]
+
+[[sources]]
+ref = "piighost/au-phone"
+
+[[sources]]
+ref = "piighost/au-postal"
+
+[[sources]]
+ref = "piighost/au-abn"

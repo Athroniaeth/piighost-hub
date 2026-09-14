@@ -1,0 +1,47 @@
+{
+  "digest": "b6d78b542c2dc3e47de2a10e5d09eebdafe8d5976c24cec09b94d56379edbe22",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "pl-pesel",
+    "schema_version": 1,
+    "label": "PL_PESEL",
+    "regex": "(?<!\\d)\\d{11}(?!\\d)",
+    "description": {
+      "en": "Polish national identification number (PESEL): eleven digits encoding the date of birth, a serial and a sex digit. Eleven bare digits also match the Italian VAT number and the Australian business number, and a PESEL for a birth after 1999 starts with a zero, which the German phone pattern claims.",
+      "fr": "Numéro national d'identification polonais (PESEL) : onze chiffres encodant la date de naissance, un numéro de série et un chiffre de sexe. Onze chiffres nus correspondent aussi au numéro de TVA italien et au numéro d'entreprise australien, et un PESEL pour une naissance après 1999 commence par un zéro, que le motif de téléphone allemand réclame."
+    },
+    "tags": [
+      "pl",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "PESEL 44051401359 w dokumencie.",
+          "value": "44051401359"
+        },
+        {
+          "text": "Numer 02322412345 dla dziecka.",
+          "value": "02322412345"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "PESEL 4405140135"
+        },
+        {
+          "text": "PESEL 440514013591"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "4",
+      "suffix": "x"
+    }
+  }
+}

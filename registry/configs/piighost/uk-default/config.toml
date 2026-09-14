@@ -2,8 +2,8 @@ schema_version = 1
 
 [config]
 name = "uk-default"
-description = { en = "United Kingdom without a model: National Insurance and NHS numbers, postcodes, plus the generic shapes. The NHS number and a US phone number have the same shape, so the US pack is deliberately absent.", fr = "Royaume-Uni sans modèle : numéros d'assurance nationale et NHS, codes postaux, plus les formes génériques. Le numéro NHS et un numéro de téléphone américain ont la même forme, donc le pack américain est volontairement absent." }
-tags = ["uk", "lang-en", "hr", "healthcare", "document"]
+description = { en = "the United Kingdom without a model: phone, postcode, the National Insurance number and the NHS number, plus the email, URL, IPv4 and card number that belong to no country. Word-boundary expansion catches a value detected once everywhere else in the message.", fr = "Royaume-Uni sans modèle : téléphone, code postal, le numéro d'assurance nationale et le numéro NHS, plus l e-mail, l URL, l IPv4 et le numéro de carte qui n appartiennent à aucun pays. L expansion par mot entier reprend partout dans le message une valeur détectée une fois." }
+tags = ["chat", "customer-support", "document", "uk"]
 piighost = ">=1.7,<2"
 
 [[detectors]]
@@ -18,6 +18,9 @@ groups = ["piighost/generic"]
 
 [stages.linker]
 type = "exact"
+
+[stages.expander]
+type = "word_boundary"
 
 [stages.anonymizer.placeholder]
 type = "label_counter"

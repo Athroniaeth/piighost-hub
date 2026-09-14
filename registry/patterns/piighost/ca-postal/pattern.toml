@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ca-postal"
+label = "CA_POSTAL"
+tags = ["ca", "location", "contact"]
+regex = '(?<!\w)[A-CEGHJ-NPR-TVXY]\d[A-CEGHJ-NPR-TV-Z]\s?\d[A-CEGHJ-NPR-TV-Z]\d(?!\w)'
+
+[pattern.description]
+en = "Canadian postal code, letter digit letter then digit letter digit. The letter classes drop D, F, I, O, Q and U, which Canada Post never uses because they read as digits, so the shape alone is already selective."
+fr = "Code postal canadien, lettre chiffre lettre puis chiffre lettre chiffre. Les classes de lettres écartent D, F, I, O, Q et U, que Postes Canada n'utilise jamais car elles se lisent comme des chiffres, donc la forme seule est déjà sélective."
+
+[[examples.match]]
+text = "Ottawa, K1A 0B1 for the mail room."
+value = "K1A 0B1"
+
+[[examples.match]]
+text = "Postal code H3Z2Y7 in Montreal."
+value = "H3Z2Y7"
+
+[[examples.no_match]]
+text = "Postal code D1A 0B1"
+
+[[examples.no_match]]
+text = "Postal code K1A 0B"
+
+[redos]
+prefix = ""
+filler = "K1A"
+suffix = "x"

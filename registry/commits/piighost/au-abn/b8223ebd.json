@@ -1,0 +1,47 @@
+{
+  "digest": "b8223ebde81cc6792dec6e1bd46958de6f829070fb314c3e9cb180ed8c66b8c7",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "au-abn",
+    "schema_version": 1,
+    "label": "AU_ABN",
+    "regex": "(?<!\\d)\\d{2}\\s\\d{3}\\s\\d{3}\\s\\d{3}(?!\\d)",
+    "description": {
+      "en": "Australian business number: eleven digits written in groups of two then three, three, three. The spacing is required here, since eleven bare digits are also the Italian VAT number and the Polish PESEL.",
+      "fr": "Numéro d'entreprise australien : onze chiffres écrits en groupes de deux puis trois, trois, trois. L'espacement est exigé ici, puisque onze chiffres nus sont aussi le numéro de TVA italien et le PESEL polonais."
+    },
+    "tags": [
+      "au",
+      "business",
+      "accounting"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "ABN 51 824 753 556 on the invoice.",
+          "value": "51 824 753 556"
+        },
+        {
+          "text": "Supplier 12 345 678 901 registered.",
+          "value": "12 345 678 901"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ABN 51824753556"
+        },
+        {
+          "text": "ABN 51 824 753"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "51 ",
+      "filler": "824 ",
+      "suffix": "x"
+    }
+  }
+}

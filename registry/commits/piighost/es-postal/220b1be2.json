@@ -1,0 +1,47 @@
+{
+  "digest": "220b1be2e9c01c921958f170333d9722c38444c3fc8c006d55d54bf649dfd6a6",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "es-postal",
+    "schema_version": 1,
+    "label": "ES_POSTAL",
+    "regex": "(?<!\\d)(?:0[1-9]|[1-4]\\d|5[0-2])\\d{3}(?!\\d)",
+    "description": {
+      "en": "Spanish postal code: five digits whose first two are a province from 01 to 52. Identical in length to the French, German, Italian and US codes, so two of them in one detector fight for the same span and the first declared wins.",
+      "fr": "Code postal espagnol : cinq chiffres dont les deux premiers sont une province de 01 à 52. De même longueur que les codes français, allemand, italien et américain, donc deux d'entre eux dans un même détecteur se disputent le même span et le premier déclaré l'emporte."
+    },
+    "tags": [
+      "es",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Vive en Madrid, 28001 exactamente.",
+          "value": "28001"
+        },
+        {
+          "text": "Codigo postal 08013 en Barcelona.",
+          "value": "08013"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Codigo postal 53001"
+        },
+        {
+          "text": "Codigo 2800"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "2",
+      "suffix": "x"
+    }
+  }
+}

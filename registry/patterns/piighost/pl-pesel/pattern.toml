@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "pl-pesel"
+label = "PL_PESEL"
+tags = ["pl", "government-id", "identity"]
+regex = '(?<!\d)\d{11}(?!\d)'
+
+[pattern.description]
+en = "Polish national identification number (PESEL): eleven digits encoding the date of birth, a serial and a sex digit. Eleven bare digits also match the Italian VAT number and the Australian business number, and a PESEL for a birth after 1999 starts with a zero, which the German phone pattern claims."
+fr = "Numéro national d'identification polonais (PESEL) : onze chiffres encodant la date de naissance, un numéro de série et un chiffre de sexe. Onze chiffres nus correspondent aussi au numéro de TVA italien et au numéro d'entreprise australien, et un PESEL pour une naissance après 1999 commence par un zéro, que le motif de téléphone allemand réclame."
+
+[[examples.match]]
+text = "PESEL 44051401359 w dokumencie."
+value = "44051401359"
+
+[[examples.match]]
+text = "Numer 02322412345 dla dziecka."
+value = "02322412345"
+
+[[examples.no_match]]
+text = "PESEL 4405140135"
+
+[[examples.no_match]]
+text = "PESEL 440514013591"
+
+[redos]
+prefix = ""
+filler = "4"
+suffix = "x"

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "it-cap"
+label = "IT_CAP"
+tags = ["it", "location", "contact"]
+regex = '(?<!\d)\d{5}(?!\d)'
+
+[pattern.description]
+en = "Italian postal code (CAP): five digits, with no structural rule beyond the length, which makes it the loosest of the five-digit codes. It matches every French, German, Spanish and US postal code as well, so it belongs in an Italian detector of its own."
+fr = "Code postal italien (CAP) : cinq chiffres, sans autre règle de structure que la longueur, ce qui en fait le plus large des codes à cinq chiffres. Il reconnaît aussi tous les codes postaux français, allemand, espagnol et américain, donc il a sa place dans un détecteur italien à part."
+
+[[examples.match]]
+text = "Roma, 00184 vicino alla stazione."
+value = "00184"
+
+[[examples.match]]
+text = "CAP 20121 per Milano centro."
+value = "20121"
+
+[[examples.no_match]]
+text = "CAP 2012"
+
+[[examples.no_match]]
+text = "CAP 201210"
+
+[redos]
+prefix = ""
+filler = "2"
+suffix = "x"

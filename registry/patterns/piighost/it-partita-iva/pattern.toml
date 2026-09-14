@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "it-partita-iva"
+label = "IT_PARTITA_IVA"
+tags = ["it", "business", "accounting"]
+regex = '(?<!\w)(?:IT)?\d{11}(?!\w)'
+
+[pattern.description]
+en = "Italian VAT number: eleven digits, optionally prefixed IT for intra-community use. Eleven bare digits also match the Polish PESEL and the Australian business number, so those three cannot share a detector."
+fr = "Numéro de TVA italien : onze chiffres, éventuellement préfixés IT pour l'usage intracommunautaire. Onze chiffres nus correspondent aussi au PESEL polonais et au numéro d'entreprise australien, donc ces trois-là ne peuvent pas partager un détecteur."
+
+[[examples.match]]
+text = "Partita IVA 12345678903 in fattura."
+value = "12345678903"
+
+[[examples.match]]
+text = "Codice IT12345678903 per l'estero."
+value = "IT12345678903"
+
+[[examples.no_match]]
+text = "Partita IVA 1234567890"
+
+[[examples.no_match]]
+text = "Partita IVA 123456789034"
+
+[redos]
+prefix = ""
+filler = "1"
+suffix = "x"

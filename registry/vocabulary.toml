@@ -47,6 +47,22 @@ label = { en = "Brazil", fr = "Brésil" }
 kind = "region"
 label = { en = "India", fr = "Inde" }
 
+[nl]
+kind = "region"
+label = { en = "Netherlands", fr = "Pays-Bas" }
+
+[pl]
+kind = "region"
+label = { en = "Poland", fr = "Pologne" }
+
+[ca]
+kind = "region"
+label = { en = "Canada", fr = "Canada" }
+
+[au]
+kind = "region"
+label = { en = "Australia", fr = "Australie" }
+
 # ---- category : la nature de la donnée ---------------------------------------
 [contact]
 kind = "category"

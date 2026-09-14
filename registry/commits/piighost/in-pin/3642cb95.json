@@ -1,0 +1,47 @@
+{
+  "digest": "3642cb95e481266a16c2e0be203491bd0213912323b00eaa2051cc497c76790e",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "in-pin",
+    "schema_version": 1,
+    "label": "IN_PIN",
+    "regex": "(?<!\\d)[1-9]\\d{5}(?!\\d)",
+    "description": {
+      "en": "Indian PIN code: six digits, the first being the postal zone and never zero. Six bare digits are common in reference numbers, so expect it to flag more than addresses.",
+      "fr": "Code PIN indien : six chiffres, le premier étant la zone postale et jamais zéro. Six chiffres nus sont fréquents dans les numéros de référence, donc attendez-vous à ce qu'il signale plus que des adresses."
+    },
+    "tags": [
+      "in",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "New Delhi, 110001 near the station.",
+          "value": "110001"
+        },
+        {
+          "text": "PIN 400001 for south Mumbai.",
+          "value": "400001"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "PIN 011000"
+        },
+        {
+          "text": "PIN 11000"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

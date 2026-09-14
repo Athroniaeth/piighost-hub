@@ -1,0 +1,46 @@
+{
+  "digest": "c618cc35b067c687a2b4449b8ef303082c37b087ca09b979699f65eb80fcd7f9",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "uk-phone",
+    "schema_version": 1,
+    "label": "UK_PHONE",
+    "regex": "(?<![\\w+])(?:\\+44[\\s.-]?|0)\\d(?:[\\s.-]?\\d){8,9}(?!\\w)",
+    "description": {
+      "en": "United Kingdom phone number, the +44 or leading 0 prefix then nine or ten digits, spaces allowed anywhere. Shape only, so it accepts area codes that were never allocated.",
+      "fr": "Numéro de téléphone britannique, le préfixe +44 ou un 0 initial puis neuf ou dix chiffres, espaces autorisés. Forme seule, donc il accepte des indicatifs jamais attribués."
+    },
+    "tags": [
+      "uk",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Call 020 7946 0958 before noon.",
+          "value": "020 7946 0958"
+        },
+        {
+          "text": "Switchboard: +44 20 7946 0321",
+          "value": "+44 20 7946 0321"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Call 020 7946 now"
+        },
+        {
+          "text": "4420794609580"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+44 ",
+      "filler": "20 ",
+      "suffix": "x"
+    }
+  }
+}

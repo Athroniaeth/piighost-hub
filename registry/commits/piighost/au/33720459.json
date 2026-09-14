@@ -1,0 +1,42 @@
+{
+  "digest": "33720459d4d3fefd5cd16a35df415db77b9101514aabbcd32c5fb8037e3247c3",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "au",
+    "schema_version": 1,
+    "description": {
+      "en": "Australia: phone, postal code and the business number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Australie : téléphone, code postal et le numéro d'entreprise. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "au",
+      "business",
+      "contact",
+      "government-id",
+      "identity",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/au-phone",
+        "commit": "ae56d908",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/au-postal",
+        "commit": "73f6b1f8",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/au-abn",
+        "commit": "b8223ebd",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

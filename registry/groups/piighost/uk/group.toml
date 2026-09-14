@@ -2,14 +2,17 @@ schema_version = 1
 
 [group]
 name = "uk"
-description = { en = "United Kingdom: National Insurance number, NHS number, postcode.", fr = "Royaume-Uni : numéro d'assurance nationale, numéro NHS, code postal." }
-tags = ["uk", "government-id", "health", "location"]
+description = { en = "the United Kingdom: phone, postcode, the National Insurance number and the NHS number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Royaume-Uni : téléphone, code postal, le numéro d'assurance nationale et le numéro NHS. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["contact", "government-id", "health", "identity", "location", "uk"]
+
+[[sources]]
+ref = "piighost/uk-phone"
+
+[[sources]]
+ref = "piighost/uk-postcode"
 
 [[sources]]
 ref = "piighost/uk-nino"
 
 [[sources]]
 ref = "piighost/uk-nhs"
-
-[[sources]]
-ref = "piighost/uk-postcode"

@@ -2,14 +2,14 @@ schema_version = 1
 
 [group]
 name = "us"
-description = { en = "United States: SSN, phone, ZIP. Mirrors piighost's built-in `us` catalog.", fr = "États-Unis : SSN, téléphone, ZIP. Miroir du catalogue intégré `us` de piighost." }
-tags = ["us", "government-id", "contact", "location"]
-
-[[sources]]
-ref = "piighost/us-ssn"
+description = { en = "the United States: phone, ZIP code and social security number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "États-Unis : téléphone, code ZIP et numéro de sécurité sociale. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["contact", "government-id", "identity", "location", "us"]
 
 [[sources]]
 ref = "piighost/us-phone"
 
 [[sources]]
 ref = "piighost/us-zip"
+
+[[sources]]
+ref = "piighost/us-ssn"

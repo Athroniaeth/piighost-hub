@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "in-pin"
+label = "IN_PIN"
+tags = ["in", "location", "contact"]
+regex = '(?<!\d)[1-9]\d{5}(?!\d)'
+
+[pattern.description]
+en = "Indian PIN code: six digits, the first being the postal zone and never zero. Six bare digits are common in reference numbers, so expect it to flag more than addresses."
+fr = "Code PIN indien : six chiffres, le premier étant la zone postale et jamais zéro. Six chiffres nus sont fréquents dans les numéros de référence, donc attendez-vous à ce qu'il signale plus que des adresses."
+
+[[examples.match]]
+text = "New Delhi, 110001 near the station."
+value = "110001"
+
+[[examples.match]]
+text = "PIN 400001 for south Mumbai."
+value = "400001"
+
+[[examples.no_match]]
+text = "PIN 011000"
+
+[[examples.no_match]]
+text = "PIN 11000"
+
+[redos]
+prefix = ""
+filler = "1"
+suffix = "x"

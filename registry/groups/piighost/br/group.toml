@@ -2,8 +2,14 @@ schema_version = 1
 
 [group]
 name = "br"
-description = { en = "Brazil: the CPF for a person and the CNPJ for a company.", fr = "Brésil : le CPF pour une personne et le CNPJ pour une entreprise." }
-tags = ["br", "government-id", "identity", "business"]
+description = { en = "Brazil: phone, CEP postal code, the CPF for a person and the CNPJ for a company. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Brésil : téléphone, code postal CEP, le CPF pour une personne et le CNPJ pour une entreprise. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["br", "business", "contact", "government-id", "identity", "location"]
+
+[[sources]]
+ref = "piighost/br-phone"
+
+[[sources]]
+ref = "piighost/br-cep"
 
 [[sources]]
 ref = "piighost/br-cpf"

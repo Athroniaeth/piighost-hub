@@ -1,0 +1,46 @@
+{
+  "digest": "1943466e3339e224d1d20bf498af4d6557448ef805e7996f0be4842fd320a244",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "it-phone",
+    "schema_version": 1,
+    "label": "IT_PHONE",
+    "regex": "(?<![\\w+])(?:\\+39[\\s.-]?)?(?:3\\d{2}|0\\d{1,3})[\\s.-]?\\d{5,8}(?!\\w)",
+    "description": {
+      "en": "Italian phone number: an optional +39, then a mobile prefix starting 3 or a landline area code starting 0, then the subscriber digits. Italy keeps the leading 0 when dialling, unlike most of Europe.",
+      "fr": "Numéro de téléphone italien : un +39 optionnel, puis un préfixe mobile commençant par 3 ou un indicatif de zone commençant par 0, puis les chiffres d'abonné. L'Italie conserve le 0 initial à la composition, contrairement à la plupart de l'Europe."
+    },
+    "tags": [
+      "it",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Chiama il +39 06 12345678 in mattinata.",
+          "value": "+39 06 12345678"
+        },
+        {
+          "text": "Cellulare 331 1234567 sempre attivo.",
+          "value": "331 1234567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Chiama il 12345"
+        },
+        {
+          "text": "Numero 991 1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+39 ",
+      "filler": "06",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "digest": "74eb9f4c9a5f5371620045acaa88eb8f7b1be09fa83a68b02723dff164b354de",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "de",
+    "schema_version": 1,
+    "description": {
+      "en": "Germany: phone and postal code. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Allemagne : téléphone et code postal. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "de",
+      "government-id",
+      "identity",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/de-phone",
+        "commit": "a94db6e7",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/de-zip",
+        "commit": "98750e5c",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

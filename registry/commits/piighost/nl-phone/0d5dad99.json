@@ -1,0 +1,46 @@
+{
+  "digest": "0d5dad995a5e9886a09d21a3d41f2052c4e5a0bdbd0ef361c48f917ba7cd460f",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "nl-phone",
+    "schema_version": 1,
+    "label": "NL_PHONE",
+    "regex": "(?<![\\w+])(?:\\+31[\\s.-]?|0)(?:6[\\s.-]?\\d{8}|\\d{2,3}[\\s.-]?\\d{6,7})(?!\\w)",
+    "description": {
+      "en": "Dutch phone number: the +31 or leading 0 prefix, then 6 followed by eight digits for a mobile, or an area code and the subscriber number for a landline.",
+      "fr": "Numéro de téléphone néerlandais : le préfixe +31 ou un 0 initial, puis 6 suivi de huit chiffres pour un mobile, ou un indicatif de zone et le numéro d'abonné pour un fixe."
+    },
+    "tags": [
+      "nl",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Bel +31 6 12345678 na tienen.",
+          "value": "+31 6 12345678"
+        },
+        {
+          "text": "Kantoor 020 1234567 op werkdagen.",
+          "value": "020 1234567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Bel 612345678"
+        },
+        {
+          "text": "Bel +31 6 1234"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+31 6 ",
+      "filler": "12",
+      "suffix": "x"
+    }
+  }
+}

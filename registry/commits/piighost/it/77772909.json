@@ -1,0 +1,48 @@
+{
+  "digest": "77772909a7c2d19ee3a29fc86eff3c578c2ba0c195c5612d7da9ecd5c351f6b2",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "it",
+    "schema_version": 1,
+    "description": {
+      "en": "Italy: phone, postal code, the codice fiscale and the VAT number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Italie : téléphone, code postal, le codice fiscale et le numéro de TVA. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "business",
+      "contact",
+      "government-id",
+      "identity",
+      "it",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/it-phone",
+        "commit": "1943466e",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-cap",
+        "commit": "6d2a8539",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-codice-fiscale",
+        "commit": "b558e1ae",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-partita-iva",
+        "commit": "2cbc607c",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

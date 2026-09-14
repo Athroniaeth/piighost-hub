@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "es-phone"
+label = "ES_PHONE"
+tags = ["es", "contact"]
+regex = '(?<![\w+])(?:\+34[\s.-]?)?[6-9](?:[\s.-]?\d){8}(?!\w)'
+
+[pattern.description]
+en = "Spanish phone number: an optional +34, then nine digits starting 6 or 7 for mobiles and 8 or 9 for landlines. Nine bare digits also match, so it competes with any other nine-digit shape, the US bank routing number in particular."
+fr = "Numéro de téléphone espagnol : un +34 optionnel, puis neuf chiffres commençant par 6 ou 7 pour un mobile et 8 ou 9 pour un fixe. Neuf chiffres nus correspondent aussi, donc il entre en concurrence avec toute autre forme à neuf chiffres, le numéro de routage bancaire américain en particulier."
+
+[[examples.match]]
+text = "Llama al +34 612 34 56 78 por la mañana."
+value = "+34 612 34 56 78"
+
+[[examples.match]]
+text = "Oficina 912 345 678 de 9 a 14."
+value = "912 345 678"
+
+[[examples.no_match]]
+text = "Llama al 512 345 678"
+
+[[examples.no_match]]
+text = "12 34 56"
+
+[redos]
+prefix = "+34 "
+filler = "61 "
+suffix = "x"

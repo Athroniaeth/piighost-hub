@@ -1,0 +1,48 @@
+{
+  "digest": "be231decc28571e4bbd77990e9be0371a0443e3b62b9e10d58548ff859cf3015",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "es-nif-cif",
+    "schema_version": 1,
+    "label": "ES_NIF_CIF",
+    "regex": "(?<!\\w)[ABCDEFGHJNPQRSUVW]\\d{7}[0-9A-J](?!\\w)",
+    "description": {
+      "en": "Spanish company tax number (CIF): an entity-type letter, seven digits, then a check character. The leading letter set excludes the ones reserved for individuals, so it does not collide with the DNI.",
+      "fr": "Numéro fiscal d'entreprise espagnol (CIF) : une lettre de type d'entité, sept chiffres, puis un caractère de contrôle. L'ensemble de lettres initiales exclut celles réservées aux personnes, donc il n'entre pas en collision avec le DNI."
+    },
+    "tags": [
+      "es",
+      "business",
+      "accounting",
+      "government-id"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "CIF A58818501 en la factura.",
+          "value": "A58818501"
+        },
+        {
+          "text": "Sociedad con B12345674 registrada.",
+          "value": "B12345674"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "CIF Z58818501"
+        },
+        {
+          "text": "CIF A5881850"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "A",
+      "filler": "5",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "es-nif-cif"
+label = "ES_NIF_CIF"
+tags = ["es", "business", "accounting", "government-id"]
+regex = '(?<!\w)[ABCDEFGHJNPQRSUVW]\d{7}[0-9A-J](?!\w)'
+
+[pattern.description]
+en = "Spanish company tax number (CIF): an entity-type letter, seven digits, then a check character. The leading letter set excludes the ones reserved for individuals, so it does not collide with the DNI."
+fr = "Numéro fiscal d'entreprise espagnol (CIF) : une lettre de type d'entité, sept chiffres, puis un caractère de contrôle. L'ensemble de lettres initiales exclut celles réservées aux personnes, donc il n'entre pas en collision avec le DNI."
+
+[[examples.match]]
+text = "CIF A58818501 en la factura."
+value = "A58818501"
+
+[[examples.match]]
+text = "Sociedad con B12345674 registrada."
+value = "B12345674"
+
+[[examples.no_match]]
+text = "CIF Z58818501"
+
+[[examples.no_match]]
+text = "CIF A5881850"
+
+[redos]
+prefix = "A"
+filler = "5"
+suffix = "x"

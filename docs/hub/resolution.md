@@ -93,6 +93,42 @@ le signale et l'auteur réordonne. Un span différent mais chevauchant se règle
 toujours par la position, pas par l'ordre : un IBAN entier l'emporte sur les
 seize chiffres qu'il contient.
 
+## Composer plusieurs pays
+
+Un groupe national est fait pour être utilisé seul, ou avec des groupes d'une
+autre nature. Les empiler tels quels ne marche pas, et la raison est de forme,
+pas d'implémentation : les identifiants nationaux se ressemblent.
+
+Un code postal fait cinq chiffres en France, en Allemagne, en Espagne, en
+Italie et aux États-Unis. Un numéro à neuf chiffres est un routage bancaire
+américain, un BSN néerlandais et un SIN canadien. Dix chiffres nus sont un
+numéro NHS, un NPI américain et un Medicare australien. Sur un span identique,
+c'est la première source déclarée qui gagne, donc mettre deux pays dans un même
+détecteur revient à étiqueter les valeurs du second avec les labels du premier.
+
+Trois façons de s'en sortir, par ordre de préférence :
+
+1. **Un détecteur par pays.** Une config peut en porter plusieurs, et le
+   resolver tranche entre eux comme entre deux motifs. C'est ce que fait
+   `regex-default` avec `fr`, `eu`, `us` et `generic`. Cela ne supprime pas la
+   collision, cela la rend visible et ordonnée.
+2. **Exclure la forme ambiguë** dans le bloc de la source, avec `exclude`. Un
+   groupe multi-pays qui garde un seul code postal et écarte les autres est
+   honnête : il dit quel pays il sert vraiment.
+3. **Ne pas mélanger.** Une config nommée d'après un pays est plus utile qu'une
+   config qui prétend couvrir le monde et se trompe d'étiquette une fois sur
+   deux.
+
+Ce qui se compose sans risque, en revanche, ce sont les groupes qui ne reposent
+pas sur une longueur de chiffres : `generic`, `international`, `secrets`,
+`secrets-extended`, `network`, `crypto`. Leurs formes portent un préfixe, un
+séparateur ou un alphabet qui les distingue, donc ils s'ajoutent à n'importe
+quel pays.
+
+Le check de composition rejoue les exemples de chaque motif retenu contre
+l'ensemble aplati, donc une collision entre deux pays fait échouer la
+publication plutôt que d'arriver chez un utilisateur.
+
 ## Résolution d'une config
 
 Une config se résout en une liste ordonnée de détecteurs nommés et une table

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "au-abn"
+label = "AU_ABN"
+tags = ["au", "business", "accounting"]
+regex = '(?<!\d)\d{2}\s\d{3}\s\d{3}\s\d{3}(?!\d)'
+
+[pattern.description]
+en = "Australian business number: eleven digits written in groups of two then three, three, three. The spacing is required here, since eleven bare digits are also the Italian VAT number and the Polish PESEL."
+fr = "Numéro d'entreprise australien : onze chiffres écrits en groupes de deux puis trois, trois, trois. L'espacement est exigé ici, puisque onze chiffres nus sont aussi le numéro de TVA italien et le PESEL polonais."
+
+[[examples.match]]
+text = "ABN 51 824 753 556 on the invoice."
+value = "51 824 753 556"
+
+[[examples.match]]
+text = "Supplier 12 345 678 901 registered."
+value = "12 345 678 901"
+
+[[examples.no_match]]
+text = "ABN 51824753556"
+
+[[examples.no_match]]
+text = "ABN 51 824 753"
+
+[redos]
+prefix = "51 "
+filler = "824 "
+suffix = "x"

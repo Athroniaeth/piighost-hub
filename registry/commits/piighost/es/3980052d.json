@@ -1,0 +1,48 @@
+{
+  "digest": "3980052d8dc8520b6b8a90cc2dd8f8fbebd29db2d415a3f25c20a3932a082669",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "es",
+    "schema_version": 1,
+    "description": {
+      "en": "Spain: phone, postal code, the DNI and NIE identity numbers and the CIF company tax number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Espagne : téléphone, code postal, les numéros d'identité DNI et NIE et le numéro fiscal d'entreprise CIF. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "business",
+      "contact",
+      "es",
+      "government-id",
+      "identity",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/es-phone",
+        "commit": "993d8692",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/es-postal",
+        "commit": "220b1be2",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/es-dni-nie",
+        "commit": "4982df18",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/es-nif-cif",
+        "commit": "be231dec",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

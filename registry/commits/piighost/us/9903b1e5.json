@@ -1,0 +1,41 @@
+{
+  "digest": "9903b1e5c498d83315865adfd45f6efc8f43544dfc602d6bb2ec45473940d85f",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "us",
+    "schema_version": 1,
+    "description": {
+      "en": "the United States: phone, ZIP code and social security number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "États-Unis : téléphone, code ZIP et numéro de sécurité sociale. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "location",
+      "us"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/us-phone",
+        "commit": "e489706c",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-zip",
+        "commit": "38e73fdc",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-ssn",
+        "commit": "3ffb731f",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

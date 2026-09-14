@@ -1,0 +1,26 @@
+schema_version = 1
+
+[config]
+name = "in-default"
+description = { en = "India without a model: phone, PIN code and the PAN tax number, plus the email, URL, IPv4 and card number that belong to no country. Word-boundary expansion catches a value detected once everywhere else in the message.", fr = "Inde sans modèle : téléphone, code PIN et le numéro fiscal PAN, plus l e-mail, l URL, l IPv4 et le numéro de carte qui n appartiennent à aucun pays. L expansion par mot entier reprend partout dans le message une valeur détectée une fois." }
+tags = ["chat", "customer-support", "document", "in"]
+piighost = ">=1.7,<2"
+
+[[detectors]]
+name = "regex-in"
+type = "regex"
+groups = ["piighost/in"]
+
+[[detectors]]
+name = "regex-generic"
+type = "regex"
+groups = ["piighost/generic"]
+
+[stages.linker]
+type = "exact"
+
+[stages.expander]
+type = "word_boundary"
+
+[stages.anonymizer.placeholder]
+type = "label_counter"

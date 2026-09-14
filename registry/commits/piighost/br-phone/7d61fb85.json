@@ -1,0 +1,46 @@
+{
+  "digest": "7d61fb8513de96ca809cd47f74ffff9a7ff8cccf9a9321d2b9a270b08d78a1cf",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "br-phone",
+    "schema_version": 1,
+    "label": "BR_PHONE",
+    "regex": "(?<![\\w+])(?:\\+55[\\s.-]?)?\\(?[1-9]\\d\\)?[\\s.-]?9?\\d{4}[\\s.-]?\\d{4}(?!\\w)",
+    "description": {
+      "en": "Brazilian phone number: an optional +55, a two-digit area code often written in parentheses, then eight digits for a landline or nine for a mobile, the extra 9 being the mobile marker added nationwide.",
+      "fr": "Numéro de téléphone brésilien : un +55 optionnel, un indicatif régional à deux chiffres souvent écrit entre parenthèses, puis huit chiffres pour un fixe ou neuf pour un mobile, le 9 supplémentaire étant le marqueur mobile ajouté dans tout le pays."
+    },
+    "tags": [
+      "br",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ligue para +55 11 91234-5678 durante a semana.",
+          "value": "+55 11 91234-5678"
+        },
+        {
+          "text": "Escritorio (21) 2345-6789 em horario comercial.",
+          "value": "(21) 2345-6789"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Ligue para 11 9123"
+        },
+        {
+          "text": "(01) 2345-6789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+55 11 ",
+      "filler": "91",
+      "suffix": "x"
+    }
+  }
+}

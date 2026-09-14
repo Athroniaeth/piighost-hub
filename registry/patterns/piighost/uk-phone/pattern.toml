@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "uk-phone"
+label = "UK_PHONE"
+tags = ["uk", "contact"]
+regex = '(?<![\w+])(?:\+44[\s.-]?|0)\d(?:[\s.-]?\d){8,9}(?!\w)'
+
+[pattern.description]
+en = "United Kingdom phone number, the +44 or leading 0 prefix then nine or ten digits, spaces allowed anywhere. Shape only, so it accepts area codes that were never allocated."
+fr = "Numéro de téléphone britannique, le préfixe +44 ou un 0 initial puis neuf ou dix chiffres, espaces autorisés. Forme seule, donc il accepte des indicatifs jamais attribués."
+
+[[examples.match]]
+text = "Call 020 7946 0958 before noon."
+value = "020 7946 0958"
+
+[[examples.match]]
+text = "Switchboard: +44 20 7946 0321"
+value = "+44 20 7946 0321"
+
+[[examples.no_match]]
+text = "Call 020 7946 now"
+
+[[examples.no_match]]
+text = "4420794609580"
+
+[redos]
+prefix = "+44 "
+filler = "20 "
+suffix = "x"

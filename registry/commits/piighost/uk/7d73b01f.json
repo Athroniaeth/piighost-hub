@@ -1,0 +1,48 @@
+{
+  "digest": "7d73b01f4f1858931731c434028b08ba24c162dc55158744ed04da35f1ad4c19",
+  "recorded_at": "2026-09-14T14:14:36+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "uk",
+    "schema_version": 1,
+    "description": {
+      "en": "the United Kingdom: phone, postcode, the National Insurance number and the NHS number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Royaume-Uni : téléphone, code postal, le numéro d'assurance nationale et le numéro NHS. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "health",
+      "identity",
+      "location",
+      "uk"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/uk-phone",
+        "commit": "c618cc35",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-postcode",
+        "commit": "0a6bed51",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-nino",
+        "commit": "3f033fc3",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-nhs",
+        "commit": "1dfa5fba",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

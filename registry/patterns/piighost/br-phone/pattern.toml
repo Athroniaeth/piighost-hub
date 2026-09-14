@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "br-phone"
+label = "BR_PHONE"
+tags = ["br", "contact"]
+regex = '(?<![\w+])(?:\+55[\s.-]?)?\(?[1-9]\d\)?[\s.-]?9?\d{4}[\s.-]?\d{4}(?!\w)'
+
+[pattern.description]
+en = "Brazilian phone number: an optional +55, a two-digit area code often written in parentheses, then eight digits for a landline or nine for a mobile, the extra 9 being the mobile marker added nationwide."
+fr = "Numéro de téléphone brésilien : un +55 optionnel, un indicatif régional à deux chiffres souvent écrit entre parenthèses, puis huit chiffres pour un fixe ou neuf pour un mobile, le 9 supplémentaire étant le marqueur mobile ajouté dans tout le pays."
+
+[[examples.match]]
+text = "Ligue para +55 11 91234-5678 durante a semana."
+value = "+55 11 91234-5678"
+
+[[examples.match]]
+text = "Escritorio (21) 2345-6789 em horario comercial."
+value = "(21) 2345-6789"
+
+[[examples.no_match]]
+text = "Ligue para 11 9123"
+
+[[examples.no_match]]
+text = "(01) 2345-6789"
+
+[redos]
+prefix = "+55 11 "
+filler = "91"
+suffix = "x"
