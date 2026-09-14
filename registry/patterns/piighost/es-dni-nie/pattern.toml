@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "es-dni-nie"
+label = "ES_DNI_NIE"
+tags = ["es", "government-id", "identity"]
+regex = '\b(?:\d{8}|[XYZ]\d{7})-?[A-HJ-NP-TV-Z]\b'
+
+[pattern.description]
+en = "Both Spanish personal identifiers in one pattern: the DNI, eight digits and a check letter, and the NIE, a leading X, Y or Z then seven digits and a check letter, with the hyphen often typed between number and letter left optional. The trailing class is exactly the twenty-three letter check alphabet, so I, O and U, which are never issued, are refused, and that removes about an eighth of the random false positives for free. An eight digit order number followed by a letter still matches. No collision: the existing us-passport is letter first and cannot overlap a letter last DNI."
+fr = "Les deux identifiants personnels espagnols dans un seul motif : le DNI, huit chiffres et une lettre de contrôle, et le NIE, un X, Y ou Z en tête puis sept chiffres et une lettre de contrôle, le tiret souvent tapé entre le nombre et la lettre restant optionnel. La classe finale est exactement l'alphabet de contrôle à vingt-trois lettres : I, O et U, jamais émis, sont refusés, ce qui écarte gratuitement environ un huitième des faux positifs aléatoires. Un numéro de commande à huit chiffres suivi d'une lettre reste reconnu. Aucune collision : le motif existant us-passport commence par une lettre et ne peut pas recouvrir un DNI qui finit par une lettre."
+
+# DNI inventé.
+[[examples.match]]
+text = "DNI 12345678Z sur le contrat."
+value = "12345678Z"
+
+# NIE inventé, avec le tiret optionnel.
+[[examples.match]]
+text = "NIE : X1234567-L"
+value = "X1234567-L"
+
+# Sept chiffres : il en faut huit.
+[[examples.no_match]]
+text = "1234567Z"
+
+# I n'appartient pas à l'alphabet de contrôle.
+[[examples.no_match]]
+text = "12345678I"
+
+[redos]
+prefix = ""
+filler = "12345678 "
+suffix = "x"

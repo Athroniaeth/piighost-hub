@@ -1,0 +1,47 @@
+{
+  "digest": "ae84c40a532c54b96a16844af10cd89ae20254c8768b8a51d8cda8e16ce2fb98",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "npm-token",
+    "schema_version": 1,
+    "label": "NPM_TOKEN",
+    "regex": "\\bnpm_[A-Za-z0-9]{36}\\b",
+    "description": {
+      "en": "npm granular or automation access token: npm_ then exactly thirty-six alphanumeric characters, the form written into .npmrc as an auth token. Practically no noise. Legacy npm tokens were bare UUIDs, which have no distinctive shape, and are not covered. No collision.",
+      "fr": "Jeton d'accès npm à portée fine ou d'automatisation : npm_ puis exactement trente-six caractères alphanumériques, la forme écrite dans .npmrc comme jeton d'authentification. Bruit pratiquement nul. Les jetons npm hérités étaient de simples UUID, sans forme distinctive, et ne sont pas couverts. Aucune collision."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "//registry.npmjs.org/:_authToken=npm_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789",
+          "value": "npm_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"
+        },
+        {
+          "text": "Le fichier .npmrc contenait npm_000000000000000000000000000000000000 en clair.",
+          "value": "npm_000000000000000000000000000000000000"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "npm_install"
+        },
+        {
+          "text": "npm_AbCdEfGh"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "npm_",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

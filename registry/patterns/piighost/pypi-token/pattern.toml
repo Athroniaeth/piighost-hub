@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "pypi-token"
+label = "PYPI_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bpypi-AgE(?:IcHlwaS5vcmc|NdGVzdC5weXBpLm9yZw)[A-Za-z0-9_-]{50,}(?![A-Za-z0-9_-])'
+
+[pattern.description]
+en = "PyPI upload token. The macaroon body always opens with the base64 of the issuing domain, so pypi-AgEIcHlwaS5vcmc for pypi.org and pypi-AgENdGVzdC5weXBpLm9yZw for test.pypi.org are fixed prefixes. No practical noise, and the fifty character minimum on the tail keeps a bare prefix quoted in documentation out. No collision."
+fr = "Jeton de publication PyPI. Le corps du macaron commence toujours par le base64 du domaine émetteur : pypi-AgEIcHlwaS5vcmc pour pypi.org et pypi-AgENdGVzdC5weXBpLm9yZw pour test.pypi.org sont donc des préfixes fixes. Aucun bruit en pratique, et le minimum de cinquante caractères sur la queue écarte un préfixe nu cité dans une documentation. Aucune collision."
+
+# Jeton inventé pour pypi.org.
+[[examples.match]]
+text = "password = pypi-AgEIcHlwaS5vcmcAbCdEf0123456789_-AbCdEf0123456789_-AbCdEf0123456789_-AbCdEf0123456789_-"
+value = "pypi-AgEIcHlwaS5vcmcAbCdEf0123456789_-AbCdEf0123456789_-AbCdEf0123456789_-AbCdEf0123456789_-"
+
+# Jeton inventé pour test.pypi.org.
+[[examples.match]]
+text = "Le jeton de test pypi-AgENdGVzdC5weXBpLm9yZwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx est publie."
+value = "pypi-AgENdGVzdC5weXBpLm9yZwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# Un texte de remplacement, pas un jeton.
+[[examples.no_match]]
+text = "pypi-token-here"
+
+# Queue trop courte.
+[[examples.no_match]]
+text = "pypi-AgEIcHlwaS5vcmcSHORT"
+
+[redos]
+prefix = "pypi-AgEIcHlwaS5vcmc"
+filler = "a"
+suffix = "!"

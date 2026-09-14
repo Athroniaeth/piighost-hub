@@ -1,0 +1,9 @@
+schema_version = 1
+
+[group]
+name = "es"
+description = { en = "Spain: the DNI and NIE identity numbers.", fr = "Espagne : les numéros d'identité DNI et NIE." }
+tags = ["es", "government-id", "identity"]
+
+[[sources]]
+ref = "piighost/es-dni-nie"

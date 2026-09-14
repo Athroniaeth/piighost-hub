@@ -1,0 +1,47 @@
+{
+  "digest": "a7681c77819e566e3f9b272259f9eb5c2eca7c323d0d16f65308f49ad132f5cb",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "mac-address",
+    "schema_version": 1,
+    "label": "MAC_ADDRESS",
+    "regex": "\\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\\b|\\b[0-9A-Fa-f]{4}(?:\\.[0-9A-Fa-f]{4}){2}\\b",
+    "description": {
+      "en": "MAC address in its two written conventions: six hex octets separated by colons or hyphens, and the Cisco dotted form of three groups of four. The separator is not back-referenced, so a string that mixes colons and hyphens also matches, which Presidio forbids with a backreference. Six hex pairs is a distinctive enough shape that noise stays low in prose, though a colon-delimited hex digest matches too. No collision with any existing pattern.",
+      "fr": "Adresse MAC dans ses deux conventions d'écriture : six octets hexadécimaux séparés par des deux-points ou des tirets, et la forme pointée de Cisco en trois groupes de quatre. Le séparateur n'est pas repris par référence arrière : une chaîne qui mélange deux-points et tirets est donc reconnue, ce que Presidio interdit au moyen d'une référence arrière. Six paires hexadécimales forment une silhouette assez distinctive pour que le bruit reste faible en prose, même si une empreinte hexadécimale séparée par des deux-points est également reconnue. Aucune collision avec un motif existant."
+    },
+    "tags": [
+      "international",
+      "identity",
+      "network"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "MAC 00:1B:44:11:3A:B7 sur le port 3.",
+          "value": "00:1B:44:11:3A:B7"
+        },
+        {
+          "text": "Le switch annonce 0011.2233.4455 dans sa table.",
+          "value": "0011.2233.4455"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "00:1B:44:11:3A"
+        },
+        {
+          "text": "GG:1B:44:11:3A:B7"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "0:",
+      "suffix": "x"
+    }
+  }
+}

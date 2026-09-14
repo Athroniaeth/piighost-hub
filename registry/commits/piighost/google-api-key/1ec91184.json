@@ -1,0 +1,47 @@
+{
+  "digest": "1ec91184212bd172539cdec05e991e8f164f5aafde73ae2d9c46a33eae751345",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "google-api-key",
+    "schema_version": 1,
+    "label": "GOOGLE_API_KEY",
+    "regex": "\\bAIza[A-Za-z0-9_-]{35}(?![A-Za-z0-9_-])",
+    "description": {
+      "en": "Google and Google Cloud API key: the fixed AIza prefix then thirty-five base64url characters, thirty-nine in all. Covers the Maps, YouTube, Gemini and Firebase keys, which all share the prefix. Noise is close to zero, and the trailing guard stops a longer token from being truncated into a false key. No collision with any existing pattern.",
+      "fr": "Clé d'API Google et Google Cloud : le préfixe fixe AIza puis trente-cinq caractères base64url, trente-neuf en tout. Couvre les clés Maps, YouTube, Gemini et Firebase, qui partagent ce préfixe. Le bruit est quasi nul, et la garde finale empêche qu'un jeton plus long soit tronqué en fausse clé. Aucune collision avec un motif existant."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "GOOGLE_API_KEY=AIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678",
+          "value": "AIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+        },
+        {
+          "text": "https://maps.example/api?key=AIzaHIJKLMNOPQRSTUVWXYZ0123456789abcdef",
+          "value": "AIzaHIJKLMNOPQRSTUVWXYZ0123456789abcdef"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "AIzaSy0123"
+        },
+        {
+          "text": "BIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "AIza",
+      "filler": "A",
+      "suffix": "!"
+    }
+  }
+}

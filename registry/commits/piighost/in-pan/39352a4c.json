@@ -1,0 +1,47 @@
+{
+  "digest": "39352a4c42416563dfad996835b1098b72b767826aa2e0dcac5c4599410feb45",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "in-pan",
+    "schema_version": 1,
+    "label": "IN_PAN",
+    "regex": "\\b[A-Z]{3}[ABCFGHJLPT][A-Z]\\d{4}[A-Z]\\b",
+    "description": {
+      "en": "Indian permanent account number, five letters then four digits then a letter, with the fourth position restricted to the entity type letters, P for an individual, C for a company, H for a Hindu undivided family, F for a firm and so on. That restriction is what lifts the pattern above a generic five-letter, four-digit token. Narrowing the fourth position to P alone would keep individuals only and drop company PANs. No collision.",
+      "fr": "Numéro de compte permanent indien, cinq lettres puis quatre chiffres puis une lettre, la quatrième position étant restreinte aux lettres de type d'entité : P pour une personne physique, C pour une société, H pour une famille indivise hindoue, F pour une firme, et ainsi de suite. C'est cette restriction qui hisse le motif au-dessus d'un jeton générique de cinq lettres et quatre chiffres. Réduire la quatrième position au seul P ne garderait que les personnes physiques et laisserait filer les PAN d'entreprise. Aucune collision."
+    },
+    "tags": [
+      "in",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "PAN: AAAPZ1234C",
+          "value": "AAAPZ1234C"
+        },
+        {
+          "text": "Le formulaire cite ABCPK1234M comme PAN.",
+          "value": "ABCPK1234M"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ABCDE1234"
+        },
+        {
+          "text": "ABCXE1234F"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "ABCPZ123 ",
+      "suffix": "X"
+    }
+  }
+}

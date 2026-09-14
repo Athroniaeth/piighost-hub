@@ -1,0 +1,9 @@
+schema_version = 1
+
+[group]
+name = "in"
+description = { en = "India: the PAN, the permanent account number used for tax.", fr = "Inde : le PAN, le numéro de compte permanent utilisé pour la fiscalité." }
+tags = ["in", "government-id", "identity", "accounting"]
+
+[[sources]]
+ref = "piighost/in-pan"

@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "slack-token"
+label = "SLACK_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\b(?:xox[abeoprs]-[A-Za-z0-9-]{10,256}|xapp-\d-[A-Za-z0-9]{5,20}-\d{8,20}-[a-f0-9]{32,80})(?![A-Za-z0-9-])'
+
+[pattern.description]
+en = "Slack credentials in both families: the xox bot, user, app, legacy and refresh tokens, and the newer app-level xapp token with its counter, application id, timestamp and hex layout. The xox prefix belongs to no one else, so noise is negligible. Incoming webhook URLs are a different shape and are not covered here, the existing url pattern catches them only weakly. No whole-span collision, but the long digit runs inside a token trigger credit-card, uk-nhs and us-phone on sub-spans, so slack-token must be resolved before those."
+fr = "Identifiants Slack dans leurs deux familles : les jetons xox de bot, d'utilisateur, d'application, hérités ou de rafraîchissement, et le jeton applicatif xapp plus récent, avec son compteur, son identifiant d'application, son horodatage et sa signature hexadécimale. Le préfixe xox n'appartient à personne d'autre, le bruit est donc négligeable. Les URL de webhook entrant ont une autre forme et ne sont pas couvertes ici, le motif url existant ne les attrape que faiblement. Aucune collision sur le span entier, mais les longues suites de chiffres à l'intérieur d'un jeton déclenchent credit-card, uk-nhs et us-phone sur des sous-spans ; slack-token doit être résolu avant eux."
+
+# Jeton de bot inventé.
+[[examples.match]]
+text = "SLACK_BOT_TOKEN=xoxb-2345678901-2345678901-AbCdEfGhIjKlMnOpQrStUvWx"
+value = "xoxb-2345678901-2345678901-AbCdEfGhIjKlMnOpQrStUvWx"
+
+# Jeton applicatif inventé.
+[[examples.match]]
+text = "Le jeton applicatif xapp-1-A01BCDEFGHI-1234567890123-a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4 a ete revoque."
+value = "xapp-1-A01BCDEFGHI-1234567890123-a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4"
+
+# xoxz n'est pas un préfixe Slack.
+[[examples.no_match]]
+text = "xoxz-2345678901-2345678901-abc"
+
+# Trop court après le préfixe.
+[[examples.no_match]]
+text = "xoxb-short"
+
+[redos]
+prefix = "xoxb-"
+filler = "A"
+suffix = "!"

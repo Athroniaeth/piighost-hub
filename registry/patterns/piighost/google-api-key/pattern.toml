@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "google-api-key"
+label = "GOOGLE_API_KEY"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bAIza[A-Za-z0-9_-]{35}(?![A-Za-z0-9_-])'
+
+[pattern.description]
+en = "Google and Google Cloud API key: the fixed AIza prefix then thirty-five base64url characters, thirty-nine in all. Covers the Maps, YouTube, Gemini and Firebase keys, which all share the prefix. Noise is close to zero, and the trailing guard stops a longer token from being truncated into a false key. No collision with any existing pattern."
+fr = "Clé d'API Google et Google Cloud : le préfixe fixe AIza puis trente-cinq caractères base64url, trente-neuf en tout. Couvre les clés Maps, YouTube, Gemini et Firebase, qui partagent ce préfixe. Le bruit est quasi nul, et la garde finale empêche qu'un jeton plus long soit tronqué en fausse clé. Aucune collision avec un motif existant."
+
+# Clé inventée, longueur exacte.
+[[examples.match]]
+text = "GOOGLE_API_KEY=AIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+value = "AIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+
+# Clé inventée passée en paramètre d'URL.
+[[examples.match]]
+text = "https://maps.example/api?key=AIzaHIJKLMNOPQRSTUVWXYZ0123456789abcdef"
+value = "AIzaHIJKLMNOPQRSTUVWXYZ0123456789abcdef"
+
+# Trop court.
+[[examples.no_match]]
+text = "AIzaSy0123"
+
+# Le préfixe n'est pas AIza.
+[[examples.no_match]]
+text = "BIzaSyCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
+
+[redos]
+prefix = "AIza"
+filler = "A"
+suffix = "!"

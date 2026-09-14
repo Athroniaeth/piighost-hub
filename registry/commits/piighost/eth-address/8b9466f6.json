@@ -1,0 +1,47 @@
+{
+  "digest": "8b9466f6bc8b459109052090389160c2cfbed1c724370bcfd9d585d91fd9aaa9",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "eth-address",
+    "schema_version": 1,
+    "label": "ETH_ADDRESS",
+    "regex": "\\b0x[0-9a-fA-F]{40}\\b",
+    "description": {
+      "en": "Ethereum and EVM chain account address: 0x then forty hex characters. The hex class stays tolerant to case because EIP-55 carries its checksum in the capitalisation of the letters alone, so lowering the case would destroy it. Noise is low, a 0x prefix on exactly forty hex characters is specific, but the pattern also matches contract addresses, which are not personal data, and any 160-bit hash written with a 0x prefix. No collision.",
+      "fr": "Adresse de compte Ethereum, et plus largement des chaînes EVM : 0x puis quarante caractères hexadécimaux. La classe hexadécimale reste tolérante à la casse car l'EIP-55 loge sa somme de contrôle dans la seule capitalisation des lettres, qu'une mise en minuscules détruirait. Le bruit est faible, un préfixe 0x suivi d'exactement quarante caractères hexadécimaux est spécifique, mais le motif reconnaît aussi les adresses de contrat, qui ne sont pas des données personnelles, ainsi que toute empreinte de 160 bits écrite avec un préfixe 0x. Aucune collision."
+    },
+    "tags": [
+      "international",
+      "identity",
+      "finance"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Le versement part vers 0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed ce soir.",
+          "value": "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed"
+        },
+        {
+          "text": "to: 0xde709f2102306220921060314715629080e2fb77",
+          "value": "0xde709f2102306220921060314715629080e2fb77"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "0x1234"
+        },
+        {
+          "text": "1234567890abcdef1234567890abcdef12345678"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "0x",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "digest": "b86ef3d46813323d6a6b0911abcc3e1ba6bb77fda92e2ba1364dc5b5d3bf04ff",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "br-cpf",
+    "schema_version": 1,
+    "label": "BR_CPF",
+    "regex": "\\b\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}\\b",
+    "description": {
+      "en": "Brazilian CPF taxpayer number in its punctuated form. The punctuation is required, and that requirement is what makes the pattern usable at all: an unpunctuated CPF is eleven bare digits and is missed by design. Both examples are the checksum-valid values that circulate in Brazilian developer documentation as test CPFs. Do not relax the punctuation: a bare eleven digit run collides head on with the existing de-phone whenever it starts with a zero.",
+      "fr": "Numéro fiscal brésilien CPF dans sa forme ponctuée. La ponctuation est exigée, et c'est cette exigence qui rend le motif utilisable : un CPF sans ponctuation n'est qu'une suite de onze chiffres et échappe volontairement au motif. Les deux exemples sont les valeurs à somme de contrôle correcte qui circulent dans la documentation des développeurs brésiliens comme CPF de test. Ne relâchez pas la ponctuation : une suite nue de onze chiffres entre en collision frontale avec le motif existant de-phone dès qu'elle commence par un zéro."
+    },
+    "tags": [
+      "br",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "CPF 111.444.777-35 informado.",
+          "value": "111.444.777-35"
+        },
+        {
+          "text": "O cadastro traz 529.982.247-25 como titular.",
+          "value": "529.982.247-25"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "529.982.247"
+        },
+        {
+          "text": "52998224725"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "123.456.789-",
+      "suffix": "x"
+    }
+  }
+}

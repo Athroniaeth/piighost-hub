@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "us-npi"
+label = "US_NPI"
+tags = ["us", "health", "identity"]
+regex = '\b[12]\d{9}\b'
+
+[pattern.description]
+en = "United States national provider identifier, the ten digit number CMS issues to a healthcare provider, always beginning with 1 or 2. The leading digit rule removes most random ten digit runs, but the pattern is still ten digits and nothing else, so treat it as context gated rather than standalone. Collision: the existing uk-nhs matches any bare ten digits and fires on the identical span, and the existing us-phone does too. A health config for the United States must not enable uk-nhs and us-npi together without a resolution rule."
+fr = "Identifiant national de prestataire de santé aux États-Unis, le nombre à dix chiffres que les CMS attribuent à un professionnel, toujours commencé par 1 ou 2. La contrainte sur le premier chiffre écarte la plupart des suites de dix chiffres tirées au hasard, mais le motif reste dix chiffres et rien d'autre : à traiter comme un motif dépendant du contexte, pas comme un motif autonome. Collision : le motif existant uk-nhs reconnaît n'importe quelle suite nue de dix chiffres et se déclenche sur le même span, et le motif existant us-phone aussi. Une configuration santé américaine ne doit pas activer uk-nhs et us-npi ensemble sans règle de résolution."
+
+# NPI inventé, premier chiffre 1.
+[[examples.match]]
+text = "NPI 1234567893 on the claim form."
+value = "1234567893"
+
+# Autre NPI inventé.
+[[examples.match]]
+text = "Le prestataire 1999999992 figure au registre."
+value = "1999999992"
+
+# Le premier chiffre doit être 1 ou 2.
+[[examples.no_match]]
+text = "3234567893"
+
+# Neuf chiffres : il en faut dix.
+[[examples.no_match]]
+text = "123456789"
+
+[redos]
+prefix = ""
+filler = "12 "
+suffix = "x"

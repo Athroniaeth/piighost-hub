@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "npm-token"
+label = "NPM_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bnpm_[A-Za-z0-9]{36}\b'
+
+[pattern.description]
+en = "npm granular or automation access token: npm_ then exactly thirty-six alphanumeric characters, the form written into .npmrc as an auth token. Practically no noise. Legacy npm tokens were bare UUIDs, which have no distinctive shape, and are not covered. No collision."
+fr = "Jeton d'accès npm à portée fine ou d'automatisation : npm_ puis exactement trente-six caractères alphanumériques, la forme écrite dans .npmrc comme jeton d'authentification. Bruit pratiquement nul. Les jetons npm hérités étaient de simples UUID, sans forme distinctive, et ne sont pas couverts. Aucune collision."
+
+# Jeton inventé, longueur exacte.
+[[examples.match]]
+text = "//registry.npmjs.org/:_authToken=npm_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"
+value = "npm_AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"
+
+# Jeton inventé, uniquement des zéros.
+[[examples.match]]
+text = "Le fichier .npmrc contenait npm_000000000000000000000000000000000000 en clair."
+value = "npm_000000000000000000000000000000000000"
+
+# Un mot, pas un jeton.
+[[examples.no_match]]
+text = "npm_install"
+
+# Trop court.
+[[examples.no_match]]
+text = "npm_AbCdEfGh"
+
+[redos]
+prefix = "npm_"
+filler = "a"
+suffix = "!"

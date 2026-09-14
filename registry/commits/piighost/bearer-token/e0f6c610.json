@@ -1,0 +1,47 @@
+{
+  "digest": "e0f6c6104c87fedb97940a2f96b7f2e59dc6e24f4cf5e3d0c57c2700d5acac69",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "bearer-token",
+    "schema_version": 1,
+    "label": "BEARER_TOKEN",
+    "regex": "\\b(?i:bearer) [A-Za-z0-9._~+/-]{15,}[A-Za-z0-9_~+/]={0,2}",
+    "description": {
+      "en": "The credential of an HTTP Authorization Bearer header, over the RFC 6750 token alphabet. The span covers the Bearer keyword as well as the value: a bare token has no shape of its own, so the keyword is what makes the match honest, and a value cut from its keyword would not survive on its own. Deliberately catch-all, it takes whatever follows the keyword, opaque session tokens, JWTs and OAuth access tokens alike, and the sixteen character minimum keeps placeholders such as Bearer TOKEN out. Basic and X-Api-Key headers are not covered. Collision: whenever the value is a JWT this fires on the same span as jwt, which carries the more informative label, and a digit-heavy token also trips de-phone on a sub-span.",
+      "fr": "Le secret d'un en-tête HTTP Authorization Bearer, sur l'alphabet de jeton de la RFC 6750. Le span couvre le mot-clé Bearer en plus de la valeur : un jeton nu n'a aucune forme propre, c'est le mot-clé qui rend la reconnaissance honnête, et une valeur coupée de son mot-clé ne tiendrait pas seule. Volontairement attrape-tout, le motif prend ce qui suit le mot-clé, jetons de session opaques, JWT et jetons d'accès OAuth compris, et le minimum de seize caractères écarte les textes de remplacement du genre Bearer TOKEN. Les en-têtes Basic et X-Api-Key ne sont pas couverts. Collision : quand la valeur est un JWT, ce motif se déclenche sur le même span que jwt, dont l'étiquette est plus informative, et un jeton riche en chiffres déclenche aussi de-phone sur un sous-span."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Authorization: Bearer aBcDeF0123456789GhIjKl",
+          "value": "Bearer aBcDeF0123456789GhIjKl"
+        },
+        {
+          "text": "curl -H 'authorization: bearer 0123456789abcdef0123'",
+          "value": "bearer 0123456789abcdef0123"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Bearer short"
+        },
+        {
+          "text": "Bearer <redacted>"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "Bearer ",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

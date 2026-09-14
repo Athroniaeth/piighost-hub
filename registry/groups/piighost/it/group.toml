@@ -1,0 +1,9 @@
+schema_version = 1
+
+[group]
+name = "it"
+description = { en = "Italy: the codice fiscale, which encodes a person's name, date of birth and place of birth, so it identifies on its own without any other field.", fr = "Italie : le codice fiscale, qui encode le nom, la date et le lieu de naissance, donc il identifie à lui seul sans aucun autre champ." }
+tags = ["it", "government-id", "identity"]
+
+[[sources]]
+ref = "piighost/it-codice-fiscale"

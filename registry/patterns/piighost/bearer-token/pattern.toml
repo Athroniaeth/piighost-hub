@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "bearer-token"
+label = "BEARER_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\b(?i:bearer) [A-Za-z0-9._~+/-]{15,}[A-Za-z0-9_~+/]={0,2}'
+
+[pattern.description]
+en = "The credential of an HTTP Authorization Bearer header, over the RFC 6750 token alphabet. The span covers the Bearer keyword as well as the value: a bare token has no shape of its own, so the keyword is what makes the match honest, and a value cut from its keyword would not survive on its own. Deliberately catch-all, it takes whatever follows the keyword, opaque session tokens, JWTs and OAuth access tokens alike, and the sixteen character minimum keeps placeholders such as Bearer TOKEN out. Basic and X-Api-Key headers are not covered. Collision: whenever the value is a JWT this fires on the same span as jwt, which carries the more informative label, and a digit-heavy token also trips de-phone on a sub-span."
+fr = "Le secret d'un en-tête HTTP Authorization Bearer, sur l'alphabet de jeton de la RFC 6750. Le span couvre le mot-clé Bearer en plus de la valeur : un jeton nu n'a aucune forme propre, c'est le mot-clé qui rend la reconnaissance honnête, et une valeur coupée de son mot-clé ne tiendrait pas seule. Volontairement attrape-tout, le motif prend ce qui suit le mot-clé, jetons de session opaques, JWT et jetons d'accès OAuth compris, et le minimum de seize caractères écarte les textes de remplacement du genre Bearer TOKEN. Les en-têtes Basic et X-Api-Key ne sont pas couverts. Collision : quand la valeur est un JWT, ce motif se déclenche sur le même span que jwt, dont l'étiquette est plus informative, et un jeton riche en chiffres déclenche aussi de-phone sur un sous-span."
+
+# Jeton opaque inventé.
+[[examples.match]]
+text = "Authorization: Bearer aBcDeF0123456789GhIjKl"
+value = "Bearer aBcDeF0123456789GhIjKl"
+
+# Le mot-clé est reconnu quelle que soit la casse.
+[[examples.match]]
+text = "curl -H 'authorization: bearer 0123456789abcdef0123'"
+value = "bearer 0123456789abcdef0123"
+
+# Moins de seize caractères.
+[[examples.no_match]]
+text = "Bearer short"
+
+# Un texte de remplacement, pas un jeton.
+[[examples.no_match]]
+text = "Bearer <redacted>"
+
+[redos]
+prefix = "Bearer "
+filler = "a"
+suffix = "!"

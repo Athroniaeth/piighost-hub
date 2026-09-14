@@ -1,0 +1,50 @@
+{
+  "digest": "4afc0d2f4fd7507a175fe1aa3246fe8ec426545bc8ed153800d73a9476171070",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "openai-api-key",
+    "schema_version": 1,
+    "label": "OPENAI_API_KEY",
+    "regex": "(?<![A-Za-z0-9])sk-(?!ant-)(?:proj-)?[A-Za-z0-9_-]{20,}",
+    "description": {
+      "en": "OpenAI secret key, the sk- prefix with the optional proj- segment, then at least twenty key characters. Anthropic keys start sk-ant- and are excluded here, otherwise every one of them is reported as an OpenAI key. Not a personal identifier but a credential, which is exactly what must not reach a third-party model when a developer pastes a config or a traceback.",
+      "fr": "Clé secrète OpenAI, le préfixe sk- avec le segment proj- optionnel, puis au moins vingt caractères de clé. Les clés Anthropic commencent par sk-ant- et sont exclues ici, sans quoi chacune d'elles serait signalée comme une clé OpenAI. Ce n'est pas une donnée personnelle mais un secret, et c'est précisément ce qui ne doit pas atteindre un modèle tiers quand un développeur colle une configuration ou une trace d'erreur."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "export OPENAI_API_KEY=sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD",
+          "value": "sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD"
+        },
+        {
+          "text": "Key sk-abcdefghijklmnopqrstuvwxyz012345 rejected.",
+          "value": "sk-abcdefghijklmnopqrstuvwxyz012345"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "sk-abc123"
+        },
+        {
+          "text": "risk-abcdefghijklmnopqrstuvwxyz012345"
+        },
+        {
+          "text": "sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "sk-proj-",
+      "filler": "a",
+      "suffix": " "
+    }
+  }
+}

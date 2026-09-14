@@ -1,0 +1,27 @@
+{
+  "digest": "db11b565a5dc7d250539fe256881e0fbfcba63ed8bc13191e3613331afd2e48a",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "it",
+    "schema_version": 1,
+    "description": {
+      "en": "Italy: the codice fiscale, which encodes a person's name, date of birth and place of birth, so it identifies on its own without any other field.",
+      "fr": "Italie : le codice fiscale, qui encode le nom, la date et le lieu de naissance, donc il identifie à lui seul sans aucun autre champ."
+    },
+    "tags": [
+      "it",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/it-codice-fiscale",
+        "commit": "b558e1ae",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

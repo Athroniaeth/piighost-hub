@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "it-codice-fiscale"
+label = "IT_CODICE_FISCALE"
+tags = ["it", "government-id", "identity"]
+regex = '\b[A-Z]{6}[0-9LMNP-V]{2}[A-EHLMPRST][0-9LMNP-V]{2}[A-Z][0-9LMNP-V]{3}[A-Z]\b'
+
+[pattern.description]
+en = "Italian codice fiscale: six name letters, two year characters, a month letter taken from the twelve letter set, two day characters with forty added for a woman, a Belfiore place code of one letter and three characters, then a check letter. The digit positions accept the omocodia substitutes, the letters the tax office writes in place of digits to break a tie, so those variants still match. That tolerance is the main noise source, it widens five positions, and a sixteen character uppercase token carrying a month letter in the ninth position can false-positive. No collision with any existing pattern."
+fr = "Codice fiscale italien : six lettres tirées du nom, deux caractères d'année, une lettre de mois prise dans l'ensemble de douze, deux caractères de jour auxquels quarante est ajouté pour une femme, un code Belfiore d'une lettre et trois caractères, puis une lettre de contrôle. Les positions numériques acceptent les substitutions d'omocodia, ces lettres que le fisc écrit à la place de chiffres pour départager deux personnes, si bien que ces variantes restent reconnues. Cette tolérance est la principale source de bruit : elle élargit cinq positions, et un jeton de seize caractères en majuscules portant une lettre de mois en neuvième position peut être un faux positif. Aucune collision avec un motif existant."
+
+# Codice fiscale inventé, lettre de mois D pour avril.
+[[examples.match]]
+text = "CF: MRTMTT91D08F205J"
+value = "MRTMTT91D08F205J"
+
+# Codice fiscale inventé, lettre de mois M pour août.
+[[examples.match]]
+text = "Codice fiscale RSSMRA85M01H501Z sur le bail."
+value = "RSSMRA85M01H501Z"
+
+# Quinze caractères : il en faut seize.
+[[examples.no_match]]
+text = "RSSMRA85M01H501"
+
+# Pas de lettre de mois en neuvième position.
+[[examples.no_match]]
+text = "ABCDEFGHIJKLMNOP"
+
+[redos]
+prefix = "MRTMTT"
+filler = "9"
+suffix = "!"

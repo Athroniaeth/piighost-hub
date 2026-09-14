@@ -1,0 +1,47 @@
+{
+  "digest": "edbb8957a01b5b22011bb6aec1f3e5e3a299fe599ee1f5cbb19930a81d73b76c",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "private-key-block",
+    "schema_version": 1,
+    "label": "PRIVATE_KEY_BLOCK",
+    "regex": "-----BEGIN [A-Z0-9 ]{0,40}PRIVATE KEY(?: BLOCK)?-----[\\s\\S]{0,20000}?-----END [A-Z0-9 ]{0,40}PRIVATE KEY(?: BLOCK)?-----",
+    "description": {
+      "en": "PEM armoured private key, from the BEGIN header to the matching END footer, covering the RSA, EC, DSA, OPENSSH, ENCRYPTED and PGP PRIVATE KEY BLOCK variants. The body is bounded at twenty thousand characters so the whole block is redacted as one span instead of leaving the base64 payload behind. Honest limit: a key truncated by a paste or by a log line limit has no END footer and is missed. BEGIN CERTIFICATE and BEGIN PUBLIC KEY are deliberately left alone, they are not secrets. No collision with any existing pattern, nothing else matches five-dash armour.",
+      "fr": "Clé privée en armure PEM, de l'en-tête BEGIN au pied END correspondant, pour les variantes RSA, EC, DSA, OPENSSH, ENCRYPTED et PGP PRIVATE KEY BLOCK. Le corps est borné à vingt mille caractères afin que le bloc entier soit caviardé d'un seul tenant, sans laisser la charge base64 derrière lui. Limite assumée : une clé tronquée par un copier-coller ou par la taille d'une ligne de journal n'a pas de pied END et échappe au motif. BEGIN CERTIFICATE et BEGIN PUBLIC KEY sont volontairement ignorés, ce ne sont pas des secrets. Aucune collision avec un motif existant, rien d'autre ne reconnaît l'armure à cinq tirets."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Le fichier contient -----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAxxxx\nAAAA\n-----END RSA PRIVATE KEY----- en clair.",
+          "value": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAxxxx\nAAAA\n-----END RSA PRIVATE KEY-----"
+        },
+        {
+          "text": "key: -----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----",
+          "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "-----BEGIN CERTIFICATE-----\nMIIB\n-----END CERTIFICATE-----"
+        },
+        {
+          "text": "-----BEGIN PUBLIC KEY-----\nMFkw\n-----END PUBLIC KEY-----"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "-----BEGIN RSA PRIVATE KEY-----",
+      "filler": "MIIE",
+      "suffix": "!"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "digest": "5f4fef84b50899adcfd1cae50775f59cf326f2648fe6853c3187fb65ab5cdf07",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "br-cnpj",
+    "schema_version": 1,
+    "label": "BR_CNPJ",
+    "regex": "\\b[A-Z0-9]{2}\\.[A-Z0-9]{3}\\.[A-Z0-9]{3}/[A-Z0-9]{4}-\\d{2}\\b",
+    "description": {
+      "en": "Brazilian company number CNPJ in its masked form. The first twelve positions accept uppercase letters as well as digits, because the alphanumeric CNPJ came into force on 31 July 2026: a new registration may carry letters in the root and branch positions while the two check digits stay numeric, so one pattern covers the legacy and the new format at once. Widening those twelve positions lets an uppercase order code with the same punctuation match, which the slash and dot mask makes rare in practice. No collision.",
+      "fr": "Numéro d'entreprise brésilien CNPJ dans sa forme masquée. Les douze premières positions acceptent les lettres majuscules autant que les chiffres, car le CNPJ alphanumérique est entré en vigueur le 31 juillet 2026 : une immatriculation nouvelle peut porter des lettres dans la racine et la succursale, tandis que les deux chiffres de contrôle restent numériques, si bien qu'un seul motif couvre à la fois l'ancien et le nouveau format. Élargir ces douze positions laisse passer un code de commande en majuscules portant la même ponctuation, ce que le masque à barre oblique et points rend rare en pratique. Aucune collision."
+    },
+    "tags": [
+      "br",
+      "government-id",
+      "business"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "CNPJ 11.222.333/0001-81 na nota.",
+          "value": "11.222.333/0001-81"
+        },
+        {
+          "text": "A filial 00.000.000/E08G-12 usa o formato alfanumerico.",
+          "value": "00.000.000/E08G-12"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "12.345.678-0001"
+        },
+        {
+          "text": "12345678000195"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "AB.CDE.FGH/IJKL-",
+      "suffix": "9"
+    }
+  }
+}

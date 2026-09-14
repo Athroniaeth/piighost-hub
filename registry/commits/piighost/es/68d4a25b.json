@@ -1,0 +1,27 @@
+{
+  "digest": "68d4a25ba5bf2d6b4b31e008fa74cc3e015da38a3c42c799b2296e3d5a8fc1b1",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "es",
+    "schema_version": 1,
+    "description": {
+      "en": "Spain: the DNI and NIE identity numbers.",
+      "fr": "Espagne : les numéros d'identité DNI et NIE."
+    },
+    "tags": [
+      "es",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/es-dni-nie",
+        "commit": "4982df18",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

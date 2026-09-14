@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "aws-secret-access-key"
+label = "AWS_SECRET_ACCESS_KEY"
+tags = ["international", "secrets", "software-dev"]
+regex = '(?i:aws)[_-]?(?i:secret)[_-]?(?:(?i:access)[_-]?)?(?i:key)[A-Za-z0-9_]{0,8}["\x27\]\[ ]{0,4}[:=][ "\x27]{0,4}[A-Za-z0-9/+]{40}(?![A-Za-z0-9/+])'
+
+[pattern.description]
+en = "AWS secret access key. On its own the value is forty characters of letters, digits, slash and plus, indistinguishable from any base64 blob or forty-character hash, so the pattern is anchored on the aws secret key assignment that precedes it. The match span therefore covers that assignment as well as the value, because a Python lookbehind must be fixed width and this prefix is not: redaction removes the whole fragment, keyword included. A secret key written with no keyword nearby is missed by design, an unanchored forty-character rule is unusable at its false-positive rate. No collision: the existing aws-access-key covers the AKIA identifier, which is the public half of the pair."
+fr = "Clé secrète d'accès AWS. Prise seule, la valeur n'est que quarante caractères de lettres, chiffres, barre oblique et plus, impossible à distinguer d'un bloc base64 ou d'une empreinte de quarante caractères : le motif s'ancre donc sur l'affectation aws secret key qui la précède. Le span reconnu couvre par conséquent cette affectation en plus de la valeur, car un lookbehind Python doit être de largeur fixe et ce préfixe ne l'est pas ; le caviardage retire le fragment entier, mot-clé compris. Une clé secrète écrite sans mot-clé à proximité échappe volontairement au motif : une règle de quarante caractères sans ancre serait inutilisable à ce taux de faux positifs. Aucune collision : le motif existant aws-access-key couvre l'identifiant AKIA, qui est la moitié publique de la paire."
+
+# Clé d'exemple publiée par AWS dans sa documentation, jamais attribuée.
+[[examples.match]]
+text = "export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+value = "AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+
+# Autre clé d'exemple AWS : le span inclut le mot-clé et le guillemet ouvrant.
+[[examples.match]]
+text = 'aws_secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY"'
+value = 'aws_secret_key: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY'
+
+# L'identifiant de clé, pas le secret.
+[[examples.no_match]]
+text = "AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE"
+
+# Trop court pour être un secret.
+[[examples.no_match]]
+text = "aws_secret_access_key=tooshort"
+
+[redos]
+prefix = "aws_secret_key="
+filler = "A"
+suffix = "!"

@@ -1,0 +1,47 @@
+{
+  "digest": "ca8e565110ed60b1407a749c999735eca8a4aa107bbe4a185754401223c9f43f",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "jwt",
+    "schema_version": 1,
+    "label": "JWT",
+    "regex": "\\bey[A-Za-z0-9_-]{10,}\\.ey[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_=-]{10,}(?![\\w=-])",
+    "description": {
+      "en": "JSON Web Token in compact serialisation: two base64url segments that both start with ey, the encoding of an opening brace and quote, then a signature segment. Expired and sample tokens match as readily as live ones, which is usually what you want, and a signature shorter than ten characters is missed. The payload of a JWT routinely carries an email, a subject and a name, so this pattern is personal data cover as much as secret cover. No whole-span collision, but a long digit run inside the token body triggers credit-card, uk-nhs or de-phone on a sub-span, so jwt must be resolved before those.",
+      "fr": "Jeton JSON Web Token en sérialisation compacte : deux segments base64url commençant tous deux par ey, l'encodage d'une accolade et d'un guillemet ouvrants, puis un segment de signature. Les jetons expirés ou d'exemple sont reconnus comme les jetons vivants, ce qui est en général souhaitable, et une signature de moins de dix caractères échappe au motif. La charge utile d'un JWT transporte couramment un e-mail, un sujet et un nom : ce motif couvre donc autant de la donnée personnelle que du secret. Aucune collision sur le span entier, mais une longue suite de chiffres à l'intérieur du jeton déclenche credit-card, uk-nhs ou de-phone sur un sous-span ; jwt doit être résolu avant eux."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The API answered with eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c in its body.",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        },
+        {
+          "text": "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuY29tIn0.QUJDREVGR0hJSktM",
+          "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuY29tIn0.QUJDREVGR0hJSktM"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        },
+        {
+          "text": "keyboard.eyesight.eyelash"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "ey",
+      "filler": "A",
+      "suffix": "!"
+    }
+  }
+}

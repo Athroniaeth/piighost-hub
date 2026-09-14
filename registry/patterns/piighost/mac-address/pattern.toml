@@ -1,0 +1,34 @@
+schema_version = 1
+
+[pattern]
+name = "mac-address"
+label = "MAC_ADDRESS"
+tags = ["international", "identity", "network"]
+regex = '\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b|\b[0-9A-Fa-f]{4}(?:\.[0-9A-Fa-f]{4}){2}\b'
+
+[pattern.description]
+en = "MAC address in its two written conventions: six hex octets separated by colons or hyphens, and the Cisco dotted form of three groups of four. The separator is not back-referenced, so a string that mixes colons and hyphens also matches, which Presidio forbids with a backreference. Six hex pairs is a distinctive enough shape that noise stays low in prose, though a colon-delimited hex digest matches too. No collision with any existing pattern."
+fr = "Adresse MAC dans ses deux conventions d'écriture : six octets hexadécimaux séparés par des deux-points ou des tirets, et la forme pointée de Cisco en trois groupes de quatre. Le séparateur n'est pas repris par référence arrière : une chaîne qui mélange deux-points et tirets est donc reconnue, ce que Presidio interdit au moyen d'une référence arrière. Six paires hexadécimales forment une silhouette assez distinctive pour que le bruit reste faible en prose, même si une empreinte hexadécimale séparée par des deux-points est également reconnue. Aucune collision avec un motif existant."
+
+# Adresse MAC de documentation.
+[[examples.match]]
+text = "MAC 00:1B:44:11:3A:B7 sur le port 3."
+value = "00:1B:44:11:3A:B7"
+
+# Forme pointée de Cisco.
+[[examples.match]]
+text = "Le switch annonce 0011.2233.4455 dans sa table."
+value = "0011.2233.4455"
+
+# Cinq groupes : il en faut six.
+[[examples.no_match]]
+text = "00:1B:44:11:3A"
+
+# G n'est pas un chiffre hexadécimal.
+[[examples.no_match]]
+text = "GG:1B:44:11:3A:B7"
+
+[redos]
+prefix = ""
+filler = "0:"
+suffix = "x"

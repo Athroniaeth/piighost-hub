@@ -1,0 +1,47 @@
+{
+  "digest": "3b686ef70d5cc24661527b63ef6178a2804b73f6a8fd9003fdc479f8270b0abe",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-npi",
+    "schema_version": 1,
+    "label": "US_NPI",
+    "regex": "\\b[12]\\d{9}\\b",
+    "description": {
+      "en": "United States national provider identifier, the ten digit number CMS issues to a healthcare provider, always beginning with 1 or 2. The leading digit rule removes most random ten digit runs, but the pattern is still ten digits and nothing else, so treat it as context gated rather than standalone. Collision: the existing uk-nhs matches any bare ten digits and fires on the identical span, and the existing us-phone does too. A health config for the United States must not enable uk-nhs and us-npi together without a resolution rule.",
+      "fr": "Identifiant national de prestataire de santé aux États-Unis, le nombre à dix chiffres que les CMS attribuent à un professionnel, toujours commencé par 1 ou 2. La contrainte sur le premier chiffre écarte la plupart des suites de dix chiffres tirées au hasard, mais le motif reste dix chiffres et rien d'autre : à traiter comme un motif dépendant du contexte, pas comme un motif autonome. Collision : le motif existant uk-nhs reconnaît n'importe quelle suite nue de dix chiffres et se déclenche sur le même span, et le motif existant us-phone aussi. Une configuration santé américaine ne doit pas activer uk-nhs et us-npi ensemble sans règle de résolution."
+    },
+    "tags": [
+      "us",
+      "health",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "NPI 1234567893 on the claim form.",
+          "value": "1234567893"
+        },
+        {
+          "text": "Le prestataire 1999999992 figure au registre.",
+          "value": "1999999992"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "3234567893"
+        },
+        {
+          "text": "123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "12 ",
+      "suffix": "x"
+    }
+  }
+}

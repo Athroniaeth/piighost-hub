@@ -1,0 +1,34 @@
+{
+  "digest": "a1c1ded28303d96a468e8d1b1b58fd47de41085394102d535734973a4a432f8a",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "vehicles",
+    "schema_version": 1,
+    "description": {
+      "en": "Vehicle registration plates, France and the United Kingdom. A plate is not a name, but it is registered to one and reappears in insurance, fleet and incident records.",
+      "fr": "Plaques d'immatriculation, France et Royaume-Uni. Une plaque n'est pas un nom, mais elle est immatriculée à un nom et réapparaît dans les dossiers d'assurance, de flotte et de sinistre."
+    },
+    "tags": [
+      "fr",
+      "uk",
+      "identity",
+      "legal"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/fr-plate",
+        "commit": "b56bf68d",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/uk-plate",
+        "commit": "5864c922",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

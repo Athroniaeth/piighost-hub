@@ -1,0 +1,28 @@
+{
+  "digest": "e4d60858d6ee358927806d9a5ea487cad91bf9c003ab037a577d4c53501859cf",
+  "recorded_at": "2026-09-14T13:24:42+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "in",
+    "schema_version": 1,
+    "description": {
+      "en": "India: the PAN, the permanent account number used for tax.",
+      "fr": "Inde : le PAN, le numéro de compte permanent utilisé pour la fiscalité."
+    },
+    "tags": [
+      "in",
+      "government-id",
+      "identity",
+      "accounting"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/in-pan",
+        "commit": "39352a4c",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}
