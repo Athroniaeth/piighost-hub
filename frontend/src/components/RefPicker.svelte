@@ -58,6 +58,12 @@
     );
   }
 
+  /** The whole key and what the bare number means, for the title on hover. */
+  function countLabel(item: SearchHit): string {
+    const kind = t(`kind.${item.kind}` as Key);
+    return `${item.key} \u2022 ${kind} \u2022 ${item.labels.length} ${t("pick.coverage")}`;
+  }
+
   function choose(key: string) {
     value = key;
     open = false;
@@ -101,12 +107,11 @@
         kind={current?.kind ?? "config"}
         class="size-4 shrink-0 text-muted-foreground"
       />
-      <span class="truncate font-mono">{value}</span>
+      <span class="min-w-0 flex-1 truncate font-mono">{value}</span>
       {#if current}
         <span
-          class="ms-auto shrink-0 tabular-nums text-muted-foreground"
-          title="{t(`kind.${current.kind}` as Key)} \u00b7 {current.labels
-            .length} {t('pick.coverage')}"
+          class="shrink-0 tabular-nums text-muted-foreground"
+          title={countLabel(current)}
         >
           {current.labels.length}
         </span>
@@ -115,8 +120,13 @@
     </button>
 
     {#if open}
+      <!-- Never wider than its column. The playground and contribution shells
+           clip their children to draw their rounded corners, so a popover that
+           overflows sideways has the strip past the column edge painted away,
+           and the coverage count is the first thing to go. A long key
+           ellipsizes instead, and the title carries it whole. -->
       <div
-        class="absolute start-0 z-20 mt-1 w-[22rem] max-w-[85vw] min-w-full rounded-lg border bg-card shadow-lg"
+        class="absolute inset-x-0 z-20 mt-1 rounded-lg border bg-card shadow-lg"
       >
         <label class="relative block border-b">
           <Search
@@ -134,7 +144,7 @@
         <div
           role="listbox"
           aria-label={label}
-          class="max-h-72 overflow-auto p-1"
+          class="max-h-72 overflow-x-hidden overflow-y-auto p-1"
         >
           {#each matching(items) as item (item.key)}
             <button
@@ -147,6 +157,7 @@
                   ? "bg-muted font-medium"
                   : "hover:bg-muted focus-visible:bg-muted",
               )}
+              title={countLabel(item)}
               onclick={() => choose(item.key)}
               {onkeydown}
             >
@@ -154,14 +165,8 @@
                 kind={item.kind}
                 class="size-4 shrink-0 text-muted-foreground"
               />
-              <span class="truncate font-mono">{item.key}</span>
-              <span class="ms-auto shrink-0 text-xs text-muted-foreground">
-                {t(`kind.${item.kind}` as Key)}
-              </span>
-              <span
-                class="w-7 shrink-0 text-end text-xs tabular-nums text-muted-foreground"
-                title={t("pick.coverage")}
-              >
+              <span class="min-w-0 flex-1 truncate font-mono">{item.key}</span>
+              <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
                 {item.labels.length}
               </span>
             </button>
