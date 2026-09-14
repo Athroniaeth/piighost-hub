@@ -63,6 +63,10 @@ const STRINGS = {
     "kind.group": "group",
     "kind.config": "configuration",
 
+    "pick.filter": "Filter by name, label or tag",
+    "pick.coverage": "labels covered",
+    "pick.none": "Nothing matches.",
+
     "detail.openPlayground": "Open in the playground",
     "detail.download": "Download TOML",
     "detail.pipeline": "Pipeline file",
@@ -146,12 +150,25 @@ const STRINGS = {
     "chat.empty": "Send a message to start.",
 
     "contribute.lede":
-      "Publishing is a pull request against the registry. Check your manifest here with the same tests the maintainers run.",
+      "Publishing is a pull request against the registry. Write your manifest here and check it with the same tests the maintainers run.",
+    "contribute.what": "What are you proposing?",
+    "contribute.pattern.note": "One shape and the label it emits.",
+    "contribute.group.note": "A reusable set of patterns.",
+    "contribute.config.note": "A pipeline you can run as it is.",
     "contribute.kind": "Kind",
     "contribute.namespace": "Namespace",
     "contribute.name": "Name",
     "contribute.manifest": "Manifest",
-    "contribute.example": "Load an example",
+    "contribute.start": "Starting point",
+    "contribute.base": "Base object",
+    "contribute.blank": "Blank manifest",
+    "contribute.fork": "Start from this one",
+    "contribute.fork.pattern":
+      "Copies the manifest under your name. Edit the regex and the examples.",
+    "contribute.fork.group":
+      "References it as a source, so it keeps improving under you.",
+    "contribute.fork.config":
+      "Extends it, so you only write down what differs.",
     "contribute.check": "Check",
     "contribute.path": "Path",
     "contribute.ok": "Every check passed.",
@@ -231,6 +248,10 @@ const STRINGS = {
     "kind.pattern": "motif",
     "kind.group": "groupe",
     "kind.config": "configuration",
+
+    "pick.filter": "Filtrer par nom, label ou tag",
+    "pick.coverage": "labels couverts",
+    "pick.none": "Aucun résultat.",
 
     "detail.openPlayground": "Ouvrir dans le bac à sable",
     "detail.download": "Télécharger le TOML",
@@ -315,12 +336,24 @@ const STRINGS = {
     "chat.empty": "Envoyez un message pour commencer.",
 
     "contribute.lede":
-      "Publier passe par une pull request sur le registre. Vérifiez votre manifeste ici avec les mêmes tests que les mainteneurs.",
+      "Publier passe par une pull request sur le registre. Rédigez votre manifeste ici et vérifiez-le avec les mêmes tests que les mainteneurs.",
+    "contribute.what": "Que proposez-vous ?",
+    "contribute.pattern.note": "Un motif et le label qu'il produit.",
+    "contribute.group.note": "Un ensemble de motifs réutilisable.",
+    "contribute.config.note": "Une chaîne de traitement prête à tourner.",
     "contribute.kind": "Type",
     "contribute.namespace": "Espace de noms",
     "contribute.name": "Nom",
     "contribute.manifest": "Manifeste",
-    "contribute.example": "Charger un exemple",
+    "contribute.start": "Point de départ",
+    "contribute.base": "Objet de base",
+    "contribute.blank": "Manifeste vierge",
+    "contribute.fork": "Partir de celui-ci",
+    "contribute.fork.pattern":
+      "Copie le manifeste sous votre nom. Modifiez le regex et les exemples.",
+    "contribute.fork.group":
+      "Le référence comme source : il continue de s'améliorer sous vous.",
+    "contribute.fork.config": "L'étend : vous n'écrivez que ce qui change.",
     "contribute.check": "Vérifier",
     "contribute.path": "Chemin",
     "contribute.ok": "Tous les contrôles passent.",

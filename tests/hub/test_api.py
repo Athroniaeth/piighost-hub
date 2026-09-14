@@ -26,6 +26,26 @@ class TestListing:
         assert sorted(p["name"] for p in finance) == ["credit-card", "fr-siret"]
         assert everything[0]["pointers"]["latest"] == everything[0]["latest"]
 
+    async def test_manifest_serves_the_source_file(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """The literal segment has to win over the commit selector beside it."""
+        response = await client.get("/api/v1/refs/piighost/base/manifest")
+        assert response.status_code == 200, response.text
+        body = response.json()
+        assert body["kind"] == "config"
+        assert body["path"] == "configs/piighost/base/config.toml"
+        assert 'name = "base"' in body["text"]
+        assert 'type = "gliner2"' in body["text"]
+        selector = await client.get("/api/v1/refs/piighost/base/latest")
+        assert selector.status_code == 200
+
+    async def test_manifest_of_an_unknown_object_is_404(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.get("/api/v1/refs/piighost/nope/manifest")
+        assert response.status_code == 404
+
     async def test_object_detail_lists_commits(
         self, client: AsyncTestClient[Litestar]
     ) -> None:

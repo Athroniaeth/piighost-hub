@@ -22,7 +22,9 @@
   let result = $state<ChatOut | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
-  let reveal = $state(false);
+  // On by default: the demo exists to show the substitution, and a visitor
+  // who has to find a checkbox first sees an ordinary chat and leaves.
+  let reveal = $state(true);
 
   // One map for the whole conversation, built from the tokens themselves, so a
   // value keeps its colour from the message that introduced it to the last reply.

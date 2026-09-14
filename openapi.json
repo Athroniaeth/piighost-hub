@@ -475,6 +475,35 @@
         "title": "Localized",
         "type": "object"
       },
+      "ManifestOut": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "pattern",
+              "group",
+              "config"
+            ],
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "kind",
+          "path",
+          "text"
+        ],
+        "title": "ManifestOut",
+        "type": "object"
+      },
       "ObjectDetail": {
         "properties": {
           "commits": {
@@ -1875,6 +1904,87 @@
           }
         },
         "summary": "ObjectDetail",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/refs/{namespace}/{name}/manifest": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1RefsNamespaceManifestManifest",
+        "parameters": [
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManifestOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Manifest",
         "tags": [
           "hub"
         ]

@@ -89,6 +89,15 @@ class ObjectDetail(msgspec.Struct):
     commits: list[CommitSummary]
 
 
+class ManifestOut(msgspec.Struct):
+    """One object's manifest as it sits in the registry, ready to be forked."""
+
+    key: str
+    kind: Literal["pattern", "group", "config"]
+    path: str
+    text: str
+
+
 class CommitDetail(msgspec.Struct):
     key: str
     kind: Literal["pattern", "group", "config"]
@@ -315,6 +324,29 @@ class HubController(Controller):
                 )
                 for s in registry.history(ref.key)
             ],
+        )
+
+    @get("/refs/{namespace:str}/{name:str}/manifest", name="hub:manifest")
+    async def manifest(
+        self, state: State, namespace: FromPath[str], name: FromPath[str]
+    ) -> ManifestOut:
+        """The head manifest verbatim, so a contributor starts from working TOML.
+
+        The source file rather than a rendering of the frozen snapshot: what a
+        contributor forks has to be the thing the maintainers read in review,
+        comments and ordering included. Older commits are not served here, since
+        they are stored as canonical JSON and forking one would hand back TOML
+        nobody ever wrote.
+        """
+        registry = registry_of(state)
+        obj = registry.objects.get(f"{namespace}/{name}")
+        if obj is None:
+            raise NotFoundError
+        return ManifestOut(
+            key=obj.key,
+            kind=obj.kind,
+            path=str(obj.path.relative_to(registry.root)),
+            text=obj.path.read_text(encoding="utf-8"),
         )
 
     @get("/refs/{namespace:str}/{name:str}/{selector:str}", name="hub:commit")

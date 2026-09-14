@@ -15,6 +15,7 @@ import {
   apiV1PlaygroundCandidateCandidate,
   apiV1PlaygroundChatChat,
   apiV1PlaygroundPlayground,
+  apiV1RefsNamespaceManifestManifest,
   apiV1RefsNamespaceObjectDetail,
   apiV1RefsNamespaceSelectorCommitDetail,
   apiV1RefsNamespaceSelectorExportExportLabels,
@@ -33,6 +34,7 @@ import type {
   CompareOut,
   DiffOut,
   LabelsOut,
+  ManifestOut,
   ObjectDetail,
   Resolved,
   RunOut,
@@ -99,6 +101,12 @@ export const api = {
   async object(namespace: string, name: string): Promise<ObjectDetail> {
     return unwrap(
       await apiV1RefsNamespaceObjectDetail({ path: { namespace, name } }),
+    );
+  },
+
+  async manifest(namespace: string, name: string): Promise<ManifestOut> {
+    return unwrap(
+      await apiV1RefsNamespaceManifestManifest({ path: { namespace, name } }),
     );
   },
 

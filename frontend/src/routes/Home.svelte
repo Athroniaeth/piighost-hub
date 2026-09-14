@@ -17,7 +17,9 @@
 
   const PER_PAGE = 15;
   const KINDS: Kind[] = ["pattern", "group", "config"];
-  const SORTS: Sort[] = ["relevance", "updated", "used", "labels", "name"];
+  // Widest coverage leads: a visitor who has not typed anything is looking for
+  // the configuration that covers the most, not the one edited most recently.
+  const SORTS: Sort[] = ["labels", "relevance", "updated", "used", "name"];
   const FACET_ORDER = ["region", "category", "domain", "use-case", "language"];
 
   // The query string is the state: a filtered view is shareable, and the back
@@ -27,7 +29,7 @@
   const tags = $derived(router.query.getAll("tag"));
   const label = $derived(router.query.get("label") ?? "");
   const sort = $derived(
-    (router.query.get("sort") ?? (query ? "relevance" : "updated")) as Sort,
+    (router.query.get("sort") ?? (query ? "relevance" : "labels")) as Sort,
   );
   const page = $derived(
     Math.max(1, Number(router.query.get("page") ?? "1") || 1),

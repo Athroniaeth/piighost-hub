@@ -20,17 +20,23 @@
   // Written as a constant: inside an attribute, Svelte would read the `{6}` of a
   // regex quantifier as an expression and render a bare 6.
   const REGEX_PLACEHOLDER = String.raw`\bORD-[0-9]{6}\b`;
-  const DEFAULT_TEXT =
-    "Write to john.doe@example.com or call +1 415-555-0123. Card 4111 1111 1111 1111.";
 
   let source = $state<"object" | "candidate">("object");
   let ref = $state(router.query.get("ref") ?? "piighost/regex-default");
   let regex = $state("");
-  let text = $state(DEFAULT_TEXT);
+  let text = $state("");
   let view = $state<"input" | "anonymized">("input");
   let run = $state<RunOut | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
+
+  // The page opens on the first sample: an empty box asks the visitor to invent
+  // a text holding personal data, which is the slowest possible way to see what
+  // the hub does.
+  api.samples().then((result) => {
+    const first = result.items[0];
+    if (first && text === "") text = first.text.trim();
+  });
 
   const kept = $derived(run?.hits.filter((hit) => hit.kept) ?? []);
   const dropped = $derived(run?.hits.filter((hit) => !hit.kept) ?? []);
