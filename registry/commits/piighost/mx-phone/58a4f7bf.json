@@ -1,0 +1,46 @@
+{
+  "digest": "58a4f7bfdeb1dbe28609c57238002ef6d0e7d5b61986339d67b5d1f6688aecbd",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "mx-phone",
+    "schema_version": 1,
+    "label": "MX_PHONE",
+    "regex": "(?<![\\w+])(?:\\+52[\\s-]?)?(?:1[\\s-]?)?[2-9]\\d(?:[\\s-]?\\d){8}(?!\\w)(?![\\s-]?\\d)",
+    "description": {
+      "en": "Mexican phone number: ten digits opening on an area code, with the +52 country code and the old mobile 1 both optional. Mexico dropped the 044 and 045 prefixes in 2019, so only the ten digit form is matched here.",
+      "fr": "Numéro de téléphone mexicain : dix chiffres commençant par un indicatif, l'indicatif +52 et l'ancien 1 des mobiles étant tous deux optionnels. Le Mexique a supprimé les préfixes 044 et 045 en 2019, donc seule la forme à dix chiffres est reconnue ici."
+    },
+    "tags": [
+      "mx",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Llamame al +52 55 1234 5678 en la tarde.",
+          "value": "+52 55 1234 5678"
+        },
+        {
+          "text": "El celular es 55-9876-5432 por si acaso.",
+          "value": "55-9876-5432"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "La extension es 1234"
+        },
+        {
+          "text": "El folio 12 3456 7890 no aplica"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+52 5",
+      "filler": "5",
+      "suffix": "x"
+    }
+  }
+}

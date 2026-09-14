@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "mx-phone"
+label = "MX_PHONE"
+tags = ["mx", "contact"]
+regex = '(?<![\w+])(?:\+52[\s-]?)?(?:1[\s-]?)?[2-9]\d(?:[\s-]?\d){8}(?!\w)(?![\s-]?\d)'
+
+[pattern.description]
+en = "Mexican phone number: ten digits opening on an area code, with the +52 country code and the old mobile 1 both optional. Mexico dropped the 044 and 045 prefixes in 2019, so only the ten digit form is matched here."
+fr = "Numéro de téléphone mexicain : dix chiffres commençant par un indicatif, l'indicatif +52 et l'ancien 1 des mobiles étant tous deux optionnels. Le Mexique a supprimé les préfixes 044 et 045 en 2019, donc seule la forme à dix chiffres est reconnue ici."
+
+[[examples.match]]
+text = "Llamame al +52 55 1234 5678 en la tarde."
+value = "+52 55 1234 5678"
+
+[[examples.match]]
+text = "El celular es 55-9876-5432 por si acaso."
+value = "55-9876-5432"
+
+[[examples.no_match]]
+text = "La extension es 1234"
+
+[[examples.no_match]]
+text = "El folio 12 3456 7890 no aplica"
+
+[redos]
+prefix = "+52 5"
+filler = "5"
+suffix = "x"

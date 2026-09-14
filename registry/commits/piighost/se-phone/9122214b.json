@@ -1,0 +1,46 @@
+{
+  "digest": "9122214bcb3f0d33c033d01a40e22dc71237c98b6a3af5c345a2631b2c2960ea",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "se-phone",
+    "schema_version": 1,
+    "label": "SE_PHONE",
+    "regex": "(?<![\\w+])(?:\\+46|0)(?:[\\s.-]?\\d){8,9}(?!\\w)",
+    "description": {
+      "en": "Swedish phone number, the +46 country code or the 0 trunk prefix then eight or nine digits. Swedish area codes vary in length, so the count is a range rather than a fixed grouping.",
+      "fr": "Numéro de téléphone suédois, l'indicatif +46 ou le préfixe interurbain 0 puis huit ou neuf chiffres. La longueur des indicatifs varie en Suède, donc le décompte est un intervalle plutôt qu'un groupement fixe."
+    },
+    "tags": [
+      "se",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ring mig på +46 70 123 45 67 i kväll.",
+          "value": "+46 70 123 45 67"
+        },
+        {
+          "text": "Växeln har 08-123 456 78 på dagtid.",
+          "value": "08-123 456 78"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Anknytning 0123"
+        },
+        {
+          "text": "Ordernummer 1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+46 ",
+      "filler": "70",
+      "suffix": "x"
+    }
+  }
+}

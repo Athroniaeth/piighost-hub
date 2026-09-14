@@ -1,0 +1,46 @@
+{
+  "digest": "94f677d6363fde91127fd8e1ce653ca806ca5259acf9672906a8f0e6b5ede2ae",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "kr-phone",
+    "schema_version": 1,
+    "label": "KR_PHONE",
+    "regex": "(?<![\\w+])(?:\\+82|0)[\\s.-]?1[0-9](?:[\\s.-]?\\d){7,8}(?!\\w)",
+    "description": {
+      "en": "South Korean mobile number, the +82 country code or the 0 trunk prefix then a 1 and the carrier digit, then seven or eight digits. Mobile only on purpose: a Korean landline is short enough to collide with the resident registration number beside it.",
+      "fr": "Numéro de mobile sud-coréen, l'indicatif +82 ou le préfixe interurbain 0 puis un 1 et le chiffre d'opérateur, puis sept ou huit chiffres. Mobile uniquement à dessein : un fixe coréen est assez court pour entrer en collision avec le numéro d'enregistrement de résident à côté."
+    },
+    "tags": [
+      "kr",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Text me on +82 10 1234 5678 when you land.",
+          "value": "+82 10 1234 5678"
+        },
+        {
+          "text": "His number is 010-9876-5432 these days.",
+          "value": "010-9876-5432"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The office line is 02-1234-5678"
+        },
+        {
+          "text": "Extension 0123"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+82 1",
+      "filler": "0",
+      "suffix": "x"
+    }
+  }
+}

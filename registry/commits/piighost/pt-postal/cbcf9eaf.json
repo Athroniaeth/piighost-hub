@@ -1,0 +1,47 @@
+{
+  "digest": "cbcf9eaff95a6efe210346e94dc80a734f15993bd2fbd026ea8f31ef09690893",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "pt-postal",
+    "schema_version": 1,
+    "label": "PT_POSTAL",
+    "regex": "(?<!\\w)\\d{4}-\\d{3}(?!\\w)",
+    "description": {
+      "en": "Portuguese postal code: four digits, a dash, then three digits for the delivery zone. The dash is mandatory, which is what keeps it apart from the nine bare digits of a tax number.",
+      "fr": "Code postal portugais : quatre chiffres, un tiret, puis trois chiffres pour la zone de distribution. Le tiret est obligatoire, et c'est ce qui le distingue des neuf chiffres nus d'un numéro fiscal."
+    },
+    "tags": [
+      "pt",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Morada em 1000-100 Lisboa, perto do metro.",
+          "value": "1000-100"
+        },
+        {
+          "text": "A fabrica fica em 4150-007 Porto.",
+          "value": "4150-007"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "O codigo antigo era 1000"
+        },
+        {
+          "text": "Intervalo 100-100"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "1000",
+      "filler": "-100",
+      "suffix": "x"
+    }
+  }
+}

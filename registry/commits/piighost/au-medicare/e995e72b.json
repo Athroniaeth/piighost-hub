@@ -1,0 +1,47 @@
+{
+  "digest": "e995e72b4eeb6dd582ea7a5357af1cc3a4a841a735dc9b7347a9d11e2b945320",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "au-medicare",
+    "schema_version": 1,
+    "label": "AU_MEDICARE",
+    "regex": "(?<!\\w)[2-6]\\d{3}[\\s-]\\d{5}[\\s-]\\d(?:[\\s-]\\d)?(?!\\w)",
+    "description": {
+      "en": "Australian Medicare number: ten digits in the groups the card prints, sometimes followed by the individual reference number of the family member. The separators are required and the first digit runs 2 to 6, which together keep it away from the phone numbers and card numbers around it.",
+      "fr": "Numéro Medicare australien : dix chiffres dans les groupes imprimés sur la carte, parfois suivis du numéro de référence individuel du membre de la famille. Les séparateurs sont exigés et le premier chiffre va de 2 à 6, ce qui l'éloigne des téléphones et des numéros de carte alentour."
+    },
+    "tags": [
+      "au",
+      "health",
+      "government-id"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "My Medicare is 2123 45670 1 on the green card.",
+          "value": "2123 45670 1"
+        },
+        {
+          "text": "Quote 3456 78901 2 3 when you book.",
+          "value": "3456 78901 2 3"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The number 7123 45670 1 is out of range"
+        },
+        {
+          "text": "Reference 2123456701"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "2123 ",
+      "filler": "45670",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "digest": "229f114b6398f42b6b142a1226e9a55fb002f885906585ac21e665053a37e4a7",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "de-health-insurance",
+    "schema_version": 1,
+    "label": "DE_HEALTH_INSURANCE",
+    "regex": "(?<!\\w)[A-Z]\\d{9}(?!\\w)",
+    "description": {
+      "en": "German health insurance number, one letter then nine digits, the lifelong identifier printed on the electronic health card. The single leading letter is thin protection, so this is kept out of the general German group and offered to health configurations only.",
+      "fr": "Numéro d'assuré allemand, une lettre puis neuf chiffres, l'identifiant à vie imprimé sur la carte de santé électronique. La lettre unique en tête protège peu, donc ce motif reste hors du groupe allemand général et n'est offert qu'aux configurations de santé."
+    },
+    "tags": [
+      "de",
+      "health",
+      "government-id"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Die Karte zeigt A123456789 als Nummer.",
+          "value": "A123456789"
+        },
+        {
+          "text": "Versichert unter Z987654321 seit Januar.",
+          "value": "Z987654321"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Die Nummer 123456789 hat keinen Buchstaben"
+        },
+        {
+          "text": "Referenz A12345678"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "A",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

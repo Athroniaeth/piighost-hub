@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "sg-phone"
+label = "SG_PHONE"
+tags = ["sg", "contact"]
+regex = '(?<![\w+])(?:\+65[\s.-]?)?[3689](?:[\s.-]?\d){7}(?!\w)(?![\s.-]?\d)'
+
+[pattern.description]
+en = "Singapore phone number: eight digits opening on a 3, 6, 8 or 9, with the +65 country code optional. Singapore has no trunk prefix and no area codes, so the opening digit is the only thing that says which kind of line it is."
+fr = "Numéro de téléphone singapourien : huit chiffres commençant par 3, 6, 8 ou 9, l'indicatif +65 étant optionnel. Singapour n'a ni préfixe interurbain ni indicatif régional, donc le premier chiffre est la seule indication du type de ligne."
+
+[[examples.match]]
+text = "Call +65 6123 4567 for the front desk."
+value = "+65 6123 4567"
+
+[[examples.match]]
+text = "My handphone is 9123 4567 if you need me."
+value = "9123 4567"
+
+[[examples.no_match]]
+text = "The room number is 1123 4567"
+
+[[examples.no_match]]
+text = "Extension 6123"
+
+[redos]
+prefix = "+65 6"
+filler = "1"
+suffix = "x"

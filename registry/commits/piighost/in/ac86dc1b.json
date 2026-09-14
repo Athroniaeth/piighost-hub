@@ -1,0 +1,53 @@
+{
+  "digest": "ac86dc1b26db7d51c08bc1a76dd2af114679405cebe8deeda20e4a7ae2fb186e",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "in",
+    "schema_version": 1,
+    "description": {
+      "en": "India: phone, PIN code, the PAN tax number, the Aadhaar number and the GST number. Aadhaar is only matched in its grouped form, since twelve bare digits are also the head of a card number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Inde : téléphone, code PIN, le numéro fiscal PAN, le numéro Aadhaar et le numéro GST. L'Aadhaar n'est reconnu que sous sa forme groupée, car douze chiffres nus sont aussi le début d'un numéro de carte. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "in",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/in-phone",
+        "commit": "3e8115c9",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-pin",
+        "commit": "3642cb95",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-pan",
+        "commit": "39352a4c",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-aadhaar",
+        "commit": "95c4aa70",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/in-gstin",
+        "commit": "2b9b59d4",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

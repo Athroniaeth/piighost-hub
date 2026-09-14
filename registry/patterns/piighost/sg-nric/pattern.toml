@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "sg-nric"
+label = "SG_NRIC"
+tags = ["sg", "government-id", "identity"]
+regex = '(?<!\w)[STFGM]\d{7}[A-Z](?!\w)'
+
+[pattern.description]
+en = "Singapore NRIC or FIN: a prefix letter saying the status and the century, seven digits, then a checksum letter. The letters at both ends make it unmistakable, which is rare for a national identifier."
+fr = "NRIC ou FIN singapourien : une lettre de préfixe indiquant le statut et le siècle, sept chiffres, puis une lettre de contrôle. Les lettres aux deux bouts le rendent reconnaissable sans ambiguïté, ce qui est rare pour un identifiant national."
+
+[[examples.match]]
+text = "Please bring your card, S1234567D, to the counter."
+value = "S1234567D"
+
+[[examples.match]]
+text = "The pass number is G7654321X on the record."
+value = "G7654321X"
+
+[[examples.no_match]]
+text = "The serial is 1234567D"
+
+[[examples.no_match]]
+text = "Reference S1234567"
+
+[redos]
+prefix = "S"
+filler = "1"
+suffix = "x"

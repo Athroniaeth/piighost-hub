@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ch-ahv"
+label = "CH_AHV"
+tags = ["ch", "government-id", "identity", "health"]
+regex = '(?<!\w)756\.\d{4}\.\d{4}\.\d{2}(?!\w)'
+
+[pattern.description]
+en = "Swiss AHV social insurance number: the 756 country code of the EAN standard, then three dotted groups. It is also the insured person's health number, so it turns up in medical correspondence as well as payroll."
+fr = "Numéro AVS suisse d'assurance sociale : le code pays 756 de la norme EAN, puis trois groupes pointés. C'est aussi le numéro d'assuré en santé, donc il apparaît dans la correspondance médicale autant que dans la paie."
+
+[[examples.match]]
+text = "Die Nummer 756.1234.5678.97 steht auf der Karte."
+value = "756.1234.5678.97"
+
+[[examples.match]]
+text = "Versichert unter 756.9217.0769.85 seit 2015."
+value = "756.9217.0769.85"
+
+[[examples.no_match]]
+text = "Die Nummer 757.1234.5678.97 gibt es nicht"
+
+[[examples.no_match]]
+text = "Referenz 756.1234.5678"
+
+[redos]
+prefix = "756."
+filler = "1234."
+suffix = "x"

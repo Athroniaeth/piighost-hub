@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ar-postal"
+label = "AR_POSTAL"
+tags = ["ar", "location", "contact"]
+regex = '(?<!\w)[A-Z]\d{4}[A-Z]{3}(?!\w)'
+
+[pattern.description]
+en = "Argentine CPA postal code: a province letter, four digits for the town, then three letters for the block side. The letters at both ends make it unmistakable, which is what a postal code should look like."
+fr = "Code postal argentin CPA : une lettre de province, quatre chiffres pour la localité, puis trois lettres pour le côté de l'îlot. Les lettres aux deux bouts le rendent reconnaissable sans ambiguïté, ce à quoi un code postal devrait ressembler."
+
+[[examples.match]]
+text = "Envialo a C1425DKE, Palermo, Buenos Aires."
+value = "C1425DKE"
+
+[[examples.match]]
+text = "La sucursal de B1636FDA ya cerró."
+value = "B1636FDA"
+
+[[examples.no_match]]
+text = "El codigo viejo era 1425"
+
+[[examples.no_match]]
+text = "Referencia C1425DK"
+
+[redos]
+prefix = "C"
+filler = "1"
+suffix = "x"

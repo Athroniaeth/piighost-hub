@@ -2,8 +2,14 @@ schema_version = 1
 
 [group]
 name = "ie"
-description = { en = "Ireland: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.", fr = "Irlande : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas." }
-tags = ["ie", "government-id", "identity"]
+description = { en = "Ireland: phone, Eircode and the PPS number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Irlande : téléphone, Eircode et le numéro PPS. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["contact", "government-id", "identity", "ie", "location"]
+
+[[sources]]
+ref = "piighost/ie-phone"
+
+[[sources]]
+ref = "piighost/ie-eircode"
 
 [[sources]]
 ref = "piighost/ie-ppsn"

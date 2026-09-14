@@ -134,6 +134,42 @@ NIF portugais, neuf chiffres nus qui réclament la tête d'un SIRET ; `health`
 écarte le numéro de praticien américain, dix chiffres nus indiscernables du
 numéro NHS ; `logs` écarte l'URL, qui avale un jeton inscrit dedans.
 
+## Qui gagne un span, exactement
+
+Le resolver trie par `(-confiance, span)` et garde gloutonnement. La confiance
+d'un regex vaut toujours 1, donc c'est le span seul qui décide, et un span est
+un couple `(début, fin)` trié en ordre croissant. Deux conséquences, et les deux
+surprennent :
+
+- **Le span qui commence le plus tôt gagne.** C'est l'intuition habituelle.
+- **À début égal, c'est le plus court qui gagne**, pas le plus long. Un motif
+  qui reconnaît le *début* d'une suite plus longue la découpe donc au lieu de
+  lui céder la place.
+
+C'est cette seconde règle qui casse le plus de motifs, et toujours de la même
+façon : un téléphone danois de huit chiffres se pose sur la tête d'un numéro de
+carte de seize, un Aadhaar de douze chiffres groupés aussi, un code postal
+japonais sur la tête d'un téléphone japonais. Le remède n'est pas l'ordre des
+sources, qui ne joue qu'à span identique, mais le motif lui-même : une
+anticipation négative de fin qui refuse un séparateur suivi d'un chiffre.
+
+```
+(?<!\w)\d{3}-\d{4}(?!\w)(?![\s.-]?\d)
+```
+
+Un code postal japonais écrit ainsi ne réclame plus `090-1234` dans
+`090-1234-5678`. Sept motifs du registre portent cette anticipation, tous
+ajoutés après que le check de composition les a pris en faute.
+
+Quand les deux spans sont *identiques*, en revanche, seul l'ordre des sources
+tranche, et la règle est de déclarer le plus spécifique d'abord. Quatre groupes
+le font, chacun avec sa raison écrite dans sa description : `us` place le numéro
+fiscal individuel avant le numéro de sécurité sociale, qui ne commence jamais
+par 9 ; `business` place le numéro de TVA britannique avant l'européen, le
+Royaume-Uni ayant quitté ce système ; `health` place le CPR danois avant le
+numéro NHS, sa date de naissance validée étant plus spécifique ; `international`
+place l'ORCID avant le numéro de carte, aucune carte ne commençant par 0000.
+
 Ce qui se compose sans risque, en revanche, ce sont les groupes qui ne reposent
 pas sur une longueur de chiffres : `generic`, `international`, `secrets`,
 `secrets-extended`, `network`, `crypto`. Leurs formes portent un préfixe, un

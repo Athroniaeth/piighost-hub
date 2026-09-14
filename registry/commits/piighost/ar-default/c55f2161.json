@@ -1,0 +1,57 @@
+{
+  "digest": "c55f2161367c6fca44c70eec5ce80afb3331b1fcb60c1403f6352d1fbcafc089",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "ar-default",
+    "schema_version": 1,
+    "description": {
+      "en": "Argentina without a model: phone, CPA postal code and the DNI identity number, plus the email, URL, IPv4 and card number that belong to no country. Word-boundary expansion catches a value detected once everywhere else in the message.",
+      "fr": "Argentine sans modèle : téléphone, code postal CPA et le numéro d'identité DNI, plus l e-mail, l URL, l IPv4 et le numéro de carte qui n appartiennent à aucun pays. L expansion par mot entier reprend partout dans le message une valeur détectée une fois."
+    },
+    "tags": [
+      "ar",
+      "chat",
+      "customer-support",
+      "document"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [],
+    "detectors": [
+      {
+        "name": "regex-ar",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/ar",
+            "commit": "4ab296c1"
+          }
+        ]
+      },
+      {
+        "name": "regex-generic",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/generic",
+            "commit": "e9f9b4fa"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "linker": {
+        "type": "exact"
+      },
+      "expander": {
+        "type": "word_boundary"
+      },
+      "anonymizer": {
+        "placeholder": {
+          "type": "label_counter"
+        }
+      }
+    }
+  }
+}

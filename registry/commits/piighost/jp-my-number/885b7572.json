@@ -1,0 +1,47 @@
+{
+  "digest": "885b7572534c6bf1645c7e26b3d683ef2bd90c0832b0a489c68205f3f8b74ab0",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "jp-my-number",
+    "schema_version": 1,
+    "label": "JP_MY_NUMBER",
+    "regex": "(?<!\\w)\\d{4}[\\s-]\\d{4}[\\s-]\\d{4}(?!\\w)(?![\\s.-]?\\d)",
+    "description": {
+      "en": "Japanese individual number, twelve digits in three groups of four. The separator is required rather than optional: twelve bare digits are also a phone number and a card number fragment, and the grouped form is how the number is printed on the notification card.",
+      "fr": "Numéro individuel japonais, douze chiffres en trois groupes de quatre. Le séparateur est exigé et non optionnel : douze chiffres nus sont aussi un numéro de téléphone et un fragment de numéro de carte, et la forme groupée est celle imprimée sur la carte de notification."
+    },
+    "tags": [
+      "jp",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "My Number 1234 5678 9012 is on the form.",
+          "value": "1234 5678 9012"
+        },
+        {
+          "text": "Enter 9876-5432-1098 in the tax field.",
+          "value": "9876-5432-1098"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The number 123456789012 has no groups"
+        },
+        {
+          "text": "Reference 1234 5678 901"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "1234 ",
+      "filler": "5678",
+      "suffix": "x"
+    }
+  }
+}

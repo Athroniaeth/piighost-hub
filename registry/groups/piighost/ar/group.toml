@@ -2,8 +2,14 @@ schema_version = 1
 
 [group]
 name = "ar"
-description = { en = "Argentina: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.", fr = "Argentine : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas." }
-tags = ["ar", "government-id", "identity"]
+description = { en = "Argentina: phone, CPA postal code and the DNI identity number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Argentine : téléphone, code postal CPA et le numéro d'identité DNI. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["ar", "contact", "government-id", "identity", "location"]
+
+[[sources]]
+ref = "piighost/ar-phone"
+
+[[sources]]
+ref = "piighost/ar-postal"
 
 [[sources]]
 ref = "piighost/ar-dni"

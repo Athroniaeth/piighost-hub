@@ -1,0 +1,46 @@
+{
+  "digest": "d3d8309b677932c23d3dd5f090dfed60230cceb1d4208035ec2f3cadf6f189ab",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "ch-phone",
+    "schema_version": 1,
+    "label": "CH_PHONE",
+    "regex": "(?<![\\w+])(?:\\+41|0)(?:[\\s./-]?\\d){9}(?!\\w)",
+    "description": {
+      "en": "Swiss phone number, the +41 country code or the 0 trunk prefix then nine digits. Swiss writing uses the space and the slash between the area code and the number, so both are accepted as separators.",
+      "fr": "Numéro de téléphone suisse, l'indicatif +41 ou le préfixe interurbain 0 puis neuf chiffres. L'écriture suisse emploie l'espace et la barre oblique entre l'indicatif et le numéro, donc les deux sont acceptés comme séparateurs."
+    },
+    "tags": [
+      "ch",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Rufen Sie +41 44 668 18 00 an, bitte.",
+          "value": "+41 44 668 18 00"
+        },
+        {
+          "text": "Mein Handy ist 079 123 45 67 tagsüber.",
+          "value": "079 123 45 67"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Die Klappe ist 0123"
+        },
+        {
+          "text": "Bestellung 123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+41 ",
+      "filler": "44",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "digest": "a6a758c5670735157619a8917926c72535f9dec83020328dc7d330ecbebe3718",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "sg-phone",
+    "schema_version": 1,
+    "label": "SG_PHONE",
+    "regex": "(?<![\\w+])(?:\\+65[\\s.-]?)?[3689](?:[\\s.-]?\\d){7}(?!\\w)(?![\\s.-]?\\d)",
+    "description": {
+      "en": "Singapore phone number: eight digits opening on a 3, 6, 8 or 9, with the +65 country code optional. Singapore has no trunk prefix and no area codes, so the opening digit is the only thing that says which kind of line it is.",
+      "fr": "Numéro de téléphone singapourien : huit chiffres commençant par 3, 6, 8 ou 9, l'indicatif +65 étant optionnel. Singapour n'a ni préfixe interurbain ni indicatif régional, donc le premier chiffre est la seule indication du type de ligne."
+    },
+    "tags": [
+      "sg",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Call +65 6123 4567 for the front desk.",
+          "value": "+65 6123 4567"
+        },
+        {
+          "text": "My handphone is 9123 4567 if you need me.",
+          "value": "9123 4567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The room number is 1123 4567"
+        },
+        {
+          "text": "Extension 6123"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+65 6",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

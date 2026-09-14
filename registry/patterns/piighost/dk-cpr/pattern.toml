@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "dk-cpr"
+label = "DK_CPR"
+tags = ["dk", "government-id", "identity", "health"]
+regex = '(?<!\w)(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])\d{2}-\d{4}(?!\w)'
+
+[pattern.description]
+en = "Danish CPR number: the birth date as day, month and year, a dash, then four digits whose last one gives the sex. The dash is mandatory and the date is validated, which is what keeps it apart from a ten digit run."
+fr = "Numéro CPR danois : la date de naissance en jour, mois et année, un tiret, puis quatre chiffres dont le dernier donne le sexe. Le tiret est obligatoire et la date est validée, ce qui le distingue d'une suite de dix chiffres."
+
+[[examples.match]]
+text = "Patienten er registreret som 010190-1234 i systemet."
+value = "010190-1234"
+
+[[examples.match]]
+text = "Hun står opført med 300785-2345 på kortet."
+value = "300785-2345"
+
+[[examples.no_match]]
+text = "Koden 321390-1234 findes ikke"
+
+[[examples.no_match]]
+text = "Reference 0101901234"
+
+[redos]
+prefix = "010190"
+filler = "-1234"
+suffix = "x"

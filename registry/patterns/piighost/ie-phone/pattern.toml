@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ie-phone"
+label = "IE_PHONE"
+tags = ["ie", "contact"]
+regex = '(?<![\w+])(?:\+353|0)(?:[\s.-]?\d){7,10}(?!\w)'
+
+[pattern.description]
+en = "Irish phone number, the +353 country code or the 0 trunk prefix then seven to ten digits. The lower bound stays above the seven digits of a PPS number so the two do not fight for the same span."
+fr = "Numéro de téléphone irlandais, l'indicatif +353 ou le préfixe interurbain 0 puis sept à dix chiffres. La borne basse reste au-dessus des sept chiffres d'un numéro PPS pour que les deux ne se disputent pas le même span."
+
+[[examples.match]]
+text = "Ring the office on +353 1 234 5678 tomorrow."
+value = "+353 1 234 5678"
+
+[[examples.match]]
+text = "My mobile is 087 123 4567 most days."
+value = "087 123 4567"
+
+[[examples.no_match]]
+text = "Extension 012 will do"
+
+[[examples.no_match]]
+text = "Order reference 445566"
+
+[redos]
+prefix = "+353 "
+filler = "1"
+suffix = "x"

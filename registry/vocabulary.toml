@@ -198,3 +198,35 @@ label = { en = "Argentina", fr = "Argentine" }
 [cl]
 kind = "region"
 label = { en = "Chile", fr = "Chili" }
+
+[jp]
+kind = "region"
+label = { en = "Japan", fr = "Japon" }
+
+[kr]
+kind = "region"
+label = { en = "South Korea", fr = "Corée du Sud" }
+
+[sg]
+kind = "region"
+label = { en = "Singapore", fr = "Singapour" }
+
+[se]
+kind = "region"
+label = { en = "Sweden", fr = "Suède" }
+
+[be]
+kind = "region"
+label = { en = "Belgium", fr = "Belgique" }
+
+[mx]
+kind = "region"
+label = { en = "Mexico", fr = "Mexique" }
+
+[ch]
+kind = "region"
+label = { en = "Switzerland", fr = "Suisse" }
+
+[dk]
+kind = "region"
+label = { en = "Denmark", fr = "Danemark" }

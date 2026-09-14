@@ -1,0 +1,47 @@
+{
+  "digest": "29d5c0a54ba24ed64051e240ee75502641e82930682a433a5c29030f5b4762b2",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "us",
+    "schema_version": 1,
+    "description": {
+      "en": "the United States: phone, ZIP code, the individual taxpayer number and the social security number. The taxpayer number comes first because it has the shape of a social security number and the social security number never opens on a 9, so on a value that matches both, the taxpayer number is the right answer. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "États-Unis : téléphone, code ZIP, le numéro fiscal individuel et le numéro de sécurité sociale. Le numéro fiscal est déclaré en premier parce qu'il a la forme d'un numéro de sécurité sociale et qu'un numéro de sécurité sociale ne commence jamais par 9 : sur une valeur qui correspond aux deux, le numéro fiscal est la bonne réponse. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "location",
+      "us"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/us-phone",
+        "commit": "e489706c",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-zip",
+        "commit": "38e73fdc",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-itin",
+        "commit": "30af7d06",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-ssn",
+        "commit": "3ffb731f",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

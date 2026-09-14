@@ -1,0 +1,48 @@
+{
+  "digest": "30af7d0671d761888197d296c900c087c5e5ead5de2d2594327117d23df66234",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "us-itin",
+    "schema_version": 1,
+    "label": "US_ITIN",
+    "regex": "(?<!\\w)9\\d{2}-[7-8]\\d-\\d{4}(?!\\w)",
+    "description": {
+      "en": "United States individual taxpayer identification number, issued to people who owe tax but cannot get a social security number. It always opens on a 9 and the middle pair starts with a 7 or an 8, which is exactly what separates it from a social security number of the same shape.",
+      "fr": "Numéro d'identification fiscale individuel américain, délivré aux personnes redevables de l'impôt mais qui ne peuvent obtenir de numéro de sécurité sociale. Il commence toujours par 9 et la paire centrale débute par 7 ou 8, ce qui le distingue précisément d'un numéro de sécurité sociale de même forme."
+    },
+    "tags": [
+      "us",
+      "government-id",
+      "identity",
+      "finance"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The return shows 912-73-4567 as the filer.",
+          "value": "912-73-4567"
+        },
+        {
+          "text": "Enter 900-81-2345 in the taxpayer field.",
+          "value": "900-81-2345"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The number 123-45-6789 is a different kind"
+        },
+        {
+          "text": "Reference 912-63-4567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "912",
+      "filler": "-73-4567",
+      "suffix": "x"
+    }
+  }
+}

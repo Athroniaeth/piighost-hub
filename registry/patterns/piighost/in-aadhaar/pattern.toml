@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "in-aadhaar"
+label = "IN_AADHAAR"
+tags = ["in", "government-id", "identity"]
+regex = '(?<!\w)[2-9]\d{3}[\s-]\d{4}[\s-]\d{4}(?!\w)(?![\s.-]?\d)'
+
+[pattern.description]
+en = "Indian Aadhaar number, twelve digits in three groups of four. The separator is required rather than optional: twelve bare digits are also a phone number, a card number fragment and a dozen other things, and the grouped form is how Aadhaar is actually written. The first digit is never a 0 or a 1."
+fr = "Numéro Aadhaar indien, douze chiffres en trois groupes de quatre. Le séparateur est exigé et non optionnel : douze chiffres nus sont aussi un numéro de téléphone, un fragment de numéro de carte et une douzaine d'autres choses, et la forme groupée est celle sous laquelle l'Aadhaar s'écrit réellement. Le premier chiffre n'est jamais 0 ni 1."
+
+[[examples.match]]
+text = "My Aadhaar is 2234 5678 9012 on the card."
+value = "2234 5678 9012"
+
+[[examples.match]]
+text = "Enter 9876-5432-1098 in the KYC form."
+value = "9876-5432-1098"
+
+[[examples.no_match]]
+text = "The number 1234 5678 9012 cannot start with one"
+
+[[examples.no_match]]
+text = "Reference 223456789012"
+
+[redos]
+prefix = "2234 "
+filler = "5678"
+suffix = "x"

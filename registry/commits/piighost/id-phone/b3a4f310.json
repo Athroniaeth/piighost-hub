@@ -1,0 +1,46 @@
+{
+  "digest": "b3a4f31045c7b34bd92108da7f34892fd6012f63541a40f607644768a6f5fbd9",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "id-phone",
+    "schema_version": 1,
+    "label": "ID_PHONE",
+    "regex": "(?<![\\w+])(?:\\+62|0)(?:[\\s.-]?\\d){8,12}(?!\\w)",
+    "description": {
+      "en": "Indonesian phone number, the +62 country code or the 0 trunk prefix then eight to twelve digits. Mobile numbers are the long end of that range and landlines the short end.",
+      "fr": "Numéro de téléphone indonésien, l'indicatif +62 ou le préfixe interurbain 0 puis huit à douze chiffres. Les mobiles occupent le haut de cet intervalle et les fixes le bas."
+    },
+    "tags": [
+      "id",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Hubungi saya di +62 812 3456 7890 ya.",
+          "value": "+62 812 3456 7890"
+        },
+        {
+          "text": "Kantor kami di 021-5551234 setiap hari.",
+          "value": "021-5551234"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Ekstensi 0123"
+        },
+        {
+          "text": "Nomor pesanan 987654"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+62 ",
+      "filler": "812",
+      "suffix": "x"
+    }
+  }
+}

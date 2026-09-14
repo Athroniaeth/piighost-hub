@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "jp-postal"
+label = "JP_POSTAL"
+tags = ["jp", "location", "contact"]
+regex = '(?<!\w)\d{3}-\d{4}(?!\w)(?![\s.-]?\d)'
+
+[pattern.description]
+en = "Japanese postal code: three digits, a dash, then four digits. The dash is what makes it safe to detect, since the same seven digits written without it would be indistinguishable from the tail of a phone number."
+fr = "Code postal japonais : trois chiffres, un tiret, puis quatre chiffres. Le tiret est ce qui rend sa détection sûre, car les mêmes sept chiffres écrits sans lui seraient impossibles à distinguer de la fin d'un numéro de téléphone."
+
+[[examples.match]]
+text = "The office is at 100-0005 Chiyoda, Tokyo."
+value = "100-0005"
+
+[[examples.match]]
+text = "Ship it to 530-0001 in Osaka please."
+value = "530-0001"
+
+[[examples.no_match]]
+text = "The old code was 100"
+
+[[examples.no_match]]
+text = "Range 100-00"
+
+[redos]
+prefix = "100"
+filler = "-000"
+suffix = "x"

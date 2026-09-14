@@ -1,0 +1,46 @@
+{
+  "digest": "670d9295912e9be49c6bcbe1e8bbf870802d4596375b78c032d3d211f76a9df9",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "be-phone",
+    "schema_version": 1,
+    "label": "BE_PHONE",
+    "regex": "(?<![\\w+])(?:\\+32|0)(?:[\\s./-]?\\d){8,9}(?!\\w)",
+    "description": {
+      "en": "Belgian phone number, the +32 country code or the 0 trunk prefix then eight or nine digits. The slash is a separator here, as Belgian writing uses it between the area code and the number.",
+      "fr": "Numéro de téléphone belge, l'indicatif +32 ou le préfixe interurbain 0 puis huit ou neuf chiffres. La barre oblique est un séparateur ici, l'écriture belge l'utilisant entre l'indicatif et le numéro."
+    },
+    "tags": [
+      "be",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Appelez le +32 2 123 45 67 avant midi.",
+          "value": "+32 2 123 45 67"
+        },
+        {
+          "text": "Mon GSM est le 0475/12.34.56 en journée.",
+          "value": "0475/12.34.56"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Le poste 0123 est libre"
+        },
+        {
+          "text": "Commande 1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+32 ",
+      "filler": "2",
+      "suffix": "x"
+    }
+  }
+}

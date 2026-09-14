@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "be-phone"
+label = "BE_PHONE"
+tags = ["be", "contact"]
+regex = '(?<![\w+])(?:\+32|0)(?:[\s./-]?\d){8,9}(?!\w)'
+
+[pattern.description]
+en = "Belgian phone number, the +32 country code or the 0 trunk prefix then eight or nine digits. The slash is a separator here, as Belgian writing uses it between the area code and the number."
+fr = "Numéro de téléphone belge, l'indicatif +32 ou le préfixe interurbain 0 puis huit ou neuf chiffres. La barre oblique est un séparateur ici, l'écriture belge l'utilisant entre l'indicatif et le numéro."
+
+[[examples.match]]
+text = "Appelez le +32 2 123 45 67 avant midi."
+value = "+32 2 123 45 67"
+
+[[examples.match]]
+text = "Mon GSM est le 0475/12.34.56 en journée."
+value = "0475/12.34.56"
+
+[[examples.no_match]]
+text = "Le poste 0123 est libre"
+
+[[examples.no_match]]
+text = "Commande 1234567"
+
+[redos]
+prefix = "+32 "
+filler = "2"
+suffix = "x"

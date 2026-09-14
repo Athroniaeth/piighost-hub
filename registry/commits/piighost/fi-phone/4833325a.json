@@ -1,0 +1,46 @@
+{
+  "digest": "4833325a4eafa7630383424dc4dbb8b4c58f73d021e80339bb6eda9fea2b7793",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fi-phone",
+    "schema_version": 1,
+    "label": "FI_PHONE",
+    "regex": "(?<![\\w+])(?:\\+358|0)(?:[\\s.-]?\\d){6,11}(?!\\w)",
+    "description": {
+      "en": "Finnish phone number, the +358 country code or the 0 trunk prefix then six to eleven digits. Finnish subscriber numbers vary in length, so the count is a range rather than a fixed grouping.",
+      "fr": "Numéro de téléphone finlandais, l'indicatif +358 ou le préfixe interurbain 0 puis six à onze chiffres. La longueur des numéros d'abonné varie en Finlande, donc le décompte est un intervalle plutôt qu'un groupement fixe."
+    },
+    "tags": [
+      "fi",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Soita minulle numeroon +358 40 123 4567.",
+          "value": "+358 40 123 4567"
+        },
+        {
+          "text": "Vaihde on 09 1234 5678 arkisin.",
+          "value": "09 1234 5678"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Alanumero on 012"
+        },
+        {
+          "text": "Tilausnumero 1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+358 ",
+      "filler": "40",
+      "suffix": "x"
+    }
+  }
+}

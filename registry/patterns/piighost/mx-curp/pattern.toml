@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "mx-curp"
+label = "MX_CURP"
+tags = ["mx", "government-id", "identity"]
+regex = '(?<!\w)[A-Z]{4}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM][A-Z]{5}[A-Z0-9]\d(?!\w)'
+
+[pattern.description]
+en = "Mexican CURP: four letters from the name, the birth date, H or M for the sex, five letters for the state and the consonants, then two characters of control. Eighteen characters of mixed letters and digits in a fixed order, which is about as unmistakable as a national identifier gets."
+fr = "CURP mexicain : quatre lettres tirées du nom, la date de naissance, H ou M pour le sexe, cinq lettres pour l'état et les consonnes, puis deux caractères de contrôle. Dix-huit caractères mêlant lettres et chiffres dans un ordre fixe, à peu près ce qu'un identifiant national peut faire de plus reconnaissable."
+
+[[examples.match]]
+text = "Su CURP es GOMC900101HDFRRL09 en el registro."
+value = "GOMC900101HDFRRL09"
+
+[[examples.match]]
+text = "Anota HELM850715MJCRPR04 para el tramite."
+value = "HELM850715MJCRPR04"
+
+[[examples.no_match]]
+text = "La clave GOMC901301HDFRRL09 no tiene ese mes"
+
+[[examples.no_match]]
+text = "Folio GOMC900101DFRRL09"
+
+[redos]
+prefix = "GOMC"
+filler = "90"
+suffix = "x"

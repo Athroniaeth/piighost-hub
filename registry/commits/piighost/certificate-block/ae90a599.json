@@ -1,0 +1,47 @@
+{
+  "digest": "ae90a599932477f01509678e6d2e4e4d7f7e1eb48e0f1ac0228a6c6286000ee1",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "certificate-block",
+    "schema_version": 1,
+    "label": "CERTIFICATE_BLOCK",
+    "regex": "-----BEGIN [A-Z ]*CERTIFICATE-----[\\s\\S]*?-----END [A-Z ]*CERTIFICATE-----",
+    "description": {
+      "en": "A PEM certificate block, from the BEGIN line to the END line. A certificate carries the subject's name, organisation and often an email address in clear text, so pasting one into a model hands over an identity as surely as a password does. The body is matched lazily so two blocks in one file stay separate.",
+      "fr": "Un bloc de certificat PEM, de la ligne BEGIN à la ligne END. Un certificat porte en clair le nom du sujet, son organisation et souvent une adresse e-mail, donc en coller un dans un modèle livre une identité aussi sûrement qu'un mot de passe. Le corps est capturé en mode paresseux pour que deux blocs dans un même fichier restent séparés."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "network"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Here is the chain: -----BEGIN CERTIFICATE-----\nMIIBkTCB+wIJAKZ\n-----END CERTIFICATE----- and the key follows.",
+          "value": "-----BEGIN CERTIFICATE-----\nMIIBkTCB+wIJAKZ\n-----END CERTIFICATE-----"
+        },
+        {
+          "text": "Trusted root: -----BEGIN TRUSTED CERTIFICATE-----\nQUJDRA==\n-----END TRUSTED CERTIFICATE----- installed.",
+          "value": "-----BEGIN TRUSTED CERTIFICATE-----\nQUJDRA==\n-----END TRUSTED CERTIFICATE-----"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "-----BEGIN CERTIFICATE----- without an end marker"
+        },
+        {
+          "text": "The word CERTIFICATE alone means nothing"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "-----BEGIN CERTIFICATE-----",
+      "filler": "A",
+      "suffix": "x"
+    }
+  }
+}

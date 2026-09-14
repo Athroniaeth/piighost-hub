@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "pt-postal"
+label = "PT_POSTAL"
+tags = ["pt", "location", "contact"]
+regex = '(?<!\w)\d{4}-\d{3}(?!\w)'
+
+[pattern.description]
+en = "Portuguese postal code: four digits, a dash, then three digits for the delivery zone. The dash is mandatory, which is what keeps it apart from the nine bare digits of a tax number."
+fr = "Code postal portugais : quatre chiffres, un tiret, puis trois chiffres pour la zone de distribution. Le tiret est obligatoire, et c'est ce qui le distingue des neuf chiffres nus d'un numéro fiscal."
+
+[[examples.match]]
+text = "Morada em 1000-100 Lisboa, perto do metro."
+value = "1000-100"
+
+[[examples.match]]
+text = "A fabrica fica em 4150-007 Porto."
+value = "4150-007"
+
+[[examples.no_match]]
+text = "O codigo antigo era 1000"
+
+[[examples.no_match]]
+text = "Intervalo 100-100"
+
+[redos]
+prefix = "1000"
+filler = "-100"
+suffix = "x"

@@ -2,8 +2,14 @@ schema_version = 1
 
 [group]
 name = "pt"
-description = { en = "Portugal: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.", fr = "Portugal : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas." }
-tags = ["pt", "government-id", "identity"]
+description = { en = "Portugal: phone, postal code and the NIF tax number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.", fr = "Portugal : téléphone, code postal et le numéro fiscal NIF. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span." }
+tags = ["business", "contact", "government-id", "identity", "location", "pt"]
+
+[[sources]]
+ref = "piighost/pt-phone"
+
+[[sources]]
+ref = "piighost/pt-postal"
 
 [[sources]]
 ref = "piighost/pt-nif"

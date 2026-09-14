@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "it-tessera-sanitaria"
+label = "IT_HEALTH_CARD"
+tags = ["it", "health", "government-id"]
+regex = '(?<!\w)80380000\d{12}(?!\w)'
+
+[pattern.description]
+en = "Italian health card number, twenty digits opening on the fixed 80380000 issuer prefix of the national health service. The constant prefix is what makes a twenty digit run safe to detect at all."
+fr = "Numéro de carte sanitaire italienne, vingt chiffres commençant par le préfixe émetteur fixe 80380000 du service national de santé. C'est ce préfixe constant qui rend une suite de vingt chiffres détectable sans danger."
+
+[[examples.match]]
+text = "La tessera riporta 80380000301234567890 sul retro."
+value = "80380000301234567890"
+
+[[examples.match]]
+text = "Registrato con 80380000123456789012 dal 2019."
+value = "80380000123456789012"
+
+[[examples.no_match]]
+text = "Il numero 80390000301234567890 non e valido"
+
+[[examples.no_match]]
+text = "Codice 8038000030123456789"
+
+[redos]
+prefix = "80380000"
+filler = "1"
+suffix = "x"

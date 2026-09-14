@@ -1,0 +1,34 @@
+{
+  "digest": "12c801217e124a58c87118c09bd6087c73c403e7defc1de93151296a33667415",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "sg",
+    "schema_version": 1,
+    "description": {
+      "en": "Singapore: phone and the NRIC or FIN identity number. No postal code: six bare digits are not safe beside a phone number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Singapour : téléphone et le numéro d'identité NRIC ou FIN. Pas de code postal : six chiffres nus ne sont pas sûrs à côté d'un téléphone. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "sg"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/sg-phone",
+        "commit": "a6a758c5",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/sg-nric",
+        "commit": "508cf196",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ar-phone"
+label = "AR_PHONE"
+tags = ["ar", "contact"]
+regex = '(?<![\w+])(?:\+54|0)(?:[\s.-]?\d){10,11}(?!\w)'
+
+[pattern.description]
+en = "Argentine phone number, the +54 country code or the 0 trunk prefix then ten or eleven digits. Separators are allowed anywhere between the digits, since Argentine writing mixes spaces and dashes freely, and the match ends on a digit."
+fr = "Numéro de téléphone argentin, l'indicatif +54 ou le préfixe interurbain 0 puis dix ou onze chiffres. Les séparateurs sont acceptés partout entre les chiffres, car l'écriture argentine mêle espaces et tirets, et la correspondance se termine sur un chiffre."
+
+[[examples.match]]
+text = "Llamame al +54 9 11 4321-1234 cuando puedas."
+value = "+54 9 11 4321-1234"
+
+[[examples.match]]
+text = "El fijo de la oficina es 011 4321-1234."
+value = "011 4321-1234"
+
+[[examples.no_match]]
+text = "El interno es 0123"
+
+[[examples.no_match]]
+text = "Documento 20123456"
+
+[redos]
+prefix = "+54 "
+filler = "9 "
+suffix = "x"

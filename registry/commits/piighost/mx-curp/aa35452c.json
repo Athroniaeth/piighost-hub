@@ -1,0 +1,47 @@
+{
+  "digest": "aa35452c31a370960a97622bf62443ce7f935dddb891e6a70ff0022d58e3b4a3",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "mx-curp",
+    "schema_version": 1,
+    "label": "MX_CURP",
+    "regex": "(?<!\\w)[A-Z]{4}\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])[HM][A-Z]{5}[A-Z0-9]\\d(?!\\w)",
+    "description": {
+      "en": "Mexican CURP: four letters from the name, the birth date, H or M for the sex, five letters for the state and the consonants, then two characters of control. Eighteen characters of mixed letters and digits in a fixed order, which is about as unmistakable as a national identifier gets.",
+      "fr": "CURP mexicain : quatre lettres tirées du nom, la date de naissance, H ou M pour le sexe, cinq lettres pour l'état et les consonnes, puis deux caractères de contrôle. Dix-huit caractères mêlant lettres et chiffres dans un ordre fixe, à peu près ce qu'un identifiant national peut faire de plus reconnaissable."
+    },
+    "tags": [
+      "mx",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Su CURP es GOMC900101HDFRRL09 en el registro.",
+          "value": "GOMC900101HDFRRL09"
+        },
+        {
+          "text": "Anota HELM850715MJCRPR04 para el tramite.",
+          "value": "HELM850715MJCRPR04"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "La clave GOMC901301HDFRRL09 no tiene ese mes"
+        },
+        {
+          "text": "Folio GOMC900101DFRRL09"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "GOMC",
+      "filler": "90",
+      "suffix": "x"
+    }
+  }
+}

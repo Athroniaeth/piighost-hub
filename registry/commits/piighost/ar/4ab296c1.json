@@ -1,0 +1,41 @@
+{
+  "digest": "4ab296c12ae154f48404a8702be08c1b23d871d1f9e2afbd12c0591b420cf71f",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "ar",
+    "schema_version": 1,
+    "description": {
+      "en": "Argentina: phone, CPA postal code and the DNI identity number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Argentine : téléphone, code postal CPA et le numéro d'identité DNI. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "ar",
+      "contact",
+      "government-id",
+      "identity",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/ar-phone",
+        "commit": "e628d7ea",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/ar-postal",
+        "commit": "38fb11ee",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/ar-dni",
+        "commit": "749d5444",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

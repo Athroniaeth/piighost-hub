@@ -2,7 +2,7 @@ schema_version = 1
 
 [group]
 name = "secrets-extended"
-description = { en = "Every credential shape the registry knows: the four of the `secrets` group plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, the AWS secret key, JWTs, bearer tokens and PEM private key blocks. Several of these contain long digit runs, so a phone or card pattern in the same detector claims part of them: declare this group first, or keep it in a detector of its own.", fr = "Toutes les formes de secret que le registre connaît : les quatre du groupe `secrets` plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, la clé secrète AWS, les JWT, les jetons bearer et les blocs de clé privée PEM. Plusieurs contiennent de longues suites de chiffres, donc un motif de téléphone ou de carte placé dans le même détecteur en réclame une partie : déclarez ce groupe en premier, ou gardez-le dans un détecteur à part." }
+description = { en = "Every credential shape the registry knows: the four of the `secrets` group plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, the AWS secret key, JWTs, bearer tokens, PEM private key blocks and PEM certificate blocks. A certificate is here because it carries the subject's name, organisation and often an email address in clear text. Several of these contain long digit runs, so a phone or card pattern in the same detector claims part of them: declare this group first, or keep it in a detector of its own.", fr = "Toutes les formes de secrets que connaît le registre : les quatre du groupe `secrets` plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, la clé secrète AWS, les JWT, les jetons bearer, les blocs de clé privée PEM et les blocs de certificat PEM. Un certificat figure ici parce qu'il porte en clair le nom du sujet, son organisation et souvent une adresse e-mail. Plusieurs contiennent de longues suites de chiffres, donc un motif de téléphone ou de carte dans le même détecteur en revendique une partie : déclarez ce groupe en premier, ou gardez-le dans un détecteur à part." }
 tags = ["international", "secrets", "software-dev", "code-assistant", "logs"]
 
 # Longest and most distinctive first: a PEM block and a JWT carry the widest
@@ -45,3 +45,6 @@ ref = "piighost/pypi-token"
 
 [[sources]]
 ref = "piighost/bearer-token"
+
+[[sources]]
+ref = "piighost/certificate-block"

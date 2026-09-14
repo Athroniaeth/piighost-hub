@@ -1,0 +1,34 @@
+{
+  "digest": "990ac59eefb6ba40929e57a28bf1b77f21260d8c97ea349da0afe76037258632",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "se",
+    "schema_version": 1,
+    "description": {
+      "en": "Sweden: phone and the personal identity number. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Suède : téléphone et le numéro d'identité personnel. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "se"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/se-phone",
+        "commit": "9122214b",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/se-personnummer",
+        "commit": "2e395e7d",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

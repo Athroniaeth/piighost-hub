@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "au-medicare"
+label = "AU_MEDICARE"
+tags = ["au", "health", "government-id"]
+regex = '(?<!\w)[2-6]\d{3}[\s-]\d{5}[\s-]\d(?:[\s-]\d)?(?!\w)'
+
+[pattern.description]
+en = "Australian Medicare number: ten digits in the groups the card prints, sometimes followed by the individual reference number of the family member. The separators are required and the first digit runs 2 to 6, which together keep it away from the phone numbers and card numbers around it."
+fr = "Numéro Medicare australien : dix chiffres dans les groupes imprimés sur la carte, parfois suivis du numéro de référence individuel du membre de la famille. Les séparateurs sont exigés et le premier chiffre va de 2 à 6, ce qui l'éloigne des téléphones et des numéros de carte alentour."
+
+[[examples.match]]
+text = "My Medicare is 2123 45670 1 on the green card."
+value = "2123 45670 1"
+
+[[examples.match]]
+text = "Quote 3456 78901 2 3 when you book."
+value = "3456 78901 2 3"
+
+[[examples.no_match]]
+text = "The number 7123 45670 1 is out of range"
+
+[[examples.no_match]]
+text = "Reference 2123456701"
+
+[redos]
+prefix = "2123 "
+filler = "45670"
+suffix = "x"

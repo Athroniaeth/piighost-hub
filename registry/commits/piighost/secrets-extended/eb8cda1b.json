@@ -1,0 +1,107 @@
+{
+  "digest": "eb8cda1b10b7c85cac1e927535ba108f87ea4ae5be5da942a2db21c8acf260ef",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "secrets-extended",
+    "schema_version": 1,
+    "description": {
+      "en": "Every credential shape the registry knows: the four of the `secrets` group plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, the AWS secret key, JWTs, bearer tokens, PEM private key blocks and PEM certificate blocks. A certificate is here because it carries the subject's name, organisation and often an email address in clear text. Several of these contain long digit runs, so a phone or card pattern in the same detector claims part of them: declare this group first, or keep it in a detector of its own.",
+      "fr": "Toutes les formes de secrets que connaît le registre : les quatre du groupe `secrets` plus Anthropic, Google, Slack, Twilio, SendGrid, Azure, npm, PyPI, la clé secrète AWS, les JWT, les jetons bearer, les blocs de clé privée PEM et les blocs de certificat PEM. Un certificat figure ici parce qu'il porte en clair le nom du sujet, son organisation et souvent une adresse e-mail. Plusieurs contiennent de longues suites de chiffres, donc un motif de téléphone ou de carte dans le même détecteur en revendique une partie : déclarez ce groupe en premier, ou gardez-le dans un détecteur à part."
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev",
+      "code-assistant",
+      "logs"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/private-key-block",
+        "commit": "edbb8957",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/jwt",
+        "commit": "ca8e5651",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/secrets",
+        "commit": "d822d04c",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/anthropic-api-key",
+        "commit": "3ea3711d",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/google-api-key",
+        "commit": "1ec91184",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/slack-token",
+        "commit": "fdb17f24",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/aws-secret-access-key",
+        "commit": "c6be14d9",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/azure-storage-key",
+        "commit": "3c3c1639",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/sendgrid-api-key",
+        "commit": "8a68c232",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/twilio-sid",
+        "commit": "1278403d",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/npm-token",
+        "commit": "ae84c40a",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/pypi-token",
+        "commit": "e6c730e1",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/bearer-token",
+        "commit": "e0f6c610",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/certificate-block",
+        "commit": "ae90a599",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "digest": "2e395e7d9d9421468ba96eb4624660b71bfae64e9ee4599cc46e3ab2c700528c",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "se-personnummer",
+    "schema_version": 1,
+    "label": "SE_PERSONNUMMER",
+    "regex": "(?<!\\w)(?:\\d{2})?\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])[-+]\\d{4}(?!\\w)",
+    "description": {
+      "en": "Swedish personal identity number: a birth date, then a dash, or a plus sign when the holder is over a hundred, then four digits. The separator is mandatory and the date is validated, which together keep it apart from any other run of digits.",
+      "fr": "Numéro d'identité personnel suédois : une date de naissance, puis un tiret, ou un signe plus quand le titulaire a plus de cent ans, puis quatre chiffres. Le séparateur est obligatoire et la date est validée, ce qui le distingue de toute autre suite de chiffres."
+    },
+    "tags": [
+      "se",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The record shows 900101-1234 for that patient.",
+          "value": "900101-1234"
+        },
+        {
+          "text": "He is listed as 19900101-1234 in the old system.",
+          "value": "19900101-1234"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The code 901301-1234 has no such month"
+        },
+        {
+          "text": "Reference 9001011234"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "900101",
+      "filler": "-1234",
+      "suffix": "x"
+    }
+  }
+}

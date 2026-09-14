@@ -1,0 +1,47 @@
+{
+  "digest": "c19c940a2df26dbafb1c8661051a670a624d4393dc5e3495e8f5b642aed2d208",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "kr-rrn",
+    "schema_version": 1,
+    "label": "KR_RRN",
+    "regex": "(?<!\\w)\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])-[1-4]\\d{6}(?!\\w)",
+    "description": {
+      "en": "South Korean resident registration number: a six digit birth date, a dash, then a digit saying the century and the sex followed by six more. The date is validated and the first digit after the dash is restricted to one through four, which is what keeps it apart from any other thirteen digit sequence.",
+      "fr": "Numéro d'enregistrement de résident sud-coréen : une date de naissance de six chiffres, un tiret, puis un chiffre indiquant le siècle et le sexe suivi de six autres. La date est validée et le premier chiffre après le tiret est restreint de un à quatre, ce qui le distingue de toute autre suite de treize chiffres."
+    },
+    "tags": [
+      "kr",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The form lists 900101-1234567 as the identifier.",
+          "value": "900101-1234567"
+        },
+        {
+          "text": "She registered under 851230-2345678 last year.",
+          "value": "851230-2345678"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The code 901301-1234567 has no such month"
+        },
+        {
+          "text": "Reference 900101-5234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "900101",
+      "filler": "-1",
+      "suffix": "x"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "ie-eircode"
+label = "IE_EIRCODE"
+tags = ["ie", "location", "contact"]
+regex = '(?<!\w)[A-Z]\d[\dW][\s-]?[A-Z0-9]{4}(?!\w)'
+
+[pattern.description]
+en = "Irish Eircode: a three-character routing key, a letter then two digits or the W of Dublin 6W, followed by four characters that identify the individual delivery point. Unlike most postal codes it names one address rather than a street."
+fr = "Eircode irlandais : une clé de routage de trois caractères, une lettre puis deux chiffres ou le W de Dublin 6W, suivie de quatre caractères qui identifient le point de livraison. Contrairement à la plupart des codes postaux, il désigne une adresse et non une rue."
+
+[[examples.match]]
+text = "The office is at D02 AF30, near the canal."
+value = "D02 AF30"
+
+[[examples.match]]
+text = "Deliver to A65F4E2 and ring the bell."
+value = "A65F4E2"
+
+[[examples.no_match]]
+text = "The old code was D02"
+
+[[examples.no_match]]
+text = "Unit 1234 5678"
+
+[redos]
+prefix = "D"
+filler = "0"
+suffix = "x"

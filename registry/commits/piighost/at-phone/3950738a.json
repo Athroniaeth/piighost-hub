@@ -1,0 +1,46 @@
+{
+  "digest": "3950738a7bb4906696b7589e7787daea227038d3167040fba0fdce8cbdaf8495",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "at-phone",
+    "schema_version": 1,
+    "label": "AT_PHONE",
+    "regex": "(?<![\\w+])(?:\\+43|0)(?:[\\s./-]?\\d){6,13}(?!\\w)",
+    "description": {
+      "en": "Austrian phone number, the +43 country code or the 0 trunk prefix then six to thirteen digits, since Austrian subscriber numbers vary in length. The slash is a separator here, as Austrian writing uses it between the area code and the number.",
+      "fr": "Numéro de téléphone autrichien, l'indicatif +43 ou le préfixe interurbain 0 puis six à treize chiffres, la longueur des numéros d'abonné variant en Autriche. La barre oblique est un séparateur ici, l'écriture autrichienne l'utilisant entre l'indicatif et le numéro."
+    },
+    "tags": [
+      "at",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Die Zentrale erreichen Sie unter +43 1 53340.",
+          "value": "+43 1 53340"
+        },
+        {
+          "text": "Mobil bin ich unter 0664/1234567 erreichbar.",
+          "value": "0664/1234567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Die Klappe lautet 0123"
+        },
+        {
+          "text": "Bestellnummer 4711"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+43 ",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

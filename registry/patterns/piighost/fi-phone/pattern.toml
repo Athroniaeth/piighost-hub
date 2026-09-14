@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "fi-phone"
+label = "FI_PHONE"
+tags = ["fi", "contact"]
+regex = '(?<![\w+])(?:\+358|0)(?:[\s.-]?\d){6,11}(?!\w)'
+
+[pattern.description]
+en = "Finnish phone number, the +358 country code or the 0 trunk prefix then six to eleven digits. Finnish subscriber numbers vary in length, so the count is a range rather than a fixed grouping."
+fr = "Numéro de téléphone finlandais, l'indicatif +358 ou le préfixe interurbain 0 puis six à onze chiffres. La longueur des numéros d'abonné varie en Finlande, donc le décompte est un intervalle plutôt qu'un groupement fixe."
+
+[[examples.match]]
+text = "Soita minulle numeroon +358 40 123 4567."
+value = "+358 40 123 4567"
+
+[[examples.match]]
+text = "Vaihde on 09 1234 5678 arkisin."
+value = "09 1234 5678"
+
+[[examples.no_match]]
+text = "Alanumero on 012"
+
+[[examples.no_match]]
+text = "Tilausnumero 1234567"
+
+[redos]
+prefix = "+358 "
+filler = "40"
+suffix = "x"

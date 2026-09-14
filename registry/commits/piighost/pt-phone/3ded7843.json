@@ -1,0 +1,46 @@
+{
+  "digest": "3ded784345a2d8d5c04683c9f664d2c74bbe5b918d460c8fa8f009a506338c70",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "pt-phone",
+    "schema_version": 1,
+    "label": "PT_PHONE",
+    "regex": "(?<![\\w+])\\+351(?:[\\s.-]?\\d){9}(?!\\w)",
+    "description": {
+      "en": "Portuguese phone number. The +351 country code is required rather than optional, because Portugal has no trunk prefix and a number written without the country code is nine bare digits, exactly the shape of a Portuguese tax number.",
+      "fr": "Numéro de téléphone portugais. L'indicatif +351 est exigé plutôt qu'optionnel, car le Portugal n'a pas de préfixe interurbain et un numéro écrit sans indicatif se réduit à neuf chiffres nus, exactement la forme d'un numéro fiscal portugais."
+    },
+    "tags": [
+      "pt",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Telefone para +351 912 345 678 depois das nove.",
+          "value": "+351 912 345 678"
+        },
+        {
+          "text": "A loja atende no +351 21 123 4567.",
+          "value": "+351 21 123 4567"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "O ramal e 912 345"
+        },
+        {
+          "text": "Contribuinte 123 456 789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+351 ",
+      "filler": "9",
+      "suffix": "x"
+    }
+  }
+}

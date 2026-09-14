@@ -1,0 +1,41 @@
+{
+  "digest": "8bba9c311b49dc98aba7c1cf8d78f98b8b7827b85e9d86b7d25c0c938f9982b7",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "jp",
+    "schema_version": 1,
+    "description": {
+      "en": "Japan: phone, postal code and the My Number individual identifier. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Japon : téléphone, code postal et l'identifiant individuel My Number. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "contact",
+      "government-id",
+      "identity",
+      "jp",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/jp-phone",
+        "commit": "4dfd665b",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/jp-postal",
+        "commit": "c7523af2",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/jp-my-number",
+        "commit": "885b7572",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

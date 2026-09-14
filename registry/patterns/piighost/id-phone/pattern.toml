@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "id-phone"
+label = "ID_PHONE"
+tags = ["id", "contact"]
+regex = '(?<![\w+])(?:\+62|0)(?:[\s.-]?\d){8,12}(?!\w)'
+
+[pattern.description]
+en = "Indonesian phone number, the +62 country code or the 0 trunk prefix then eight to twelve digits. Mobile numbers are the long end of that range and landlines the short end."
+fr = "Numéro de téléphone indonésien, l'indicatif +62 ou le préfixe interurbain 0 puis huit à douze chiffres. Les mobiles occupent le haut de cet intervalle et les fixes le bas."
+
+[[examples.match]]
+text = "Hubungi saya di +62 812 3456 7890 ya."
+value = "+62 812 3456 7890"
+
+[[examples.match]]
+text = "Kantor kami di 021-5551234 setiap hari."
+value = "021-5551234"
+
+[[examples.no_match]]
+text = "Ekstensi 0123"
+
+[[examples.no_match]]
+text = "Nomor pesanan 987654"
+
+[redos]
+prefix = "+62 "
+filler = "812"
+suffix = "x"

@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "pt-phone"
+label = "PT_PHONE"
+tags = ["pt", "contact"]
+regex = '(?<![\w+])\+351(?:[\s.-]?\d){9}(?!\w)'
+
+[pattern.description]
+en = "Portuguese phone number. The +351 country code is required rather than optional, because Portugal has no trunk prefix and a number written without the country code is nine bare digits, exactly the shape of a Portuguese tax number."
+fr = "Numéro de téléphone portugais. L'indicatif +351 est exigé plutôt qu'optionnel, car le Portugal n'a pas de préfixe interurbain et un numéro écrit sans indicatif se réduit à neuf chiffres nus, exactement la forme d'un numéro fiscal portugais."
+
+[[examples.match]]
+text = "Telefone para +351 912 345 678 depois das nove."
+value = "+351 912 345 678"
+
+[[examples.match]]
+text = "A loja atende no +351 21 123 4567."
+value = "+351 21 123 4567"
+
+[[examples.no_match]]
+text = "O ramal e 912 345"
+
+[[examples.no_match]]
+text = "Contribuinte 123 456 789"
+
+[redos]
+prefix = "+351 "
+filler = "9"
+suffix = "x"

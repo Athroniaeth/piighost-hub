@@ -1,0 +1,48 @@
+{
+  "digest": "890acebb3aadc9935bf52e3031e5b1b4959e8106c772a9c7b25d6247b4a4ea54",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "uk-vat",
+    "schema_version": 1,
+    "label": "UK_VAT",
+    "regex": "(?<!\\w)GB\\s?\\d{3}\\s?\\d{4}\\s?\\d{2}(?!\\w)",
+    "description": {
+      "en": "United Kingdom VAT registration number: the GB prefix then nine digits, written either solid or in three groups. The prefix survived the country's departure from the European VAT system, so this is deliberately separate from the eu-vat pattern.",
+      "fr": "Numéro de TVA britannique : le préfixe GB puis neuf chiffres, écrits d'un bloc ou en trois groupes. Le préfixe a survécu à la sortie du pays du système européen de TVA, donc ce motif est volontairement distinct de eu-vat."
+    },
+    "tags": [
+      "uk",
+      "government-id",
+      "business",
+      "finance"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Our VAT number is GB 123 4567 89 on invoices.",
+          "value": "GB 123 4567 89"
+        },
+        {
+          "text": "Registered as GB123456789 with HMRC.",
+          "value": "GB123456789"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The code GB12345678 is too short"
+        },
+        {
+          "text": "Reference 123456789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "GB",
+      "filler": "123",
+      "suffix": "x"
+    }
+  }
+}

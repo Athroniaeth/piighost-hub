@@ -1,0 +1,47 @@
+{
+  "digest": "c7523af285b90cdcce398bbf43f7322b3fc00b1f4ae821a312d5d6ca0903bc50",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "jp-postal",
+    "schema_version": 1,
+    "label": "JP_POSTAL",
+    "regex": "(?<!\\w)\\d{3}-\\d{4}(?!\\w)(?![\\s.-]?\\d)",
+    "description": {
+      "en": "Japanese postal code: three digits, a dash, then four digits. The dash is what makes it safe to detect, since the same seven digits written without it would be indistinguishable from the tail of a phone number.",
+      "fr": "Code postal japonais : trois chiffres, un tiret, puis quatre chiffres. Le tiret est ce qui rend sa détection sûre, car les mêmes sept chiffres écrits sans lui seraient impossibles à distinguer de la fin d'un numéro de téléphone."
+    },
+    "tags": [
+      "jp",
+      "location",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The office is at 100-0005 Chiyoda, Tokyo.",
+          "value": "100-0005"
+        },
+        {
+          "text": "Ship it to 530-0001 in Osaka please.",
+          "value": "530-0001"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The old code was 100"
+        },
+        {
+          "text": "Range 100-00"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "100",
+      "filler": "-000",
+      "suffix": "x"
+    }
+  }
+}

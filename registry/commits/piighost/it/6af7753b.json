@@ -1,0 +1,54 @@
+{
+  "digest": "6af7753b8891f6e99c5a4c3c202a018a3882e1eb953e2e4d34e859fe3835476b",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "it",
+    "schema_version": 1,
+    "description": {
+      "en": "Italy: phone, postal code, the codice fiscale, the VAT number and the health card number. The health card is twenty digits opening on a fixed issuer prefix, which is what makes a run that long safe to detect. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Italie : téléphone, code postal, le codice fiscale, le numéro de TVA et le numéro de carte sanitaire. La carte sanitaire fait vingt chiffres commençant par un préfixe émetteur fixe, ce qui rend une suite aussi longue détectable sans danger. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "business",
+      "contact",
+      "government-id",
+      "identity",
+      "it",
+      "location"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/it-phone",
+        "commit": "1943466e",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-cap",
+        "commit": "6d2a8539",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-codice-fiscale",
+        "commit": "b558e1ae",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-partita-iva",
+        "commit": "2cbc607c",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/it-tessera-sanitaria",
+        "commit": "67de62e7",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

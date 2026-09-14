@@ -1,0 +1,57 @@
+{
+  "digest": "537ed1e975c5e8c7793142b5785b59ab21e39178ea52259c48a1d962b152e96d",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "config",
+    "namespace": "piighost",
+    "name": "id-default",
+    "schema_version": 1,
+    "description": {
+      "en": "Indonesia without a model: phone and the NIK population number, plus the email, URL, IPv4 and card number that belong to no country. Word-boundary expansion catches a value detected once everywhere else in the message.",
+      "fr": "Indonésie sans modèle : téléphone et le numéro de population NIK, plus l e-mail, l URL, l IPv4 et le numéro de carte qui n appartiennent à aucun pays. L expansion par mot entier reprend partout dans le message une valeur détectée une fois."
+    },
+    "tags": [
+      "chat",
+      "customer-support",
+      "document",
+      "id"
+    ],
+    "piighost": ">=1.7,<2",
+    "extends": [],
+    "detectors": [
+      {
+        "name": "regex-id",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/id",
+            "commit": "12a6006c"
+          }
+        ]
+      },
+      {
+        "name": "regex-generic",
+        "type": "regex",
+        "groups": [
+          {
+            "ref": "piighost/generic",
+            "commit": "e9f9b4fa"
+          }
+        ]
+      }
+    ],
+    "stages": {
+      "linker": {
+        "type": "exact"
+      },
+      "expander": {
+        "type": "word_boundary"
+      },
+      "anonymizer": {
+        "placeholder": {
+          "type": "label_counter"
+        }
+      }
+    }
+  }
+}

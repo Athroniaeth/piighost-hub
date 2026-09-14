@@ -1,0 +1,35 @@
+{
+  "digest": "4aa0f6aa5c46fdf0be3da5eec898afd3389e2237ea333bb81721e2f1d0569b0b",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "ch",
+    "schema_version": 1,
+    "description": {
+      "en": "Switzerland: phone and the AHV social insurance number, which doubles as the health identifier. Country groups are meant to be used one at a time: a postal code is five digits in several of them, so two in one detector fight for the same span.",
+      "fr": "Suisse : téléphone et le numéro AVS d'assurance sociale, qui sert aussi d'identifiant de santé. Les groupes nationaux sont faits pour être utilisés un à la fois : un code postal fait cinq chiffres dans plusieurs d'entre eux, donc deux dans un même détecteur se disputent le même span."
+    },
+    "tags": [
+      "ch",
+      "contact",
+      "government-id",
+      "health",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/ch-phone",
+        "commit": "d3d8309b",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/ch-ahv",
+        "commit": "512951ce",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

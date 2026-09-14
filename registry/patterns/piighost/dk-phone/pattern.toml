@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "dk-phone"
+label = "DK_PHONE"
+tags = ["dk", "contact"]
+regex = '(?<![\w+])(?:\+45[\s.-]?)?[2-9]\d(?:[\s.-]?\d){6}(?!\w)(?![\s.-]?\d)'
+
+[pattern.description]
+en = "Danish phone number: eight digits opening on a 2 through 9, with the +45 country code optional. Denmark has no trunk prefix and no area codes, so the number is the same eight digits wherever it is dialled from."
+fr = "Numéro de téléphone danois : huit chiffres commençant par 2 à 9, l'indicatif +45 étant optionnel. Le Danemark n'a ni préfixe interurbain ni indicatif régional, donc le numéro reste les mêmes huit chiffres d'où qu'on appelle."
+
+[[examples.match]]
+text = "Ring til +45 33 14 41 41 i dag."
+value = "+45 33 14 41 41"
+
+[[examples.match]]
+text = "Mit nummer er 20 12 34 56 hvis du vil."
+value = "20 12 34 56"
+
+[[examples.no_match]]
+text = "Lokalnummer 1234"
+
+[[examples.no_match]]
+text = "Ordre 10 12 34 56 er sendt"
+
+[redos]
+prefix = "+45 3"
+filler = "3"
+suffix = "x"

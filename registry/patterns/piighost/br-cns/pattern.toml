@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "br-cns"
+label = "BR_CNS"
+tags = ["br", "health", "government-id"]
+regex = '(?<!\w)[12789]\d{2}[\s.-]?\d{4}[\s.-]?\d{4}[\s.-]?\d{4}(?!\w)'
+
+[pattern.description]
+en = "Brazilian national health card number, fifteen digits opening on a 1, 2, 7, 8 or 9 as the issuing rule requires. Written in groups of four on the card itself, and the separators are optional because the systems that export it often strip them."
+fr = "Numéro de carte nationale de santé brésilienne, quinze chiffres commençant par 1, 2, 7, 8 ou 9 comme la règle d'émission l'exige. Écrit par groupes de quatre sur la carte, et les séparateurs sont optionnels car les systèmes qui l'exportent les suppriment souvent."
+
+[[examples.match]]
+text = "O CNS do paciente e 123 4567 8901 2345 no cadastro."
+value = "123 4567 8901 2345"
+
+[[examples.match]]
+text = "Anote 898001234567890 na ficha."
+value = "898001234567890"
+
+[[examples.no_match]]
+text = "O numero 323 4567 8901 2345 nao comeca certo"
+
+[[examples.no_match]]
+text = "Codigo 123 4567 8901"
+
+[redos]
+prefix = "123 "
+filler = "4567"
+suffix = "x"

@@ -1,0 +1,46 @@
+{
+  "digest": "4dfd665b9f4b392d351e697d23de0e1689b47140d09d4471123be0df40a98cbc",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "jp-phone",
+    "schema_version": 1,
+    "label": "JP_PHONE",
+    "regex": "(?<![\\w+])(?:\\+81|0)(?:[\\s.-]?\\d){9,10}(?!\\w)",
+    "description": {
+      "en": "Japanese phone number, the +81 country code or the 0 trunk prefix then nine or ten digits. Japanese writing separates the area code, the exchange and the subscriber with dashes, and the separators are allowed anywhere between the digits.",
+      "fr": "Numéro de téléphone japonais, l'indicatif +81 ou le préfixe interurbain 0 puis neuf ou dix chiffres. L'écriture japonaise sépare l'indicatif, le central et l'abonné par des tirets, et les séparateurs sont acceptés partout entre les chiffres."
+    },
+    "tags": [
+      "jp",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Please call +81 3 1234 5678 during office hours.",
+          "value": "+81 3 1234 5678"
+        },
+        {
+          "text": "My mobile is 090-1234-5678 if it is urgent.",
+          "value": "090-1234-5678"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The extension is 0123"
+        },
+        {
+          "text": "Order number 12345"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+81 ",
+      "filler": "3",
+      "suffix": "x"
+    }
+  }
+}

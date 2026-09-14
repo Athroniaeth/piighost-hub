@@ -1,0 +1,46 @@
+{
+  "digest": "d7b337d80f1cc72b033cef43bcd005dae5e6d60ec5ed9c2304189cf1c0ef2e6d",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "dk-phone",
+    "schema_version": 1,
+    "label": "DK_PHONE",
+    "regex": "(?<![\\w+])(?:\\+45[\\s.-]?)?[2-9]\\d(?:[\\s.-]?\\d){6}(?!\\w)(?![\\s.-]?\\d)",
+    "description": {
+      "en": "Danish phone number: eight digits opening on a 2 through 9, with the +45 country code optional. Denmark has no trunk prefix and no area codes, so the number is the same eight digits wherever it is dialled from.",
+      "fr": "Numéro de téléphone danois : huit chiffres commençant par 2 à 9, l'indicatif +45 étant optionnel. Le Danemark n'a ni préfixe interurbain ni indicatif régional, donc le numéro reste les mêmes huit chiffres d'où qu'on appelle."
+    },
+    "tags": [
+      "dk",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ring til +45 33 14 41 41 i dag.",
+          "value": "+45 33 14 41 41"
+        },
+        {
+          "text": "Mit nummer er 20 12 34 56 hvis du vil.",
+          "value": "20 12 34 56"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Lokalnummer 1234"
+        },
+        {
+          "text": "Ordre 10 12 34 56 er sendt"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "+45 3",
+      "filler": "3",
+      "suffix": "x"
+    }
+  }
+}

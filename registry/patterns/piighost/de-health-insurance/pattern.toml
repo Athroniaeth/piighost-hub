@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "de-health-insurance"
+label = "DE_HEALTH_INSURANCE"
+tags = ["de", "health", "government-id"]
+regex = '(?<!\w)[A-Z]\d{9}(?!\w)'
+
+[pattern.description]
+en = "German health insurance number, one letter then nine digits, the lifelong identifier printed on the electronic health card. The single leading letter is thin protection, so this is kept out of the general German group and offered to health configurations only."
+fr = "Numéro d'assuré allemand, une lettre puis neuf chiffres, l'identifiant à vie imprimé sur la carte de santé électronique. La lettre unique en tête protège peu, donc ce motif reste hors du groupe allemand général et n'est offert qu'aux configurations de santé."
+
+[[examples.match]]
+text = "Die Karte zeigt A123456789 als Nummer."
+value = "A123456789"
+
+[[examples.match]]
+text = "Versichert unter Z987654321 seit Januar."
+value = "Z987654321"
+
+[[examples.no_match]]
+text = "Die Nummer 123456789 hat keinen Buchstaben"
+
+[[examples.no_match]]
+text = "Referenz A12345678"
+
+[redos]
+prefix = "A"
+filler = "1"
+suffix = "x"

@@ -1,0 +1,47 @@
+{
+  "digest": "508cf196cad2c8e4662dec22e7dd73c6e8742ab4784f3deeaf1b351927752181",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "sg-nric",
+    "schema_version": 1,
+    "label": "SG_NRIC",
+    "regex": "(?<!\\w)[STFGM]\\d{7}[A-Z](?!\\w)",
+    "description": {
+      "en": "Singapore NRIC or FIN: a prefix letter saying the status and the century, seven digits, then a checksum letter. The letters at both ends make it unmistakable, which is rare for a national identifier.",
+      "fr": "NRIC ou FIN singapourien : une lettre de préfixe indiquant le statut et le siècle, sept chiffres, puis une lettre de contrôle. Les lettres aux deux bouts le rendent reconnaissable sans ambiguïté, ce qui est rare pour un identifiant national."
+    },
+    "tags": [
+      "sg",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Please bring your card, S1234567D, to the counter.",
+          "value": "S1234567D"
+        },
+        {
+          "text": "The pass number is G7654321X on the record.",
+          "value": "G7654321X"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The serial is 1234567D"
+        },
+        {
+          "text": "Reference S1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "S",
+      "filler": "1",
+      "suffix": "x"
+    }
+  }
+}

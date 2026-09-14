@@ -1,0 +1,48 @@
+{
+  "digest": "2b9b59d4206f233ba19ad841ae235b639ba0359704d6519852a8c32be7f2540c",
+  "recorded_at": "2026-09-14T22:18:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "in-gstin",
+    "schema_version": 1,
+    "label": "IN_GSTIN",
+    "regex": "(?<!\\w)[0-3]\\d[A-Z]{5}\\d{4}[A-Z][A-Z0-9]Z[A-Z0-9](?!\\w)",
+    "description": {
+      "en": "Indian GST identification number: the state code, the holder's PAN, an entity digit, a fixed Z, then a checksum character. The Z in the fourteenth position is a constant, which makes this fifteen character string one of the safest business identifiers to detect.",
+      "fr": "Numéro d'identification GST indien : le code d'état, le PAN du titulaire, un chiffre d'entité, un Z fixe, puis un caractère de contrôle. Le Z en quatorzième position est une constante, ce qui fait de cette chaîne de quinze caractères l'un des identifiants d'entreprise les plus sûrs à détecter."
+    },
+    "tags": [
+      "in",
+      "government-id",
+      "business",
+      "finance"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "The invoice carries 27AAPFU0939F1ZV as the GSTIN.",
+          "value": "27AAPFU0939F1ZV"
+        },
+        {
+          "text": "Register under 29AABCU9603R1ZM for Karnataka.",
+          "value": "29AABCU9603R1ZM"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "The code 27AAPFU0939F1XV has no Z"
+        },
+        {
+          "text": "Reference 27AAPFU0939F1Z"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "27AAPFU",
+      "filler": "0939",
+      "suffix": "x"
+    }
+  }
+}

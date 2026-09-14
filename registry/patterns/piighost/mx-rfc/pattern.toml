@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "mx-rfc"
+label = "MX_RFC"
+tags = ["mx", "government-id", "business"]
+regex = '(?<!\w)[A-Z]{3,4}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[A-Z0-9]{3}(?!\w)'
+
+[pattern.description]
+en = "Mexican RFC tax number, three letters for a company or four for a person, then the date of registration or birth, then three characters of homoclave. It is the number an invoice carries, so it turns up in accounting exports far more often than the CURP does."
+fr = "Numéro fiscal mexicain RFC, trois lettres pour une entreprise ou quatre pour une personne, puis la date d'immatriculation ou de naissance, puis trois caractères d'homoclave. C'est le numéro que porte une facture, donc il apparaît dans les exports comptables bien plus souvent que le CURP."
+
+[[examples.match]]
+text = "Factura a nombre de GOMC900101AB3 por favor."
+value = "GOMC900101AB3"
+
+[[examples.match]]
+text = "El RFC de la empresa es ABC850715J21 desde 2010."
+value = "ABC850715J21"
+
+[[examples.no_match]]
+text = "La clave GOMC901301AB3 no tiene ese mes"
+
+[[examples.no_match]]
+text = "Folio GO900101AB3"
+
+[redos]
+prefix = "GOMC"
+filler = "90"
+suffix = "x"

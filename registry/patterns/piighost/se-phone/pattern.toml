@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "se-phone"
+label = "SE_PHONE"
+tags = ["se", "contact"]
+regex = '(?<![\w+])(?:\+46|0)(?:[\s.-]?\d){8,9}(?!\w)'
+
+[pattern.description]
+en = "Swedish phone number, the +46 country code or the 0 trunk prefix then eight or nine digits. Swedish area codes vary in length, so the count is a range rather than a fixed grouping."
+fr = "Numéro de téléphone suédois, l'indicatif +46 ou le préfixe interurbain 0 puis huit ou neuf chiffres. La longueur des indicatifs varie en Suède, donc le décompte est un intervalle plutôt qu'un groupement fixe."
+
+[[examples.match]]
+text = "Ring mig på +46 70 123 45 67 i kväll."
+value = "+46 70 123 45 67"
+
+[[examples.match]]
+text = "Växeln har 08-123 456 78 på dagtid."
+value = "08-123 456 78"
+
+[[examples.no_match]]
+text = "Anknytning 0123"
+
+[[examples.no_match]]
+text = "Ordernummer 1234567"
+
+[redos]
+prefix = "+46 "
+filler = "70"
+suffix = "x"

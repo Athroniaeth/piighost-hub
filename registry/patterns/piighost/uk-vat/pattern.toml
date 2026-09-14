@@ -1,0 +1,30 @@
+schema_version = 1
+
+[pattern]
+name = "uk-vat"
+label = "UK_VAT"
+tags = ["uk", "government-id", "business", "finance"]
+regex = '(?<!\w)GB\s?\d{3}\s?\d{4}\s?\d{2}(?!\w)'
+
+[pattern.description]
+en = "United Kingdom VAT registration number: the GB prefix then nine digits, written either solid or in three groups. The prefix survived the country's departure from the European VAT system, so this is deliberately separate from the eu-vat pattern."
+fr = "Numéro de TVA britannique : le préfixe GB puis neuf chiffres, écrits d'un bloc ou en trois groupes. Le préfixe a survécu à la sortie du pays du système européen de TVA, donc ce motif est volontairement distinct de eu-vat."
+
+[[examples.match]]
+text = "Our VAT number is GB 123 4567 89 on invoices."
+value = "GB 123 4567 89"
+
+[[examples.match]]
+text = "Registered as GB123456789 with HMRC."
+value = "GB123456789"
+
+[[examples.no_match]]
+text = "The code GB12345678 is too short"
+
+[[examples.no_match]]
+text = "Reference 123456789"
+
+[redos]
+prefix = "GB"
+filler = "123"
+suffix = "x"
