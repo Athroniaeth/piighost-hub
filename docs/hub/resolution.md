@@ -1,5 +1,7 @@
 # Références, commits et résolution
 
+*[English version](en/resolution.md).*
+
 Ce document fixe ce qu'une référence désigne, comment un objet devient un commit
 immuable, et comment un groupe ou une config se résout en pipeline piighost. Le
 format des fichiers est dans [manifest.md](manifest.md), l'API HTTP dans

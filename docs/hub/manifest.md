@@ -1,5 +1,7 @@
 # Format des manifestes
 
+*[English version](en/manifest.md).*
+
 Le registre est un arbre de fichiers TOML. Chaque objet publiable, motif, groupe
 ou config, vit dans son dossier avec un manifeste et, s'il porte des tags
 mobiles, un fichier `tags.toml`. Ce document décrit chaque fichier. La façon dont
