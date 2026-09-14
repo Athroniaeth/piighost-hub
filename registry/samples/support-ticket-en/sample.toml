@@ -5,17 +5,35 @@ name = "support-ticket-en"
 title = { en = "Support ticket (English)", fr = "Ticket de support (anglais)" }
 tags = ["us", "lang-en", "customer-support", "chat"]
 text = """
-Ticket #4821 - payment declined
+Ticket #4821 - payment declined twice, customer escalating
 
 Reporter: Jane Miller (jane.miller@example.org, +1 415-555-0123)
-Account: 94103, billing ZIP 94103-1234
+Account: 8842-B, billing ZIP 94103-1234
+Plan: Team annual, renewed 12 March
 
-The customer says her card 4111 1111 1111 1111 was declined twice this
-morning. She tried again from 203.0.113.42 with the same result. Her SSN on
-file is 123-45-6789, which matches our records.
+Summary
+-------
+The customer tried to pay the annual renewal twice this morning and both
+attempts were declined. Her card 4111 1111 1111 1111 works on other sites, and
+her bank confirmed no block on their side. She tried again from a different
+network, 203.0.113.42, with the same result.
 
-Escalating to billing. See https://status.example.com/incidents/4821 for the
-provider status page.
+What we know
+------------
+Both attempts hit the same processor error code, which we have seen before when
+the billing postcode does not match what the bank holds. Her SSN on file is
+123-45-6789, which matches our records, so the identity check is not the issue.
+The address on the account was updated in February and the change may not have
+propagated to the processor.
+
+She is a renewal at risk. She has asked twice for a call back on
++1 415-555-0123 rather than email.
+
+Next steps
+----------
+Escalating to billing to re-sync the address with the processor, then retry
+manually. See https://status.example.com/incidents/4821 for the processor
+status page during the window.
 """
 
 [[annotations]]

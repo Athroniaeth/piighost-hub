@@ -1,0 +1,53 @@
+{
+  "digest": "fe15c4dcf9f756a1e02a8df6178a683d03642f91acc5401dbfd5ec3a54c177d2",
+  "recorded_at": "2026-09-14T12:56:08+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "fr-phone",
+    "schema_version": 1,
+    "label": "FR_PHONE",
+    "regex": "(?<![\\w+])(?:\\+33|0)[1-9](?:[\\s.-]?\\d{2}){4}(?!\\w)",
+    "description": {
+      "en": "French phone number: +33 or a leading 0, one non-zero digit, then four pairs of digits separated by optional spaces, dots or hyphens. Lookarounds replace \\b so the + prefix anchors properly, and they guard the whole word rather than digits alone: otherwise ten digits in the middle of an API key get tokenised, cutting the key in two. This is the one departure from the library catalog. The +33 form only matches when the first digit follows immediately (+33639981234), not '+33 6 39...'.",
+      "fr": "Numéro de téléphone français : +33 ou un 0 initial, un chiffre non nul, puis quatre paires de chiffres séparées par des espaces, points ou tirets optionnels. Des lookarounds remplacent \\b pour ancrer correctement le préfixe +, et ils portent sur le mot entier et non sur les seuls chiffres : autrement dix chiffres au milieu d'une clé d'API se font tokeniser, ce qui coupe la clé en deux. C'est le seul écart avec le catalogue de la bibliothèque. La forme +33 ne correspond que si le premier chiffre suit immédiatement (+33639981234), pas « +33 6 39... »."
+    },
+    "tags": [
+      "fr",
+      "contact"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Appelez le 06 39 98 12 34 demain.",
+          "value": "06 39 98 12 34"
+        },
+        {
+          "text": "Joignable au +33639981234 en journée.",
+          "value": "+33639981234"
+        },
+        {
+          "text": "Standard : 01.99.00.12.34",
+          "value": "01.99.00.12.34"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "06 39 98 12"
+        },
+        {
+          "text": "0639981234567"
+        },
+        {
+          "text": "sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "06 39 98 ",
+      "filler": "1 ",
+      "suffix": "x"
+    }
+  }
+}

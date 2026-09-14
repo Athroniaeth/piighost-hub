@@ -6,15 +6,33 @@ title = { en = "Cross-border invoice", fr = "Facture transfrontalière" }
 tags = ["eu", "de", "lang-en", "accounting", "document"]
 text = """
 INVOICE 2026-0042
+Issued 14 March 2026, due 13 April 2026
 
-Bill to: Muster GmbH, Hauptstrasse 4, 10115 Berlin
+Bill to
+-------
+Muster GmbH
+Hauptstrasse 4
+10115 Berlin, Germany
 VAT number DE123456789
 Contact: buchhaltung@example.de, +49 30 1234567
 
-Supplier: Exemple SARL, VAT FR12345678901
+Supplier
+--------
+Exemple SARL
+VAT FR12345678901
 Bank: DE89370400440532013000
 
-Amount due: 4 200,00 EUR. Payment within 30 days.
+Lines
+-----
+Consulting, February engagement, 12 days at 350,00 EUR   4 200,00 EUR
+Travel, reimbursed at cost                                 180,00 EUR
+                                             Subtotal    4 380,00 EUR
+                                    Reverse charge VAT        0,00 EUR
+                                                Total    4 380,00 EUR
+
+Payment within 30 days by transfer to the account above, quoting the invoice
+number. Reverse charge applies: VAT is accounted for by the recipient under
+the intra-community supply rules. Queries to buchhaltung@example.de.
 """
 
 [[annotations]]

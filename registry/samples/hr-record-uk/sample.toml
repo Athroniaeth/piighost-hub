@@ -5,15 +5,33 @@ name = "hr-record-uk"
 title = { en = "HR record (United Kingdom)", fr = "Dossier RH (Royaume-Uni)" }
 tags = ["uk", "lang-en", "hr", "document"]
 text = """
-Employee record - onboarding
+EMPLOYEE RECORD - ONBOARDING
+Prepared by People Ops, reviewed 3 September
 
+Personal details
+----------------
 Name: Oliver Bennett
 NI number: AB123456C
 NHS number: 943 476 5919
 Home address: 221B Baker Street, London, SW1A 1AA
 Personal email: oliver.bennett@example.co.uk
+Emergency contact: listed separately, see the sealed annex
 
-Contract starts on 1 October. Payroll has been notified.
+Engagement
+----------
+Role: Senior engineer, platform team, reporting to the head of platform.
+Contract starts on 1 October, six month probation, hybrid two days on site.
+Salary and equity are in the offer letter and are not repeated here.
+
+Checklist
+---------
+Right to work verified against the original document on 28 August. References
+received from both named referees. Payroll notified with the NI number above;
+pension enrolment runs automatically after the first pay run. Equipment
+ordered, delivery to the home address.
+
+Outstanding: the signed contract has not come back yet. Chase on 20 September
+if it has not arrived, then again a week before the start date.
 """
 
 [[annotations]]

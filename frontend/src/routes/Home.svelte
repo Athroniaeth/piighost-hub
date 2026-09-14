@@ -104,7 +104,11 @@
     <h1 class="font-mono text-4xl font-semibold tracking-tight">
       {t("home.title")}
     </h1>
-    <p class="mt-3 text-lg text-muted-foreground">{t("home.lede")}</p>
+    <!-- Balanced: the French line is long enough that the browser otherwise
+         drops its last word alone on a third line. -->
+    <p class="mx-auto mt-3 max-w-xl text-lg text-balance text-muted-foreground">
+      {t("home.lede")}
+    </p>
     <form
       role="search"
       class="mt-7"

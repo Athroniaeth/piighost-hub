@@ -115,7 +115,9 @@ const STRINGS = {
     "play.go": "Run",
     "play.running": "Running",
     "play.input": "Input",
-    "play.anonymized": "Anonymized",
+    "play.anonymized": "De-identified",
+    "play.legend":
+      "Colours follow the label, from your text to the tokens and back.",
     "play.edit": "Edit",
     "play.kept": "kept",
     "play.dropped": "Dropped",
@@ -125,7 +127,8 @@ const STRINGS = {
     "play.unsupported": "Not run here, needs a model:",
     "play.empty": "Run to see detections.",
     "play.nothing": "No detection.",
-    "play.privacy": "Nothing is stored. The text lives only in this request.",
+    "play.privacy":
+      "Your text is not written to any database. It is de-identified to answer this request, then forgotten.",
 
     "compare.add": "Add",
     "compare.remove": "Remove",
@@ -281,7 +284,9 @@ const STRINGS = {
     "play.go": "Lancer",
     "play.running": "En cours",
     "play.input": "Saisie",
-    "play.anonymized": "Anonymisé",
+    "play.anonymized": "Dé-identifié",
+    "play.legend":
+      "Les couleurs suivent le label, de votre texte aux jetons et retour.",
     "play.edit": "Modifier",
     "play.kept": "gardées",
     "play.dropped": "Écartées",
@@ -292,7 +297,7 @@ const STRINGS = {
     "play.empty": "Lancez pour voir les détections.",
     "play.nothing": "Aucune détection.",
     "play.privacy":
-      "Rien n'est stocké. Le texte ne vit que dans cette requête.",
+      "Votre texte n'est enregistré dans aucune base. Il est dé-identifié pour répondre à cette requête, puis oublié.",
 
     "compare.add": "Ajouter",
     "compare.remove": "Retirer",

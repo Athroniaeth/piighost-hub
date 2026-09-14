@@ -11,10 +11,28 @@ Patiente : Marie Lefevre, née le 12/05/1985
 NIR : 2 85 05 78 006 084 36
 Adresse : 3 avenue du Parc, 69003 Lyon
 Téléphone : 04 99 00 12 34
+Médecin traitant : dr.martin@example.org
 
-Motif : suivi post-opératoire. Aucune complication relevée. Prochain rendez-vous
-dans six semaines. Compte rendu transmis au médecin traitant à
-dr.martin@example.org.
+Motif de la consultation
+------------------------
+Suivi à six semaines d'une intervention réalisée le 2 février. La patiente
+décrit une gêne résiduelle à l'effort, sans douleur au repos, et une reprise
+progressive de son activité professionnelle depuis trois semaines.
+
+Examen
+------
+Cicatrice propre, sans signe inflammatoire. Mobilité complète retrouvée.
+Aucune complication relevée. Les résultats du bilan biologique du 28 février
+sont dans les normes et ne justifient pas de contrôle rapproché.
+
+Conduite à tenir
+----------------
+Poursuite de la rééducation au rythme actuel, deux séances par semaine.
+Reprise du sport en charge autorisée dans un mois. Prochain rendez-vous dans
+six semaines, ou plus tôt en cas de réapparition de la douleur au repos.
+
+Compte rendu transmis au médecin traitant à dr.martin@example.org et remis en
+main propre à la patiente.
 """
 
 [[annotations]]

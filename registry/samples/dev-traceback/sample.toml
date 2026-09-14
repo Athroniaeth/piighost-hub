@@ -5,19 +5,34 @@ name = "dev-traceback"
 title = { en = "Traceback pasted into a coding assistant", fr = "Trace d'erreur collée dans un assistant de code" }
 tags = ["international", "lang-en", "software-dev", "code-assistant", "logs"]
 text = """
-Why does this fail? Here is my config and the traceback.
+Why does this keep failing in staging but not locally? Here is my config and
+the traceback. I've been on it for two hours.
 
+.env.staging (redacted? I don't think so, sorry)
+------------------------------------------------
 OPENAI_API_KEY=sk-proj-abcdefghijklmnopqrstuvwxyz0123456789ABCD
 STRIPE_SECRET_KEY=sk_test_abcdefghijklmnopqrstuvwx
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 GITHUB_TOKEN=ghp_abcdefghijklmnopqrstuvwxyz0123456789
+DATABASE_URL=postgresql://app:hunter2@198.51.100.7:5432/app
+CACHE_URL=redis://[2001:db8::1]:6379/0
 
-Connecting to 198.51.100.7 and 2001:db8::1 both time out. The ops contact is
-ops@example.net if that matters.
+What happens
+------------
+The worker boots, connects to the cache, then hangs on the first outbound call
+and dies after the 30s timeout. Connecting to 198.51.100.7 and 2001:db8::1 both
+time out from inside the container, but both answer fine from my laptop and
+from the bastion.
 
   File "app.py", line 42, in connect
     raise TimeoutError(host)
-TimeoutError: 198.51.100.7
+  TimeoutError: 198.51.100.7
+
+Things I have ruled out
+-----------------------
+The security group allows the range, and the same image works locally with the
+same env file. The ops contact is ops@example.net but they are out until
+Monday, so I would rather not wait if this is something obvious.
 """
 
 [[annotations]]

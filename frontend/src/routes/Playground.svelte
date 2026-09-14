@@ -4,6 +4,7 @@
   import type { RunOut, SampleOut } from "../generated/api";
   import EntityHighlight from "../components/EntityHighlight.svelte";
   import EntityRow from "../components/EntityRow.svelte";
+  import PlaceholderText from "../components/PlaceholderText.svelte";
   import PlaygroundShell from "../components/PlaygroundShell.svelte";
   import RefPicker from "../components/RefPicker.svelte";
   import SamplePicker from "../components/SamplePicker.svelte";
@@ -161,8 +162,9 @@
     {/snippet}
 
     {#if run && view === "anonymized"}
-      <pre
-        class="flex-1 whitespace-pre-wrap rounded-lg border bg-muted/30 p-3 font-mono text-sm leading-relaxed">{run.anonymized_text}</pre>
+      <div class="flex-1 overflow-auto rounded-lg border bg-muted/30 p-3">
+        <PlaceholderText text={run.anonymized_text} {colors} />
+      </div>
     {:else if run}
       <div class="flex-1 rounded-lg border bg-muted/30 p-3">
         <EntityHighlight {text} hits={run.hits} {colors} />

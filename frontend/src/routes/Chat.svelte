@@ -3,11 +3,15 @@
   import Send from "@lucide/svelte/icons/send";
   import type { ChatOut } from "../generated/api";
   import PlaygroundShell from "../components/PlaygroundShell.svelte";
+  import PlaceholderText from "../components/PlaceholderText.svelte";
   import RefPicker from "../components/RefPicker.svelte";
+  import RestoredText from "../components/RestoredText.svelte";
   import Button from "../components/ui/Button.svelte";
   import Region from "../components/ui/Region.svelte";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
+  import { assignLabelColors, labelStyle } from "../lib/labels";
+  import { labelsIn, placeholderLabel } from "../lib/placeholders";
   import { FIELD } from "../lib/ui";
 
   let ref = $state("piighost/fr-default");
@@ -19,6 +23,14 @@
   let error = $state<string | null>(null);
   let busy = $state(false);
   let reveal = $state(false);
+
+  // One map for the whole conversation, built from the tokens themselves, so a
+  // value keeps its colour from the message that introduced it to the last reply.
+  const colors = $derived(
+    assignLabelColors(
+      Object.keys(result?.mapping ?? {}).flatMap((token) => labelsIn(token)),
+    ),
+  );
 
   async function send() {
     if (draft.trim() === "") return;
@@ -63,6 +75,7 @@
         >
       {/if}
       {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+      <p class="text-xs text-muted-foreground">{t("play.legend")}</p>
     </div>
   </Region>
 
@@ -70,16 +83,32 @@
     <ol class="flex flex-1 flex-col gap-3 overflow-auto">
       {#each result?.turns ?? [] as turn, index (index)}
         <li class="flex flex-col gap-2">
-          <p
+          <div
             class="ms-auto max-w-[85%] rounded-2xl rounded-br-sm bg-muted px-3 py-2 text-sm"
           >
-            {reveal ? turn.user_sent : turn.user_text}
-          </p>
-          <p
+            {#if reveal}
+              <PlaceholderText text={turn.user_sent} {colors} />
+            {:else}
+              <RestoredText
+                text={turn.user_text}
+                mapping={result?.mapping ?? {}}
+                {colors}
+              />
+            {/if}
+          </div>
+          <div
             class="max-w-[85%] rounded-2xl rounded-bl-sm bg-primary/10 px-3 py-2 text-sm"
           >
-            {reveal ? turn.reply_received : turn.reply_text}
-          </p>
+            {#if reveal}
+              <PlaceholderText text={turn.reply_received} {colors} />
+            {:else}
+              <RestoredText
+                text={turn.reply_text}
+                mapping={result?.mapping ?? {}}
+                {colors}
+              />
+            {/if}
+          </div>
         </li>
       {:else}
         <li class="text-sm text-muted-foreground">{t("chat.empty")}</li>
@@ -119,7 +148,12 @@
           <li
             class="flex items-center justify-between gap-2 rounded-md bg-muted/40 p-2 font-mono text-xs"
           >
-            <span class="text-primary">{token}</span>
+            <span
+              class="rounded px-1 {labelStyle(
+                placeholderLabel(token) ?? '',
+                colors,
+              )}">{token}</span
+            >
             <span class="truncate text-muted-foreground">{value}</span>
           </li>
         {/each}
