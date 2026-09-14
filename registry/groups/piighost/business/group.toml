@@ -1,0 +1,27 @@
+schema_version = 1
+
+[group]
+name = "business"
+description = { en = "Company and tax numbers across the countries the registry covers: the European VAT number, the French SIRET, the Spanish CIF, the Italian VAT number, the Brazilian CNPJ, the Indian PAN, the Portuguese NIF, the Australian ABN and the American EIN. Useful on an invoice or a contract, where the company identifies more reliably than the signatory. Two are deliberately absent: the Portuguese NIF, nine bare digits, claims the head of a French SIRET, and the Italian VAT number is already covered here by the European one. Both stay in their country group, where they stand alone.", fr = "Numéros d'entreprise et de fiscalité pour les pays que le registre couvre : le numéro de TVA européen, le SIRET français, le CIF espagnol, le numéro de TVA italien, le CNPJ brésilien, le PAN indien, le NIF portugais, l'ABN australien et l'EIN américain. Utile sur une facture ou un contrat, où l'entreprise identifie plus sûrement que le signataire. Deux sont volontairement absents : le NIF portugais, neuf chiffres nus, réclame la tête d'un SIRET français, et le numéro de TVA italien est déjà couvert ici par l'européen. Les deux restent dans leur groupe national, où ils sont seuls." }
+tags = ["international", "business", "accounting", "finance", "document"]
+
+[[sources]]
+ref = "piighost/eu-vat"
+
+[[sources]]
+ref = "piighost/fr-siret"
+
+[[sources]]
+ref = "piighost/es-nif-cif"
+
+[[sources]]
+ref = "piighost/br-cnpj"
+
+[[sources]]
+ref = "piighost/in-pan"
+
+[[sources]]
+ref = "piighost/au-abn"
+
+[[sources]]
+ref = "piighost/us-ein"

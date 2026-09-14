@@ -1,0 +1,41 @@
+{
+  "digest": "aab5c56b9103327d344de0ace7fadd34bb82b402780f394314e851d3b49beacd",
+  "recorded_at": "2026-09-14T20:29:46+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "identity-documents",
+    "schema_version": 1,
+    "description": {
+      "en": "The documents a person is asked to produce: passports, driving licences, vehicle plates. What an onboarding file, a rental contract or a claim is made of.",
+      "fr": "Les documents qu'on demande à une personne de produire : passeports, permis de conduire, plaques d'immatriculation. Ce dont un dossier d'entrée, un contrat de location ou une déclaration de sinistre est fait."
+    },
+    "tags": [
+      "international",
+      "government-id",
+      "identity",
+      "legal",
+      "document"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/passports",
+        "commit": "f0e38c38",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/driving-licences",
+        "commit": "c5c00380",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/vehicles",
+        "commit": "a1c1ded2",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

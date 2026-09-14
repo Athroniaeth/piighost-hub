@@ -1,0 +1,40 @@
+{
+  "digest": "e2f74a7f66d6a48f47b3f220d63ad0efc1719e09411db7c7888f1aa0a8c8f89d",
+  "recorded_at": "2026-09-14T20:29:46+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "health",
+    "schema_version": 1,
+    "description": {
+      "en": "Health identifiers: the British NHS number, the French social security number, and the American prescriber number. Health data is the most sensitive category any of these registries carries, and the one where a miss costs the most. The American provider number is absent: it is ten bare digits, exactly the NHS number, and no ordering separates them. It lives in the us-health group, for American corpora.",
+      "fr": "Identifiants de santé : le numéro NHS britannique, le numéro de sécurité sociale français, et le numéro de prescripteur américain. La donnée de santé est la catégorie la plus sensible que ces registres portent, et celle où un oubli coûte le plus cher. Le numéro de praticien américain est absent : c'est dix chiffres nus, exactement le numéro NHS, et aucun ordre ne les sépare. Il vit dans le groupe us-health, pour les corpus américains."
+    },
+    "tags": [
+      "international",
+      "health",
+      "healthcare",
+      "government-id"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/uk-nhs",
+        "commit": "1dfa5fba",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/fr-nir",
+        "commit": "0b19f679",
+        "exclude": [],
+        "only": []
+      },
+      {
+        "ref": "piighost/us-dea",
+        "commit": "a1ec0ac1",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

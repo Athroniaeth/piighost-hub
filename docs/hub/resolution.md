@@ -119,6 +119,21 @@ Trois façons de s'en sortir, par ordre de préférence :
    config qui prétend couvrir le monde et se trompe d'étiquette une fois sur
    deux.
 
+Cette règle a été éprouvée plutôt que supposée. Un groupe `eu-countries`
+composant la France, l'Allemagne, l'Espagne, l'Italie, les Pays-Bas et la
+Pologne a été écrit, puis refusé par le check avec neuf collisions : le code
+postal allemand réclame les codes espagnol et italien, le téléphone espagnol
+réclame le BSN néerlandais et le téléphone polonais, le numéro de TVA italien
+réclame le PESEL. Ce groupe n'existe pas, et ne peut pas exister.
+
+Les groupes par concept, eux, marchent quand leurs membres ont des formes
+distinctes, et le check dit lesquels. `payment`, `contact` et
+`identity-documents` passent tels quels. Trois autres ont demandé un
+arbitrage, chacun consigné dans la description du groupe : `business` écarte le
+NIF portugais, neuf chiffres nus qui réclament la tête d'un SIRET ; `health`
+écarte le numéro de praticien américain, dix chiffres nus indiscernables du
+numéro NHS ; `logs` écarte l'URL, qui avale un jeton inscrit dedans.
+
 Ce qui se compose sans risque, en revanche, ce sont les groupes qui ne reposent
 pas sur une longueur de chiffres : `generic`, `international`, `secrets`,
 `secrets-extended`, `network`, `crypto`. Leurs formes portent un préfixe, un
