@@ -9,15 +9,39 @@
   import Labels from "./routes/Labels.svelte";
   import NotFound from "./routes/NotFound.svelte";
   import Playground from "./routes/Playground.svelte";
-  import { i18n, t } from "./lib/i18n.svelte";
+  import { i18n, t, type Key } from "./lib/i18n.svelte";
   import { interceptLinks, router } from "./lib/router.svelte";
 
   const route = $derived(router.route);
+
+  // One title per route. Without this every tab, every bookmark and every
+  // shared link read "piighost hub", which is useless once you have three of
+  // them open. The reference is the title on a detail page, since that is what
+  // someone is actually pointing at.
+  const title = $derived.by(() => {
+    const suffix = t("home.title");
+    if (route.name === "home") return suffix;
+    if (route.name === "detail")
+      return `${route.params.namespace}/${route.params.name} · ${suffix}`;
+    const heading: Record<string, Key> = {
+      labels: "labels.title",
+      playground: "nav.playground",
+      compare: "play.compare",
+      chat: "play.chat",
+      contribute: "nav.contribute",
+    };
+    const key = heading[route.name] ?? "common.notFound";
+    return `${t(key)} · ${suffix}`;
+  });
 
   // The document language follows the switcher: a screen reader picks its voice
   // from it, and it is the one piece of the page Svelte does not own.
   $effect(() => {
     document.documentElement.lang = i18n.locale;
+  });
+
+  $effect(() => {
+    document.title = title;
   });
 </script>
 

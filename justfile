@@ -66,6 +66,7 @@ format:
 # Run the test suite with coverage.
 test:
     uv run pytest
+    pnpm -C frontend test
 
 # The registry is data with tests of its own: examples, backtracking bounds,
 # composition, recorded commits. See docs/hub/resolution.md.

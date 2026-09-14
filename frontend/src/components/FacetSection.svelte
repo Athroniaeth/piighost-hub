@@ -1,5 +1,6 @@
 <script lang="ts">
   import ChevronDown from "@lucide/svelte/icons/chevron-down";
+  import { t } from "../lib/i18n.svelte";
 
   /**
    * One collapsible group of the facet sidebar, the LangSmith Hub pattern: a
@@ -19,6 +20,21 @@
     ontoggle: (value: string) => void;
     open?: boolean;
   } = $props();
+
+  // The region facet held nineteen countries and now holds twenty-seven, which
+  // is more than a screen on its own. A selected row is always shown, so a
+  // filter you applied never hides behind the fold.
+  const LIMIT = 8;
+
+  let expanded = $state(false);
+
+  const shown = $derived(
+    expanded || rows.length <= LIMIT
+      ? rows
+      : rows.filter(
+          (row, index) => index < LIMIT || selected.includes(row.value),
+        ),
+  );
 </script>
 
 <details {open} class="group border-b pb-3 last:border-b-0">
@@ -32,7 +48,7 @@
     />
   </summary>
   <ul class="space-y-0.5">
-    {#each rows as row (row.value)}
+    {#each shown as row (row.value)}
       <li>
         <label
           class="flex cursor-pointer items-center gap-2 rounded-md px-1 py-1 text-sm hover:bg-muted/60"
@@ -52,4 +68,15 @@
       </li>
     {/each}
   </ul>
+  {#if rows.length > LIMIT}
+    <button
+      type="button"
+      class="mt-1 px-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+      onclick={() => (expanded = !expanded)}
+    >
+      {expanded
+        ? t("facet.less")
+        : `${t("facet.more")} (${rows.length - LIMIT})`}
+    </button>
+  {/if}
 </details>
