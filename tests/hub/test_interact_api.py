@@ -43,6 +43,35 @@ class TestSearch:
         email = next(i for i in body["items"] if i["key"] == "piighost/email")
         assert email["used_by"] == ["piighost/all"]
 
+    async def test_sort_orders(self, client: AsyncTestClient[Litestar]) -> None:
+        by_name = (await client.get("/api/v1/search", params={"sort": "name"})).json()[
+            "items"
+        ]
+        assert [i["name"] for i in by_name] == sorted(i["name"] for i in by_name)
+        by_used = (await client.get("/api/v1/search", params={"sort": "used"})).json()[
+            "items"
+        ]
+        counts = [len(i["used_by"]) for i in by_used]
+        assert counts == sorted(counts, reverse=True)
+        by_labels = (
+            await client.get("/api/v1/search", params={"sort": "labels"})
+        ).json()["items"]
+        widths = [len(i["labels"]) for i in by_labels]
+        assert widths == sorted(widths, reverse=True)
+        assert (
+            await client.get("/api/v1/search", params={"sort": "nope"})
+        ).status_code == 400
+
+    async def test_hits_carry_history_facts(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        item = (await client.get("/api/v1/search", params={"q": "email"})).json()[
+            "items"
+        ][0]
+        # The fixture is unrecorded: one head, no date yet.
+        assert item["commits"] == 1
+        assert item["updated_at"] is None
+
     async def test_labels_and_samples(self, client: AsyncTestClient[Litestar]) -> None:
         labels = (await client.get("/api/v1/labels")).json()["items"]
         assert {"label": "EMAIL", "patterns": ["piighost/email"]} in labels

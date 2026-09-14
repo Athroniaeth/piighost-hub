@@ -5,17 +5,44 @@ origine unique. Sept routes, aucun état côté serveur, aucun compte.
 
 | Route | Ce qu'on y fait |
 |---|---|
-| `/` | chercher et parcourir le catalogue ; les filtres vivent dans l'URL |
-| `/r/:ns/:name[/:selector]` | une fiche d'objet : le contenu à gauche, la mesure et l'historique dessous, « l'utiliser » à droite |
+| `/` | le catalogue : recherche, tri, liste d'objets, facettes à cocher |
+| `/r/:ns/:name[/:selector]` | une fiche : historique des commits à gauche, onglets Contenu, Fichier de pipeline, L'utiliser, Couverture à droite |
 | `/playground` | lancer un objet ou un regex candidat sur un texte |
 | `/playground/compare` | deux à quatre objets sur le même texte |
 | `/playground/chat` | l'aller-retour complet, avec un assistant scripté |
 | `/contribute` | vérifier un manifeste et ouvrir une pull request |
 | `/labels` | les labels que le registre peut émettre, depuis le pied de page |
 
-Trois entrées de navigation, pas plus : Catalogue, Bac à sable, Contribuer.
-Comparer et le chat sont des onglets du bac à sable, parce qu'ils partagent sa
-grammaire et son texte d'entrée.
+## Structure, d'après le LangSmith Hub
+
+La disposition reprend celle du [LangSmith Hub](https://smith.langchain.com/hub),
+qui distribue des prompts comme ce site distribue des configurations, et dont
+les visiteurs de `piighost` connaissent déjà les gestes.
+
+- **Une barre de fil d'Ariane, pas une barre de navigation.** La marque, puis la
+  place de la page dans le registre, `piighost / fr-default`. À droite, les deux
+  actions qu'un visiteur entreprend, le bac à sable et la contribution, puis
+  GitHub, le thème et la langue.
+- **Un titre centré et une recherche en pilule.** La page d'accueil est le
+  catalogue : un titre, une ligne, un champ de recherche large, et tout de suite
+  la liste.
+- **Des chips de tri.** Pertinence, mis à jour récemment, les plus utilisés,
+  couverture la plus large, nom. Sans requête, l'ordre par défaut est la date de
+  mise à jour, la pertinence étant plate.
+- **Une liste verticale, pas une grille.** Chaque ligne porte ses pastilles en
+  tête (le type, puis les tags), la référence en titre, la description sur deux
+  lignes, puis une ligne de métadonnées : date de mise à jour, nombre de labels,
+  de commits et d'utilisations. Un bouton « Essayer » à droite mène au bac à
+  sable avec l'objet préchargé.
+- **Des facettes à cocher avec compteurs**, dans une colonne à droite, groupées
+  par famille : type, région, catégorie, métier, cas d'usage, langue. Les
+  familles viennent du `kind` du vocabulaire, les auteurs de manifestes ne les
+  voient jamais.
+- **Une fiche en deux colonnes.** À gauche, l'historique des commits, chaque
+  carte portant son hash, ses tags pointeurs et sa date. À droite, le commit
+  affiché avec ses pointeurs, puis des onglets : Contenu, Fichier de pipeline,
+  L'utiliser, Couverture. La barre de titre porte la référence, les pastilles,
+  et trois actions : copier la référence, télécharger, essayer.
 
 ## Charte
 

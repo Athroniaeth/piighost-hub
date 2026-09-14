@@ -141,6 +141,8 @@ class SearchHit(msgspec.Struct):
     labels: list[str]
     used_by: list[str]
     description: Localized
+    updated_at: str | None
+    commits: int
 
 
 class FacetOut(msgspec.Struct):
@@ -414,10 +416,14 @@ class HubController(Controller):
             QueryParameter(description="Repeatable. Tags combine with AND."),
         ] = None,
         label: Annotated[str | None, QueryParameter()] = None,
+        sort: Annotated[
+            Literal["relevance", "updated", "used", "labels", "name"],
+            QueryParameter(description="Order of the results."),
+        ] = "relevance",
     ) -> SearchOut:
         """Search the registry and return the facet counts of the result set."""
         index = index_of(state)
-        entries = index.search(q, kind=kind, tags=tag, label=label)
+        entries = index.search(q, kind=kind, tags=tag, label=label, sort=sort)
         return SearchOut(
             items=[
                 SearchHit(
@@ -432,6 +438,8 @@ class HubController(Controller):
                     description=Localized(
                         en=e.description.get("en", ""), fr=e.description.get("fr", "")
                     ),
+                    updated_at=e.updated_at,
+                    commits=e.commits,
                 )
                 for e in entries
             ],

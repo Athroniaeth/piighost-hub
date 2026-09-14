@@ -33,6 +33,9 @@ class Entry:
     tags: list[str]
     labels: list[str]
     description: dict[str, str] = field(default_factory=dict)
+    updated_at: str | None = None
+    """When the newest commit was recorded; None while the head is unrecorded."""
+    commits: int = 0
     haystack: str = ""
     used_by: list[str] = field(default_factory=list)
 
@@ -75,6 +78,7 @@ class Index:
             except Exception:  # noqa: BLE001 - an unresolvable head still lists
                 labels = []
             description = head.content.get("description", {})
+            history = self.registry.history(key)
             entry = Entry(
                 key=key,
                 kind=head.kind,
@@ -87,6 +91,10 @@ class Index:
                     "en": description.get("en", ""),
                     "fr": description.get("fr", ""),
                 },
+                updated_at=next(
+                    (s.recorded_at for s in history if s.recorded_at), None
+                ),
+                commits=len(history),
             )
             entry.haystack = fold(
                 " ".join(
@@ -120,11 +128,15 @@ class Index:
         kind: str | None = None,
         tags: list[str] | None = None,
         label: str | None = None,
+        sort: str = "relevance",
     ) -> list[Entry]:
-        """Return matching entries, best first, then by key.
+        """Return matching entries, ordered by ``sort``, then by key.
 
         Tags are combined with AND: picking two facets narrows, which is what a
         visitor expects from a facet list and what makes the counts meaningful.
+        ``relevance`` is the match score, which is flat without a query, so the
+        other orders exist for browsing: ``updated`` newest first, ``used`` most
+        referenced first, ``labels`` widest first, ``name`` alphabetical.
         """
         needle = fold(query.strip())
         wanted = set(tags or [])
@@ -140,10 +152,7 @@ class Index:
             if score is None:
                 continue
             results.append((-score, entry.key, entry))
-        return [
-            entry
-            for _, _, entry in sorted(results, key=lambda item: (item[0], item[1]))
-        ]
+        return [entry for _, _, entry in sorted(results, key=_sort_key(sort))]
 
     @staticmethod
     def _score(entry: Entry, needle: str) -> int | None:
@@ -187,6 +196,30 @@ class Index:
             if head.kind == "pattern":
                 found.setdefault(head.content["label"], []).append(key)
         return {label: sorted(keys) for label, keys in sorted(found.items())}
+
+
+SORTS = ("relevance", "updated", "used", "labels", "name")
+
+
+def _sort_key(sort: str):
+    if sort == "updated":
+        return lambda item: (
+            item[2].updated_at is None,
+            _descending(item[2].updated_at or ""),
+            item[1],
+        )
+    if sort == "used":
+        return lambda item: (-len(item[2].used_by), item[1])
+    if sort == "labels":
+        return lambda item: (-len(item[2].labels), item[1])
+    if sort == "name":
+        return lambda item: (item[2].name, item[1])
+    return lambda item: (item[0], item[1])
+
+
+def _descending(text: str) -> str:
+    """Invert a string's sort order, so an ISO date sorts newest first."""
+    return "".join(chr(0x10FFFF - ord(c)) for c in text)
 
 
 def _referenced(head: Snapshot) -> list[str]:

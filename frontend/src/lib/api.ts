@@ -79,6 +79,7 @@ export const api = {
     kind?: "pattern" | "group" | "config";
     tag?: string[];
     label?: string;
+    sort?: "relevance" | "updated" | "used" | "labels" | "name";
   }): Promise<SearchOut> {
     return unwrap(await apiV1SearchSearch({ query: params }));
   },

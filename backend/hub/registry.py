@@ -322,7 +322,7 @@ class Registry:
         if ref.selector == LATEST:
             if obj is None:
                 raise ResolutionError(f"unknown object {ref.key}")
-            return self._head(ref.key, visiting)
+            return self._recorded_or(self._head(ref.key, visiting))
         if ref.is_commit:
             short = ref.selector
         else:
@@ -335,7 +335,7 @@ class Registry:
         if obj is not None:
             head = self._head(ref.key, visiting)
             if head.short == short:
-                return head
+                return self._recorded_or(head)
         recorded = self.store.get(ref.key, short)
         if recorded is None:
             raise ResolutionError(f"{ref.key}:{short} is not a recorded commit")
@@ -414,11 +414,21 @@ class Registry:
         """Return a snapshot by commit, from the heads or the store."""
         head = self.heads.get(key)
         if head is not None and head.short == short:
-            return head
+            return self._recorded_or(head)
         recorded = self.store.get(key, short)
         if recorded is None:
             raise ResolutionError(f"{key}:{short} is not a recorded commit")
         return recorded
+
+    def _recorded_or(self, head: Snapshot) -> Snapshot:
+        """The recorded copy of a head when there is one, else the head itself.
+
+        The two carry the same content and digest; only the recorded one knows
+        when it was published. Serving the in-memory head for `latest` made the
+        API call the current commit unrecorded while listing its date one line
+        below, in the history.
+        """
+        return self.store.get(head.key, head.short) or head
 
     def history(self, key: str) -> list[Snapshot]:
         """Recorded commits of an object, newest first, the head first if unrecorded."""

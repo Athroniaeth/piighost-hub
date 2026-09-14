@@ -891,6 +891,9 @@
           "commit": {
             "type": "string"
           },
+          "commits": {
+            "type": "integer"
+          },
           "description": {
             "$ref": "#/components/schemas/Localized"
           },
@@ -918,6 +921,16 @@
             },
             "type": "array"
           },
+          "updated_at": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "used_by": {
             "items": {
               "type": "string"
@@ -927,6 +940,7 @@
         },
         "required": [
           "commit",
+          "commits",
           "description",
           "key",
           "kind",
@@ -934,6 +948,7 @@
           "name",
           "namespace",
           "tags",
+          "updated_at",
           "used_by"
         ],
         "title": "SearchHit",
@@ -2561,6 +2576,27 @@
                   "type": "null"
                 }
               ]
+            }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Order of the results.",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "relevance",
+              "description": "Order of the results.",
+              "enum": [
+                "relevance",
+                "updated",
+                "used",
+                "labels",
+                "name"
+              ],
+              "type": "string"
             }
           }
         ],
