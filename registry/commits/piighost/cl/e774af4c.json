@@ -1,0 +1,27 @@
+{
+  "digest": "e774af4c866c6da5553ca4d61d3cc9455059cf6e427ab49b7e293a898cc85581",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "cl",
+    "schema_version": 1,
+    "description": {
+      "en": "Chile: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Chili : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "cl",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/cl-rut",
+        "commit": "89ea0e79",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

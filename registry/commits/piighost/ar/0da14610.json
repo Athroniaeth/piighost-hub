@@ -1,0 +1,27 @@
+{
+  "digest": "0da146101798bfc03476af5854e1103faaf8695dd0e61d0cc1093fd9eb73a2b5",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "ar",
+    "schema_version": 1,
+    "description": {
+      "en": "Argentina: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Argentine : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "ar",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/ar-dni",
+        "commit": "749d5444",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "es-driving-licence"
+label = "ES_DRIVING_LICENCE"
+tags = ["es", "government-id", "identity"]
+regex = '(?<!\w)\d{8}[0-9A-Z](?!\w)'
+
+[pattern.description]
+en = "Spanish permiso de conducir number: eight digits then one digit or letter, per the Purview Spain driver licence definition. The number is the holder DNI, which is why this shape is not independent. Reproduced collision: both examples are matched whole by ES_DNI_NIE as well, so every hit here is also a DNI hit and the two labels should be read as the same underlying value seen through two lenses. The final character is the DNI check letter but nothing is verified, the match is on shape alone."
+fr = "Numero du permis de conduire espagnol : huit chiffres puis un chiffre ou une lettre, selon la definition Purview du permis espagnol. Ce numero est le DNI du titulaire, ce qui explique que la forme ne soit pas independante. Collision reproduite : les deux exemples sont aussi reconnus en entier par ES_DNI_NIE, donc chaque detection ici est aussi une detection de DNI et les deux labels designent la meme valeur vue sous deux angles. Le dernier caractere est la lettre de controle du DNI, mais rien n'est verifie, la reconnaissance porte sur la forme seule."
+
+[[examples.match]]
+text = "The permiso de conducir 12345678Z is recorded in the file."
+value = "12345678Z"
+
+[[examples.match]]
+text = "Licence number 87654321X repeats the DNI of the holder."
+value = "87654321X"
+
+[[examples.no_match]]
+text = "1234567Z"
+
+[[examples.no_match]]
+text = "12345678"
+
+[[examples.no_match]]
+text = "12345678z"
+
+[redos]
+prefix = ""
+filler = "1"
+suffix = "x"

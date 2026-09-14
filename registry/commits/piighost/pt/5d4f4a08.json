@@ -1,0 +1,27 @@
+{
+  "digest": "5d4f4a083c460e02c69178de1b7e0ac82b80944dc15b9456ef1a026a52f04d4b",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "pt",
+    "schema_version": 1,
+    "description": {
+      "en": "Portugal: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Portugal : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "pt",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/pt-nif",
+        "commit": "07ffe774",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "digest": "07ffe7741f67082b1074bb623552c3fe98af14d6a4df57ee29981d0895c77ada",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "pt-nif",
+    "schema_version": 1,
+    "label": "PT_NIF",
+    "regex": "(?<!\\w)\\d{3} ?\\d{3} ?\\d{3}(?!\\w)",
+    "description": {
+      "en": "Portuguese tax identification number, the NIF or numero de contribuinte: nine digits, written solid or in three groups of three, per the Purview Portugal tax identification definition; Cloudflare publishes 100000002 as its sample. The checksum is not verified. Reproduced collisions: written solid the value is matched whole by US_BANK_ROUTING, by NL_BSN and by PL_PHONE, and written with spaces it is matched whole by CA_SIN and by PL_PHONE. This is a keyword dependent label, the shape alone decides nothing.",
+      "fr": "Numero d'identification fiscale portugais, le NIF ou numero de contribuinte : neuf chiffres, ecrits d'un bloc ou en trois groupes de trois, selon la definition Purview du numero fiscal portugais ; Cloudflare publie 100000002 comme exemple. La somme de controle n'est pas verifiee. Collisions reproduites : ecrite d'un bloc, la valeur est reconnue en entier par US_BANK_ROUTING, par NL_BSN et par PL_PHONE, et ecrite avec des espaces elle est reconnue en entier par CA_SIN et par PL_PHONE. Ce label depend des mots-cles, la forme seule ne tranche rien."
+    },
+    "tags": [
+      "pt",
+      "government-id",
+      "accounting"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "O NIF 123456789 consta da factura.",
+          "value": "123456789"
+        },
+        {
+          "text": "The tax number 245 678 902 is printed in three groups.",
+          "value": "245 678 902"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "12345678"
+        },
+        {
+          "text": "1234567890"
+        },
+        {
+          "text": "123-456-789"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "123 45",
+      "suffix": "x"
+    }
+  }
+}

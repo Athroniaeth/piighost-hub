@@ -1,0 +1,12 @@
+schema_version = 1
+
+[group]
+name = "banking"
+description = { en = "Bank identifiers that cross borders: the IBAN and the BIC, also called the SWIFT code. Both carry a country prefix in their own alphabet, so they sit beside any national group without fighting it.", fr = "Identifiants bancaires qui traversent les frontières : l'IBAN et le BIC, aussi appelé code SWIFT. Tous deux portent un préfixe de pays dans leur propre alphabet, donc ils se placent à côté de n'importe quel groupe national sans le gêner." }
+tags = ["international", "eu", "finance", "banking"]
+
+[[sources]]
+ref = "piighost/iban"
+
+[[sources]]
+ref = "piighost/swift-bic"

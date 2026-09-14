@@ -1,0 +1,27 @@
+{
+  "digest": "3d6ed182e239ddbc1d621f0826a5ef8c3c3244cd6aaae838e3a6bf6ea7914743",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "ie",
+    "schema_version": 1,
+    "description": {
+      "en": "Ireland: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Irlande : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "ie",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/ie-ppsn",
+        "commit": "a00746b7",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

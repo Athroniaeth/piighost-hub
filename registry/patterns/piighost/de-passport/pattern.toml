@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "de-passport"
+label = "DE_PASSPORT"
+tags = ["de", "government-id", "identity"]
+regex = '(?<!\w)[CFGHJKLMNPRTVWXYZ][CFGHJKLMNPRTVWXYZ0-9]{7}\d(?!\w)'
+
+[pattern.description]
+en = "German Reisepassnummer, nine characters: eight from the ICAO Doc 9303 restricted set, which drops the visually ambiguous letters A, B, D, E, I, O, Q, S and U, then one digit that is the ICAO check digit. Taken from the Presidio German passport recognizer and its published sample C01X00T41; Purview describes the same run with an optional trailing check digit and an optional d, which are not matched here. The check digit is not verified, only its position. The restricted alphabet makes the shape reasonably selective and no registry label fired on the examples."
+fr = "Numero de passeport allemand, neuf caracteres : huit pris dans l'alphabet restreint ICAO Doc 9303, qui ecarte les lettres visuellement ambigues A, B, D, E, I, O, Q, S et U, puis un chiffre qui est la cle de controle ICAO. Repris du recognizer Presidio du passeport allemand et de son exemple publie C01X00T41 ; Purview decrit la meme suite avec une cle finale facultative et un d facultatif, non reconnus ici. La cle n'est pas verifiee, seule sa position l'est. L'alphabet restreint rend la forme raisonnablement selective et aucun label du registre ne s'est declenche sur les exemples."
+
+[[examples.match]]
+text = "Presidio documents the sample Reisepassnummer C01X00T41 in its recognizer."
+value = "C01X00T41"
+
+[[examples.match]]
+text = "The specimen booklet carries PF7GJ2K80 on the data page."
+value = "PF7GJ2K80"
+
+[[examples.no_match]]
+text = "A01X00T41"
+
+[[examples.no_match]]
+text = "C01X00T4"
+
+[[examples.no_match]]
+text = "C01X00T4A"
+
+[redos]
+prefix = ""
+filler = "C01X00T4"
+suffix = "!"

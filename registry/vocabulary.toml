@@ -170,3 +170,31 @@ label = { en = "English text", fr = "Texte en anglais" }
 [lang-de]
 kind = "language"
 label = { en = "German text", fr = "Texte en allemand" }
+
+[ie]
+kind = "region"
+label = { en = "Ireland", fr = "Irlande" }
+
+[pt]
+kind = "region"
+label = { en = "Portugal", fr = "Portugal" }
+
+[at]
+kind = "region"
+label = { en = "Austria", fr = "Autriche" }
+
+[fi]
+kind = "region"
+label = { en = "Finland", fr = "Finlande" }
+
+[id]
+kind = "region"
+label = { en = "Indonesia", fr = "Indonesie" }
+
+[ar]
+kind = "region"
+label = { en = "Argentina", fr = "Argentine" }
+
+[cl]
+kind = "region"
+label = { en = "Chile", fr = "Chili" }

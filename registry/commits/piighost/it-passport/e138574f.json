@@ -1,0 +1,50 @@
+{
+  "digest": "e138574f2c72647b91eb24640d631e58edcef0a9187e6f02f7a41f564fe1f0ed",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "it-passport",
+    "schema_version": 1,
+    "label": "IT_PASSPORT",
+    "regex": "(?<!\\w)[A-Z]{2}\\d{7}(?!\\w)",
+    "description": {
+      "en": "Italian passport number, two letters then seven digits. Presidio reads the two leading characters as letters, Purview allows letters or digits there; the letter reading is kept, because allowing digits collapses the pattern onto a bare nine digit run and onto UK_PASSPORT. No checksum. Reproduced on the examples, no registry label fires alongside it, but note the shape is one letter short of UK_NINO and shares its family, so mixed British and Italian documents want context words.",
+      "fr": "Numero de passeport italien, deux lettres puis sept chiffres. Presidio lit les deux premiers caracteres comme des lettres, Purview y autorise lettres ou chiffres ; la lecture par lettres est retenue, car autoriser des chiffres ramene le motif a une suite de neuf chiffres et le fait coincider avec UK_PASSPORT. Pas de somme de controle. Verifie sur les exemples, aucun label du registre ne se declenche en meme temps, mais la forme n'est qu'a une lettre de UK_NINO et appartient a la meme famille, donc un corpus melant documents britanniques et italiens demande des mots de contexte."
+    },
+    "tags": [
+      "it",
+      "government-id",
+      "identity"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Passaporto YA1234567 rilasciato a Roma.",
+          "value": "YA1234567"
+        },
+        {
+          "text": "The booklet number YB7654321 sits above the photograph.",
+          "value": "YB7654321"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "Y1234567"
+        },
+        {
+          "text": "YA123456"
+        },
+        {
+          "text": "ya1234567"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "",
+      "filler": "YA123456",
+      "suffix": "!"
+    }
+  }
+}

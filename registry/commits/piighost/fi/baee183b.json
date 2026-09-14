@@ -1,0 +1,27 @@
+{
+  "digest": "baee183b3571e75708b798926f596ec3a95a33d134a8a46b006a4c01b945ae85",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "fi",
+    "schema_version": 1,
+    "description": {
+      "en": "Finland: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Finlande : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "fi",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/fi-hetu",
+        "commit": "db788461",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

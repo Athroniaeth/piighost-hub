@@ -1,0 +1,27 @@
+{
+  "digest": "5e296d1e0c8e6470c7d9181f228cef58d2258f8528695eed07b14479dadcaeed",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "id",
+    "schema_version": 1,
+    "description": {
+      "en": "Indonesia: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Indonésie : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "id",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/id-nik",
+        "commit": "1ba48b66",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}

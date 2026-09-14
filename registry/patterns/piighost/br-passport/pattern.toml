@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "br-passport"
+label = "BR_PASSPORT"
+tags = ["br", "government-id", "identity"]
+regex = '(?<!\w)[A-Z]{2}\d{6}(?!\w)'
+
+[pattern.description]
+en = "Brazilian passport number. The Policia Federal, which issues it, states that the number is made of two letters, called the series, followed by six digits. No checksum, and the federal police add that the Brazilian booklet has no separate passport book number. Reproduced collisions: this is character for character the shape of CA_PASSPORT and of the eight character form of ES_PASSPORT, so the three labels fire together, and the six digit tail is separately matched by IN_PIN."
+fr = "Numero de passeport bresilien. La Policia Federal, qui le delivre, indique qu'il se compose de deux lettres, appelees serie, suivies de six chiffres. Pas de somme de controle, et la police federale precise que le carnet bresilien ne porte pas de numero de carnet distinct. Collisions reproduites : c'est caractere pour caractere la forme de CA_PASSPORT et de la variante a huit caracteres de ES_PASSPORT, donc les trois labels se declenchent ensemble, et la queue de six chiffres est reconnue separement par IN_PIN."
+
+[[examples.match]]
+text = "O passaporte FD000001 foi emitido pela Policia Federal."
+value = "FD000001"
+
+[[examples.match]]
+text = "The booklet YY123456 uses the same two letter series."
+value = "YY123456"
+
+[[examples.no_match]]
+text = "F000001"
+
+[[examples.no_match]]
+text = "FD0000012"
+
+[[examples.no_match]]
+text = "fd000001"
+
+[redos]
+prefix = ""
+filler = "FD00000"
+suffix = "!"

@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "ca-passport"
+label = "CA_PASSPORT"
+tags = ["ca", "government-id", "identity"]
+regex = '(?<!\w)[A-Z]{2}\d{6}(?!\w)'
+
+[pattern.description]
+en = "Canadian passport number, two upper case letters followed by six digits, per the Purview Canada passport definition. No checksum. Reproduced collisions: this is the same shape as BR_PASSPORT and as the eight character form of ES_PASSPORT, so all three fire on the same value; and the six digit tail is separately matched by IN_PIN. Only the surrounding words tell a Canadian booklet from a Brazilian one."
+fr = "Numero de passeport canadien, deux majuscules suivies de six chiffres, selon la definition Purview du passeport canadien. Pas de somme de controle. Collisions reproduites : c'est la meme forme que BR_PASSPORT et que la variante a huit caracteres de ES_PASSPORT, donc les trois se declenchent sur la meme valeur ; et la queue de six chiffres est reconnue separement par IN_PIN. Seuls les mots environnants distinguent un carnet canadien d'un carnet bresilien."
+
+[[examples.match]]
+text = "The Canadian booklet AB123456 was issued in Ottawa."
+value = "AB123456"
+
+[[examples.match]]
+text = "Passport GA654321 expires in five years."
+value = "GA654321"
+
+[[examples.no_match]]
+text = "A123456"
+
+[[examples.no_match]]
+text = "AB1234567"
+
+[[examples.no_match]]
+text = "ab123456"
+
+[redos]
+prefix = ""
+filler = "AB12345"
+suffix = "!"

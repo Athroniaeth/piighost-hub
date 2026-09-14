@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "in-passport"
+label = "IN_PASSPORT"
+tags = ["in", "government-id", "identity"]
+regex = '(?<!\w)[A-Z][1-9]\d ?\d{4}[1-9](?!\w)'
+
+[pattern.description]
+en = "Indian passport number, eight characters: one letter, then seven digits of which the first and the last are never zero, with the single space that the booklet sometimes prints after the third character tolerated. Taken from the Presidio Indian passport recognizer; Google Cloud DLP carries the same infoType without publishing a layout. The two non zero constraints trim a useful slice of the false positives. Reproduced noise: when the space is present the five digit tail is separately matched by FR_ZIP, DE_ZIP, ES_POSTAL, IT_CAP and US_ZIP."
+fr = "Numero de passeport indien, huit caracteres : une lettre, puis sept chiffres dont le premier et le dernier ne valent jamais zero, l'espace unique parfois imprime apres le troisieme caractere etant tolere. Repris du recognizer Presidio du passeport indien ; Google Cloud DLP porte le meme infoType sans publier de decomposition. Les deux contraintes de chiffre non nul retirent une part utile des faux positifs. Bruit reproduit : lorsque l'espace est present, la queue de cinq chiffres est reconnue separement par FR_ZIP, DE_ZIP, ES_POSTAL, IT_CAP et US_ZIP."
+
+[[examples.match]]
+text = "The Indian passport A1234567 is listed on the visa form."
+value = "A1234567"
+
+[[examples.match]]
+text = "Passport B12 34561 is printed with the usual space."
+value = "B12 34561"
+
+[[examples.no_match]]
+text = "A0234567"
+
+[[examples.no_match]]
+text = "A1234560"
+
+[[examples.no_match]]
+text = "a1234567"
+
+[redos]
+prefix = ""
+filler = "A123456"
+suffix = "!"

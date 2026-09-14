@@ -11,7 +11,13 @@ after a full check run.
 Usage:
     python3 scripts/new_patterns.py proposals.json [--registry registry] [--dry-run]
 
-The input is a JSON list of objects:
+The input is a JSON list of objects, or an object carrying both the patterns
+and the region tags they need, since a batch for a new country cannot be
+imported before its tag exists:
+
+    {"new_tags": {"ie": {"en": "Ireland", "fr": "Irlande"}}, "patterns": [...]}
+
+A bare list is equivalent to that object with no new tags. The list holds:
 
     [
       {
@@ -91,7 +97,9 @@ def check(proposal: dict, vocabulary: set[str], existing: set[str]) -> list[str]
 
     regex = proposal.get("regex", "")
     if "'" in regex:
-        problems.append("the regex holds a single quote, which breaks the TOML literal string")
+        problems.append(
+            "the regex holds a single quote, which breaks the TOML literal string"
+        )
     try:
         compiled = re.compile(regex, re.ASCII)
     except re.error as error:
@@ -107,7 +115,9 @@ def check(proposal: dict, vocabulary: set[str], existing: set[str]) -> list[str]
             continue
         found = [m.group() for m in compiled.finditer(text)]
         if value not in found:
-            problems.append(f"{value!r} is not matched in {text!r}; the regex found {found}")
+            problems.append(
+                f"{value!r} is not matched in {text!r}; the regex found {found}"
+            )
         for wrapper in WRAPPERS:
             wrapped = [m.group() for m in compiled.finditer(wrapper.format(v=value))]
             if wrapped != [value]:
@@ -135,7 +145,9 @@ def render(proposal: dict) -> str:
         f'\n[[examples.match]]\ntext = "{text}"\nvalue = "{value}"\n'
         for text, value in proposal["match"]
     )
-    no_matches = "".join(f'\n[[examples.no_match]]\ntext = "{t}"\n' for t in proposal["no_match"])
+    no_matches = "".join(
+        f'\n[[examples.no_match]]\ntext = "{t}"\n' for t in proposal["no_match"]
+    )
     prefix, filler, suffix = proposal["redos"]
     return TEMPLATE.format(
         name=proposal["name"],
@@ -153,18 +165,46 @@ def render(proposal: dict) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("proposals", type=Path)
     parser.add_argument("--registry", type=Path, default=Path("registry"))
     parser.add_argument("--namespace", default="piighost")
-    parser.add_argument("--dry-run", action="store_true", help="validate and report, write nothing")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="validate and report, write nothing"
+    )
     args = parser.parse_args()
 
-    vocabulary = set(tomllib.loads((args.registry / "vocabulary.toml").read_text()))
+    vocabulary_path = args.registry / "vocabulary.toml"
+    vocabulary = set(tomllib.loads(vocabulary_path.read_text()))
     patterns_dir = args.registry / "patterns" / args.namespace
-    existing = {p.name for p in patterns_dir.iterdir() if p.is_dir()} if patterns_dir.is_dir() else set()
+    existing = (
+        {p.name for p in patterns_dir.iterdir() if p.is_dir()}
+        if patterns_dir.is_dir()
+        else set()
+    )
 
-    proposals = json.loads(args.proposals.read_text())
+    payload = json.loads(args.proposals.read_text())
+    if isinstance(payload, dict):
+        proposals = payload.get("patterns", [])
+        new_tags = payload.get("new_tags", {})
+    else:
+        proposals, new_tags = payload, {}
+
+    # Declare the region tags first: a pattern for a new country is rejected for
+    # an unknown tag otherwise, which reads as the pattern's fault when it is not.
+    added = {tag: labels for tag, labels in new_tags.items() if tag not in vocabulary}
+    vocabulary |= set(added)
+    if added and not args.dry_run:
+        with vocabulary_path.open("a") as handle:
+            for tag, labels in added.items():
+                handle.write(
+                    f'\n[{tag}]\nkind = "region"\n'
+                    f'label = {{ en = "{labels["en"]}", fr = "{labels["fr"]}" }}\n'
+                )
+    if added:
+        print(f"region tags: {', '.join(sorted(added))}")
     rejected = 0
     accepted: list[dict] = []
     for proposal in proposals:

@@ -1,0 +1,27 @@
+{
+  "digest": "0a4892bdcdd232d4640c451ee2a526c95320e655ee05c7330bf009220fcf564b",
+  "recorded_at": "2026-09-14T17:43:00+00:00",
+  "content": {
+    "kind": "group",
+    "namespace": "piighost",
+    "name": "at",
+    "schema_version": 1,
+    "description": {
+      "en": "Austria: the national identifier. A first pattern for this country rather than a complete set, added because several published inventories carry it and the registry did not.",
+      "fr": "Autriche : l'identifiant national. Un premier motif pour ce pays plutôt qu'un ensemble complet, ajouté parce que plusieurs inventaires publiés le portent et que le registre ne l'avait pas."
+    },
+    "tags": [
+      "at",
+      "government-id",
+      "identity"
+    ],
+    "sources": [
+      {
+        "ref": "piighost/at-svnr",
+        "commit": "c7ac5a69",
+        "exclude": [],
+        "only": []
+      }
+    ]
+  }
+}
