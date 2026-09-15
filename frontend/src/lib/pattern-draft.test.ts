@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  draftFrom,
   emptyDraft,
   labelOf,
   problems,
@@ -128,5 +129,82 @@ describe("toManifest", () => {
       draft({ matches: [...draft().matches, { text: "", value: "" }] }),
     );
     expect(out.match(/\[\[examples\.match\]\]/g)).toHaveLength(2);
+  });
+});
+
+describe("draftFrom", () => {
+  const commit = {
+    key: "piighost/fr-nir",
+    kind: "pattern" as const,
+    commit: "0b19f679",
+    digest: "0b19f679…",
+    recorded_at: "2026-09-13T04:37:47+00:00",
+    content: {
+      kind: "pattern",
+      namespace: "piighost",
+      name: "fr-nir",
+      schema_version: 1,
+      label: "FR_NIR",
+      regex: "\\b[12]\\d{14}\\b",
+      description: { en: "French NIR.", fr: "NIR français." },
+      tags: ["fr", "government-id", "health"],
+      resilience: true,
+      examples: {
+        match: [
+          { text: "NIR : 180057505600157", value: "180057505600157" },
+          { text: "Assuré 280057505600157", value: "280057505600157" },
+        ],
+        no_match: [{ text: "SIRET 73282932000074" }, { text: "1234" }],
+      },
+      redos: { prefix: "1", filler: "8", suffix: "x" },
+    },
+  };
+
+  it("carries every field across, examples included", () => {
+    const out = draftFrom(commit);
+    expect(out.name).toBe("fr-nir");
+    expect(out.label).toBe("FR_NIR");
+    expect(out.tags).toEqual(["fr", "government-id", "health"]);
+    expect(out.regex).toBe("\\b[12]\\d{14}\\b");
+    expect(out.en).toBe("French NIR.");
+    expect(out.matches).toHaveLength(2);
+    expect(out.matches[0].value).toBe("180057505600157");
+    expect(out.noMatches[1].text).toBe("1234");
+    expect(out.redos).toEqual({ prefix: "1", filler: "8", suffix: "x" });
+  });
+
+  it("keeps a label the name would not have produced", () => {
+    // it-tessera-sanitaria emits IT_HEALTH_CARD. Deriving from the name would
+    // silently rename the label of every fork.
+    const out = draftFrom({
+      ...commit,
+      content: {
+        ...commit.content,
+        name: "it-tessera-sanitaria",
+        label: "IT_HEALTH_CARD",
+      },
+    });
+    expect(out.label).toBe("IT_HEALTH_CARD");
+  });
+
+  it("pads up to the two rows the registry asks for", () => {
+    const out = draftFrom({
+      ...commit,
+      content: {
+        ...commit.content,
+        examples: { match: [{ text: "a 1", value: "1" }], no_match: [] },
+      },
+    });
+    expect(out.matches).toHaveLength(2);
+    expect(out.matches[1]).toEqual({ text: "", value: "" });
+    expect(out.noMatches).toHaveLength(2);
+  });
+
+  it("round-trips through the manifest it writes", () => {
+    const out = toManifest(draftFrom(commit));
+    expect(out).toContain('name = "fr-nir"');
+    expect(out).toContain("regex = '\\b[12]\\d{14}\\b'");
+    expect(out.match(/\[\[examples\.match\]\]/g)).toHaveLength(2);
+    expect(problems(draftFrom(commit))).toEqual([]);
   });
 });

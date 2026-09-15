@@ -17,6 +17,7 @@
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
   import { t, type Key } from "../lib/i18n.svelte";
   import {
+    draftFrom,
     emptyDraft,
     problems,
     toManifest,
@@ -30,6 +31,7 @@
   let base = $state("piighost/email");
   let manifest = $state("");
   let draft = $state<PatternDraft>(emptyDraft());
+  let labelPinned = $state(false);
   // A pattern is written as a form; a group and a configuration stay TOML,
   // since what they hold is references and pipeline sections, which a form
   // would only retype.
@@ -74,17 +76,37 @@
   }
 
   async function fork() {
-    const [ns, object] = base.split("/");
+    const [namespaceOf, object] = base.split("/");
     loading = true;
     error = null;
     try {
-      start(basedOn(kind, name, await api.manifest(ns, object)));
+      if (asForm) {
+        // The frozen commit rather than the manifest: it is already parsed, so
+        // the form is filled by Python's reading of the file and not by a
+        // second TOML parser written in the browser.
+        const commit = await api.commit({
+          namespace: namespaceOf,
+          name: object,
+          selector: "latest",
+        });
+        draft = draftFrom(commit);
+        labelPinned = true;
+        if (name === "") name = draft.name;
+        result = null;
+      } else {
+        start(basedOn(kind, name, await api.manifest(namespaceOf, object)));
+      }
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
     } finally {
       loading = false;
     }
   }
+
+  /** The picker and the button that fills either the form or the editor. */
+  const forkNote = $derived(
+    asForm ? t("contribute.fork.draft") : t(`contribute.fork.${kind}` as Key),
+  );
 
   async function check() {
     busy = true;
@@ -181,30 +203,29 @@
         </label>
       </div>
 
+      <div class="space-y-2 rounded-lg bg-muted/40 p-2">
+        <RefPicker
+          id="contribute-base"
+          bind:value={base}
+          {kind}
+          label={t("contribute.base")}
+        />
+        <p class="text-xs text-muted-foreground">{forkNote}</p>
+        <Button
+          variant="outline"
+          size="sm"
+          class="w-full"
+          disabled={loading}
+          onclick={fork}
+        >
+          {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
+          {t("contribute.fork")}
+        </Button>
+      </div>
+
       {#if asForm}
-        <PatternFields bind:draft {name} />
+        <PatternFields bind:draft bind:labelPinned {name} />
       {:else}
-        <div class="space-y-2 rounded-lg bg-muted/40 p-2">
-          <RefPicker
-            id="contribute-base"
-            bind:value={base}
-            {kind}
-            label={t("contribute.base")}
-          />
-          <p class="text-xs text-muted-foreground">
-            {t(`contribute.fork.${kind}` as Key)}
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            class="w-full"
-            disabled={loading}
-            onclick={fork}
-          >
-            {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
-            {t("contribute.fork")}
-          </Button>
-        </div>
         <Button
           variant="outline"
           size="sm"

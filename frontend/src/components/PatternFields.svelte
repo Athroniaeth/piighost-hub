@@ -11,16 +11,19 @@
    * name have to be equal or the registry refuses the file, so the field above
    * this one is the only one, and the draft follows it.
    */
-  let { draft = $bindable(), name }: { draft: PatternDraft; name: string } =
-    $props();
+  let {
+    draft = $bindable(),
+    name,
+    labelPinned = $bindable(),
+  }: { draft: PatternDraft; name: string; labelPinned: boolean } = $props();
 
   // The label follows the name until someone types their own, which is the
   // common case (`fr-nir` gives `FR_NIR`) without taking the choice away.
-  let labelTouched = $state(false);
-
+  // Loading an existing pattern pins it too: `it-tessera-sanitaria` emits
+  // IT_HEALTH_CARD, and deriving the label from the name would lose that.
   $effect(() => {
     draft.name = name;
-    if (!labelTouched) draft.label = labelOf(name);
+    if (!labelPinned) draft.label = labelOf(name);
   });
 </script>
 
@@ -28,7 +31,7 @@
   {t("draft.label")}
   <input
     bind:value={draft.label}
-    oninput={() => (labelTouched = true)}
+    oninput={() => (labelPinned = true)}
     placeholder="ORDER_ID"
     spellcheck="false"
     class={FIELD_MONO}

@@ -203,6 +203,8 @@ const STRINGS = {
       "References it as a source, so it keeps improving under you.",
     "contribute.fork.config":
       "Extends it, so you only write down what differs.",
+    "contribute.fork.draft":
+      "Fills the form with it, examples included. Change the shape and keep the cases it already gets right.",
     "contribute.check": "Check",
     "contribute.path": "Path",
     "contribute.ok": "Every check passed.",

@@ -12,6 +12,8 @@
  * that closes a TOML literal string.
  */
 
+import type { CommitDetail } from "../generated/api";
+
 export type Example = { text: string; value: string };
 
 export type PatternDraft = {
@@ -153,4 +155,64 @@ prefix = ${quoted(draft.redos.prefix)}
 filler = ${quoted(draft.redos.filler)}
 suffix = ${quoted(draft.redos.suffix)}
 `;
+}
+
+/**
+ * A draft from a pattern already in the registry.
+ *
+ * Read from the frozen commit rather than from the TOML, because the API
+ * already hands back what Python's own parser made of the file. Parsing TOML
+ * in the browser to fill a form would be a second implementation of the format,
+ * and the first one it disagreed with would be the one that decides whether the
+ * submission is accepted.
+ *
+ * Everything is copied, including the examples, because forking a pattern means
+ * changing its shape and keeping the cases it already got right.
+ */
+export function draftFrom(commit: CommitDetail): PatternDraft {
+  const content = commit.content as {
+    name?: string;
+    label?: string;
+    regex?: string;
+    tags?: string[];
+    description?: { en?: string; fr?: string };
+    examples?: {
+      match?: { text?: string; value?: string }[];
+      no_match?: { text?: string }[];
+    };
+    redos?: { prefix?: string; filler?: string; suffix?: string };
+  };
+
+  const matches = (content.examples?.match ?? []).map((example) => ({
+    text: example.text ?? "",
+    value: example.value ?? "",
+  }));
+  const noMatches = (content.examples?.no_match ?? []).map((row) => ({
+    text: row.text ?? "",
+  }));
+
+  return {
+    name: content.name ?? "",
+    label: content.label ?? "",
+    tags: [...(content.tags ?? [])],
+    regex: content.regex ?? "",
+    en: content.description?.en ?? "",
+    fr: content.description?.fr ?? "",
+    // A fork of a pattern with a single example would open on one row and look
+    // like the form had lost one, so the minimum the registry asks for is also
+    // the minimum shown.
+    matches:
+      matches.length >= 2
+        ? matches
+        : [...matches, ...emptyDraft().matches].slice(0, 2),
+    noMatches:
+      noMatches.length >= 2
+        ? noMatches
+        : [...noMatches, ...emptyDraft().noMatches].slice(0, 2),
+    redos: {
+      prefix: content.redos?.prefix ?? "",
+      filler: content.redos?.filler ?? "",
+      suffix: content.redos?.suffix ?? "",
+    },
+  };
 }
