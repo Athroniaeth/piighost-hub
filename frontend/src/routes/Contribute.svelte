@@ -5,28 +5,51 @@
   import Loader from "@lucide/svelte/icons/loader-circle";
   import type { SubmissionResult } from "../generated/api";
   import KindIcon from "../components/KindIcon.svelte";
+  import PatternExamples from "../components/PatternExamples.svelte";
+  import PatternFields from "../components/PatternFields.svelte";
   import RefPicker from "../components/RefPicker.svelte";
   import Button from "../components/ui/Button.svelte";
+  import CodeBlock from "../components/ui/CodeBlock.svelte";
   import Region from "../components/ui/Region.svelte";
+  import Segmented from "../components/ui/Segmented.svelte";
   import { ApiError, api } from "../lib/api";
   import { cn } from "../lib/cn";
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
   import { t, type Key } from "../lib/i18n.svelte";
+  import {
+    emptyDraft,
+    problems,
+    toManifest,
+    type PatternDraft,
+  } from "../lib/pattern-draft";
   import { FIELD_MONO, TEXTAREA } from "../lib/ui";
 
-  let kind = $state<Kind>("config");
+  let kind = $state<Kind>("pattern");
   let namespace = $state("");
   let name = $state("");
-  let base = $state("piighost/fr-default");
+  let base = $state("piighost/email");
   let manifest = $state("");
+  let draft = $state<PatternDraft>(emptyDraft());
+  // A pattern is written as a form; a group and a configuration stay TOML,
+  // since what they hold is references and pipeline sections, which a form
+  // would only retype.
+  let mode = $state<"form" | "toml">("form");
   let result = $state<SubmissionResult | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
 
+  const asForm = $derived(kind === "pattern" && mode === "form");
+  const found = $derived(asForm ? problems(draft) : []);
+  const body = $derived(asForm ? toManifest(draft) : manifest);
   const ready = $derived(
-    manifest.trim() !== "" && namespace !== "" && name !== "",
+    namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
   );
+
+  const modeOptions = $derived([
+    { value: "form" as const, label: t("draft.form") },
+    { value: "toml" as const, label: t("draft.toml") },
+  ]);
 
   /** The kind drives the base too: a config extends a config, not a pattern. */
   function pickKind(next: Kind) {
@@ -37,8 +60,15 @@
         : `piighost/${next === "group" ? "generic" : "fr-default"}`;
   }
 
+  // The name is the manifest's too, so the form follows the field above it.
+  $effect(() => {
+    if (kind === "pattern" && name !== "" && draft.name === "")
+      draft.name = name;
+  });
+
   function start(text: string) {
     manifest = text;
+    mode = "toml";
     result = null;
     error = null;
   }
@@ -60,7 +90,7 @@
     busy = true;
     error = null;
     try {
-      result = await api.submit({ kind, namespace, name, manifest });
+      result = await api.submit({ kind, namespace, name, manifest: body });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
       result = null;
@@ -114,14 +144,22 @@
   </fieldset>
 
   <div
-    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-20rem)] lg:min-h-[28rem] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.9fr)_minmax(0,1.05fr)] lg:divide-x lg:divide-y-0"
+    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-20rem)] lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)] lg:divide-x lg:divide-y-0"
   >
     <Region
       step={1}
-      done={ready}
-      title={t("contribute.start")}
-      bodyClass="gap-3"
+      done={namespace !== "" && name !== ""}
+      title={asForm ? t("draft.identity") : t("contribute.start")}
+      bodyClass="gap-3 overflow-y-auto"
     >
+      {#if kind === "pattern"}
+        <Segmented
+          options={modeOptions}
+          bind:value={mode}
+          label={t("contribute.start")}
+        />
+      {/if}
+
       <div class="grid grid-cols-2 gap-2">
         <label class="flex flex-col gap-1 text-sm font-medium">
           {t("contribute.namespace")}
@@ -143,67 +181,78 @@
         </label>
       </div>
 
-      <div class="space-y-2 rounded-lg bg-muted/40 p-2">
-        <RefPicker
-          id="contribute-base"
-          bind:value={base}
-          {kind}
-          label={t("contribute.base")}
-        />
-        <p class="text-xs text-muted-foreground">
-          {t(`contribute.fork.${kind}` as Key)}
-        </p>
+      {#if asForm}
+        <PatternFields bind:draft {name} />
+      {:else}
+        <div class="space-y-2 rounded-lg bg-muted/40 p-2">
+          <RefPicker
+            id="contribute-base"
+            bind:value={base}
+            {kind}
+            label={t("contribute.base")}
+          />
+          <p class="text-xs text-muted-foreground">
+            {t(`contribute.fork.${kind}` as Key)}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            class="w-full"
+            disabled={loading}
+            onclick={fork}
+          >
+            {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
+            {t("contribute.fork")}
+          </Button>
+        </div>
         <Button
           variant="outline"
           size="sm"
-          class="w-full"
-          disabled={loading}
-          onclick={fork}
+          onclick={() => start(blank(kind, name))}
         >
-          {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
-          {t("contribute.fork")}
+          <FilePlus />
+          {t("contribute.blank")}
         </Button>
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onclick={() => start(blank(kind, name))}
-      >
-        <FilePlus />
-        {t("contribute.blank")}
-      </Button>
-
-      <div class="mt-auto flex flex-col gap-2 pt-2">
-        <Button onclick={check} disabled={busy || !ready}>
-          {#if busy}<Loader class="animate-spin" />{/if}
-          {busy ? t("play.running") : t("contribute.check")}
-        </Button>
-        {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
-      </div>
+      {/if}
     </Region>
 
     <Region
       step={2}
-      done={manifest.trim() !== ""}
-      title={t("contribute.manifest")}
+      done={body.trim() !== ""}
+      title={asForm ? t("draft.examples") : t("contribute.manifest")}
     >
-      <textarea
-        bind:value={manifest}
-        spellcheck="false"
-        aria-label={t("contribute.manifest")}
-        class="{TEXTAREA} flex-1"></textarea>
+      {#if asForm}
+        <PatternExamples bind:draft />
+      {:else}
+        <textarea
+          bind:value={manifest}
+          spellcheck="false"
+          aria-label={t("contribute.manifest")}
+          class="{TEXTAREA} flex-1"></textarea>
+      {/if}
     </Region>
 
     <Region
       step={3}
       done={Boolean(result?.ok)}
       title={t("contribute.findings")}
-      bodyClass="gap-3"
+      bodyClass="gap-3 overflow-y-auto"
     >
-      {#if !result}
-        <p class="text-sm text-muted-foreground">{t("contribute.empty")}</p>
-      {:else}
+      <Button onclick={check} disabled={busy || !ready}>
+        {#if busy}<Loader class="animate-spin" />{/if}
+        {busy ? t("play.running") : t("contribute.check")}
+      </Button>
+      {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+
+      {#if found.length > 0}
+        <ul class="space-y-1.5">
+          {#each found as problem (problem.field + problem.message)}
+            <li class="rounded-md bg-muted/40 p-2 text-sm">
+              {t(`draft.${problem.message}` as Key)}
+            </li>
+          {/each}
+        </ul>
+      {:else if result}
         <p class="text-xs text-muted-foreground">
           {t("contribute.path")}
           <code class="font-mono text-foreground">{result.path}</code>
@@ -223,7 +272,7 @@
           {/if}
         {/if}
         {#if result.findings.length > 0}
-          <ul class="space-y-1.5 overflow-auto">
+          <ul class="space-y-1.5">
             {#each result.findings as finding, index (index)}
               <li class="rounded-md bg-muted/40 p-2 text-sm">
                 <span
@@ -241,6 +290,17 @@
             {/each}
           </ul>
         {/if}
+      {:else}
+        <p class="text-sm text-muted-foreground">{t("contribute.empty")}</p>
+      {/if}
+
+      {#if asForm && body.trim() !== ""}
+        <details class="mt-auto">
+          <summary class="cursor-pointer text-xs text-muted-foreground">
+            {t("draft.preview")}
+          </summary>
+          <CodeBlock code={body} language="toml" class="mt-2 max-h-64" />
+        </details>
       {/if}
     </Region>
   </div>

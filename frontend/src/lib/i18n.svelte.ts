@@ -138,8 +138,53 @@ const STRINGS = {
     "chat.mapping": "Tokens",
     "chat.empty": "Send a message to start.",
 
+    "draft.form": "Form",
+    "draft.toml": "TOML",
+    "draft.identity": "Identity",
+    "draft.name": "Name",
+    "draft.label": "Label",
+    "draft.tags": "Tags",
+    "draft.tagFilter": "Filter the vocabulary",
+    "draft.tagRemove": "Remove this tag",
+    "draft.regex": "Regex",
+    "draft.regexNote":
+      "Python re, compiled with re.ASCII. Avoid the single quote: it closes the TOML literal string the manifest writes it in.",
+    "draft.description": "Description",
+    "draft.examples": "Examples",
+    "draft.matches": "Must be caught",
+    "draft.matchText": "A sentence",
+    "draft.matchValue": "The value in it",
+    "draft.noMatches": "Must be left alone",
+    "draft.add": "Add a row",
+    "draft.remove": "Remove",
+    "draft.redos": "Backtracking recipe",
+    "draft.redosNote":
+      "A valid prefix, an ambiguous fragment repeated to 100,000 characters, then an ending that forbids the match. This is what bounds the regex against a hostile text.",
+    "draft.prefix": "Prefix",
+    "draft.filler": "Filler",
+    "draft.suffix": "Suffix",
+    "draft.ok": "Caught as expected",
+    "draft.nothing": "nothing caught",
+    "draft.preview": "Generated manifest",
+    "draft.name.kebab": "The name is lower case words joined by dashes.",
+    "draft.label.snake": "The label is upper case words joined by underscores.",
+    "draft.tags.empty": "Pick at least one tag.",
+    "draft.regex.empty": "Write the regex.",
+    "draft.regex.quote":
+      "The regex holds a single quote, which the manifest cannot carry.",
+    "draft.description.empty.en": "The English description is required.",
+    "draft.description.empty.fr": "The French description is required.",
+    "draft.description.dash":
+      "Replace the em-dash with a comma or a full stop.",
+    "draft.matches.two": "Two sentences that must be caught are required.",
+    "draft.match.incomplete":
+      "A row needs both a sentence and the value inside it.",
+    "draft.match.once": "The value has to appear exactly once in its sentence.",
+    "draft.noMatches.two":
+      "Two sentences that must be left alone are required.",
+    "draft.redos.incomplete": "The filler and the suffix are required.",
     "contribute.lede":
-      "Publishing is a pull request against the registry. Write your manifest here and check it with the same tests the maintainers run.",
+      "Publishing is a pull request against the registry. Describe your pattern here, see what the engine makes of each example as you type, and run the same checks the maintainers do.",
     "contribute.what": "What are you proposing?",
     "contribute.pattern.note": "One shape and the label it emits.",
     "contribute.group.note": "A reusable set of patterns.",
@@ -313,8 +358,57 @@ const STRINGS = {
     "chat.mapping": "Jetons",
     "chat.empty": "Envoyez un message pour commencer.",
 
+    "draft.form": "Formulaire",
+    "draft.toml": "TOML",
+    "draft.identity": "Identité",
+    "draft.name": "Nom",
+    "draft.label": "Label",
+    "draft.tags": "Tags",
+    "draft.tagFilter": "Filtrer le vocabulaire",
+    "draft.tagRemove": "Retirer ce tag",
+    "draft.regex": "Regex",
+    "draft.regexNote":
+      "Python re, compilé avec re.ASCII. Évitez l'apostrophe droite : elle ferme la chaîne littérale TOML dans laquelle le manifeste l'écrit.",
+    "draft.description": "Description",
+    "draft.examples": "Exemples",
+    "draft.matches": "Doit être reconnu",
+    "draft.matchText": "Une phrase",
+    "draft.matchValue": "La valeur qu'elle contient",
+    "draft.noMatches": "Ne doit rien reconnaître",
+    "draft.add": "Ajouter une ligne",
+    "draft.remove": "Retirer",
+    "draft.redos": "Recette de backtracking",
+    "draft.redosNote":
+      "Un préfixe valide, un fragment ambigu répété jusqu'à 100 000 caractères, puis une fin qui interdit la correspondance. C'est ce qui borne le regex face à un texte hostile.",
+    "draft.prefix": "Préfixe",
+    "draft.filler": "Remplissage",
+    "draft.suffix": "Fin",
+    "draft.ok": "Reconnu comme prévu",
+    "draft.nothing": "rien reconnu",
+    "draft.preview": "Manifeste généré",
+    "draft.name.kebab":
+      "Le nom s'écrit en minuscules, les mots reliés par des tirets.",
+    "draft.label.snake":
+      "Le label s'écrit en majuscules, les mots reliés par des tirets bas.",
+    "draft.tags.empty": "Choisissez au moins un tag.",
+    "draft.regex.empty": "Écrivez le regex.",
+    "draft.regex.quote":
+      "Le regex contient une apostrophe droite, que le manifeste ne peut pas porter.",
+    "draft.description.empty.en": "La description anglaise est obligatoire.",
+    "draft.description.empty.fr": "La description française est obligatoire.",
+    "draft.description.dash":
+      "Remplacez le tiret cadratin par une virgule ou un point.",
+    "draft.matches.two":
+      "Deux phrases qui doivent être reconnues sont nécessaires.",
+    "draft.match.incomplete":
+      "Une ligne demande une phrase et la valeur qu'elle contient.",
+    "draft.match.once":
+      "La valeur doit apparaître exactement une fois dans sa phrase.",
+    "draft.noMatches.two":
+      "Deux phrases qui ne doivent rien déclencher sont nécessaires.",
+    "draft.redos.incomplete": "Le remplissage et la fin sont obligatoires.",
     "contribute.lede":
-      "Publier passe par une pull request sur le registre. Rédigez votre manifeste ici et vérifiez-le avec les mêmes tests que les mainteneurs.",
+      "Publier passe par une pull request sur le registre. Décrivez votre motif ici, voyez ce que le moteur fait de chaque exemple à mesure que vous tapez, et lancez les mêmes vérifications que les mainteneurs.",
     "contribute.what": "Que proposez-vous ?",
     "contribute.pattern.note": "Un motif et le label qu'il produit.",
     "contribute.group.note": "Un ensemble de motifs réutilisable.",

@@ -14,7 +14,7 @@ export default defineConfig({
   resolve: { conditions: ["browser"] },
   test: {
     environment: "jsdom",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.svelte.ts"],
     setupFiles: ["src/test-setup.ts"],
   },
 });
