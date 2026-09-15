@@ -4,6 +4,7 @@ import {
   emptyDraft,
   labelOf,
   problems,
+  started,
   toManifest,
   type PatternDraft,
 } from "./pattern-draft";
@@ -88,6 +89,29 @@ describe("problems", () => {
     expect(
       problems(draft({ noMatches: [...draft().noMatches, { text: "" }] })),
     ).toEqual([]);
+  });
+});
+
+describe("started", () => {
+  it("says no on a form nobody has touched", () => {
+    expect(started(emptyDraft())).toBe(false);
+  });
+
+  it("says yes on the first thing typed, wherever it was typed", () => {
+    expect(started({ ...emptyDraft(), regex: "\\d" })).toBe(true);
+    expect(started({ ...emptyDraft(), tags: ["contact"] })).toBe(true);
+    expect(
+      started({
+        ...emptyDraft(),
+        noMatches: [{ text: "not an email" }, { text: "" }],
+      }),
+    ).toBe(true);
+    expect(
+      started({
+        ...emptyDraft(),
+        redos: { prefix: "", filler: "a.", suffix: "" },
+      }),
+    ).toBe(true);
   });
 });
 

@@ -28,6 +28,37 @@ export type PatternDraft = {
   redos: { prefix: string; filler: string; suffix: string };
 };
 
+/**
+ * What an empty form suggests, taken from the registry's own `email` pattern.
+ *
+ * A placeholder is the shortest documentation anyone reads, so it shows a
+ * pattern that exists and passes every check rather than an invented order
+ * number: a real regex with its lookbehind, two sentences that must be caught,
+ * two that must not, and a backtracking recipe whose filler actually makes the
+ * engine work. Copy it verbatim and the check goes green, which is the fastest
+ * way to learn what each field is for.
+ */
+export const PLACEHOLDER = {
+  name: "email",
+  label: "EMAIL",
+  regex:
+    "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}",
+  en: "Email address, simplified RFC 5322. The lookbehind pins the start of the local part.",
+  fr: "Adresse e-mail, RFC 5322 simplifiée. Le lookbehind ancre le début de la partie locale.",
+  matches: [
+    {
+      text: "Write to john.doe@example.com for any question.",
+      value: "john.doe@example.com",
+    },
+    {
+      text: "Contact : support+billing@mail.example.org",
+      value: "support+billing@mail.example.org",
+    },
+  ],
+  noMatches: [{ text: "not an email" }, { text: "john@doe" }],
+  redos: { prefix: "john.doe@example.com ", filler: "a.", suffix: "@" },
+} as const;
+
 export function emptyDraft(): PatternDraft {
   return {
     name: "",
@@ -61,6 +92,20 @@ function quoted(value: string): string {
 }
 
 export type Problem = { field: string; message: string };
+
+/** Whether anything has been typed yet, so a fresh form is not a list of faults. */
+export function started(draft: PatternDraft): boolean {
+  return (
+    draft.regex.trim() !== "" ||
+    draft.label.trim() !== "" ||
+    draft.tags.length > 0 ||
+    draft.en.trim() !== "" ||
+    draft.fr.trim() !== "" ||
+    draft.matches.some((row) => row.text !== "" || row.value !== "") ||
+    draft.noMatches.some((row) => row.text !== "") ||
+    Object.values(draft.redos).some((value) => value !== "")
+  );
+}
 
 const NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const LABEL = /^[A-Z][A-Z0-9_]*$/;

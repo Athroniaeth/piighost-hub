@@ -3,7 +3,7 @@
   import Trash from "@lucide/svelte/icons/trash-2";
   import Button from "./ui/Button.svelte";
   import RegexTry from "./RegexTry.svelte";
-  import type { PatternDraft } from "../lib/pattern-draft";
+  import { PLACEHOLDER, type PatternDraft } from "../lib/pattern-draft";
   import { t } from "../lib/i18n.svelte";
   import { EYEBROW, FIELD, FIELD_MONO } from "../lib/ui";
 
@@ -16,6 +16,18 @@
    * difference between writing a regex here and writing one in a text editor.
    */
   let { draft = $bindable() }: { draft: PatternDraft } = $props();
+
+  /** The suggestion for row `index`, beyond which the generic wording stands. */
+  function hint(
+    rows: readonly { text: string }[],
+    index: number,
+    field: "text" | "value",
+  ) {
+    const row = rows[index] as { text: string; value?: string } | undefined;
+    if (!row)
+      return t(field === "text" ? "draft.matchText" : "draft.matchValue");
+    return field === "text" ? row.text : (row.value ?? "");
+  }
 </script>
 
 <div class="flex flex-col gap-4 overflow-y-auto">
@@ -26,13 +38,13 @@
         <li class="flex items-center gap-2">
           <input
             bind:value={example.text}
-            placeholder={t("draft.matchText")}
+            placeholder={hint(PLACEHOLDER.matches, index, "text")}
             aria-label={t("draft.matchText")}
             class="{FIELD} flex-[2]"
           />
           <input
             bind:value={example.value}
-            placeholder={t("draft.matchValue")}
+            placeholder={hint(PLACEHOLDER.matches, index, "value")}
             aria-label={t("draft.matchValue")}
             spellcheck="false"
             class="{FIELD_MONO} flex-1"
@@ -75,7 +87,7 @@
         <li class="flex items-center gap-2">
           <input
             bind:value={row.text}
-            placeholder={t("draft.matchText")}
+            placeholder={hint(PLACEHOLDER.noMatches, index, "text")}
             aria-label={t("draft.matchText")}
             class="{FIELD} flex-1"
           />
@@ -110,21 +122,21 @@
     <div class="grid grid-cols-3 gap-2">
       <input
         bind:value={draft.redos.prefix}
-        placeholder={t("draft.prefix")}
+        placeholder={PLACEHOLDER.redos.prefix}
         aria-label={t("draft.prefix")}
         spellcheck="false"
         class={FIELD_MONO}
       />
       <input
         bind:value={draft.redos.filler}
-        placeholder={t("draft.filler")}
+        placeholder={PLACEHOLDER.redos.filler}
         aria-label={t("draft.filler")}
         spellcheck="false"
         class={FIELD_MONO}
       />
       <input
         bind:value={draft.redos.suffix}
-        placeholder={t("draft.suffix")}
+        placeholder={PLACEHOLDER.redos.suffix}
         aria-label={t("draft.suffix")}
         spellcheck="false"
         class={FIELD_MONO}

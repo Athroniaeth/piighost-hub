@@ -1,6 +1,10 @@
 <script lang="ts">
   import TagPicker from "./TagPicker.svelte";
-  import { labelOf, type PatternDraft } from "../lib/pattern-draft";
+  import {
+    labelOf,
+    PLACEHOLDER,
+    type PatternDraft,
+  } from "../lib/pattern-draft";
   import { t } from "../lib/i18n.svelte";
   import { FIELD, FIELD_MONO } from "../lib/ui";
 
@@ -31,7 +35,7 @@
   {t("draft.regex")}
   <input
     bind:value={draft.regex}
-    placeholder={"\\bORD-[0-9]" + "{6}" + "\\b"}
+    placeholder={PLACEHOLDER.regex}
     spellcheck="false"
     class={FIELD_MONO}
   />
@@ -45,7 +49,7 @@
   <input
     bind:value={draft.label}
     oninput={() => (labelPinned = true)}
-    placeholder="ORDER_ID"
+    placeholder={PLACEHOLDER.label}
     spellcheck="false"
     class={FIELD_MONO}
   />
@@ -60,13 +64,13 @@
   {t("draft.description")}
   <input
     bind:value={draft.en}
-    placeholder="Internal order identifier, six digits after an ORD- prefix."
+    placeholder={PLACEHOLDER.en}
     aria-label="{t('draft.description')} (en)"
     class={FIELD}
   />
   <input
     bind:value={draft.fr}
-    placeholder="Identifiant de commande interne, six chiffres après un préfixe ORD-."
+    placeholder={PLACEHOLDER.fr}
     aria-label="{t('draft.description')} (fr)"
     class={FIELD}
   />

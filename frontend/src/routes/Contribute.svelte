@@ -17,8 +17,10 @@
   import { t, type Key } from "../lib/i18n.svelte";
   import {
     draftFrom,
+    PLACEHOLDER,
     emptyDraft,
     problems,
+    started,
     toManifest,
     type PatternDraft,
   } from "../lib/pattern-draft";
@@ -40,7 +42,10 @@
   // since what they hold is references and pipeline sections, which a form
   // would only retype.
   const asForm = $derived(kind === "pattern");
+  // A form nobody has touched is not a form with eight faults, so the list
+  // waits for the first keystroke, in the draft or in the name above it.
   const found = $derived(asForm ? problems(draft) : []);
+  const showing = $derived(found.length > 0 && (started(draft) || name !== ""));
   const body = $derived(asForm ? toManifest(draft) : manifest);
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
@@ -178,7 +183,7 @@
           {t("contribute.name")}
           <input
             bind:value={name}
-            placeholder="order-id"
+            placeholder={kind === "pattern" ? PLACEHOLDER.name : "my-" + kind}
             spellcheck="false"
             class={FIELD_MONO}
           />
@@ -247,7 +252,7 @@
       </Button>
       {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
 
-      {#if found.length > 0}
+      {#if showing}
         <ul class="space-y-1.5">
           {#each found as problem (problem.field + problem.message)}
             <li class="rounded-md bg-muted/40 p-2 text-sm">
