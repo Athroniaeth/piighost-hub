@@ -11,7 +11,6 @@
   import Button from "../components/ui/Button.svelte";
   import CodeBlock from "../components/ui/CodeBlock.svelte";
   import Region from "../components/ui/Region.svelte";
-  import Segmented from "../components/ui/Segmented.svelte";
   import { ApiError, api } from "../lib/api";
   import { cn } from "../lib/cn";
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
@@ -26,32 +25,26 @@
   import { FIELD_MONO, TEXTAREA } from "../lib/ui";
 
   let kind = $state<Kind>("pattern");
-  let namespace = $state("");
+  let namespace = $state("piighost");
   let name = $state("");
   let base = $state("piighost/email");
   let manifest = $state("");
   let draft = $state<PatternDraft>(emptyDraft());
   let labelPinned = $state(false);
-  // A pattern is written as a form; a group and a configuration stay TOML,
-  // since what they hold is references and pipeline sections, which a form
-  // would only retype.
-  let mode = $state<"form" | "toml">("form");
   let result = $state<SubmissionResult | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
 
-  const asForm = $derived(kind === "pattern" && mode === "form");
+  // A pattern is written as a form; a group and a configuration stay TOML,
+  // since what they hold is references and pipeline sections, which a form
+  // would only retype.
+  const asForm = $derived(kind === "pattern");
   const found = $derived(asForm ? problems(draft) : []);
   const body = $derived(asForm ? toManifest(draft) : manifest);
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
   );
-
-  const modeOptions = $derived([
-    { value: "form" as const, label: t("draft.form") },
-    { value: "toml" as const, label: t("draft.toml") },
-  ]);
 
   /** The kind drives the base too: a config extends a config, not a pattern. */
   function pickKind(next: Kind) {
@@ -70,7 +63,6 @@
 
   function start(text: string) {
     manifest = text;
-    mode = "toml";
     result = null;
     error = null;
   }
@@ -123,11 +115,9 @@
 </script>
 
 <div class="mx-auto flex w-full max-w-[88rem] flex-col gap-4 p-4">
-  <div>
+  <div class="flex flex-wrap items-baseline gap-x-3">
     <h1 class="text-xl font-semibold tracking-tight">{t("nav.contribute")}</h1>
-    <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
-      {t("contribute.lede")}
-    </p>
+    <p class="text-sm text-muted-foreground">{t("contribute.lede")}</p>
   </div>
 
   <fieldset>
@@ -166,7 +156,7 @@
   </fieldset>
 
   <div
-    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-20rem)] lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)] lg:divide-x lg:divide-y-0"
+    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-18rem)] lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)] lg:divide-x lg:divide-y-0"
   >
     <Region
       step={1}
@@ -174,14 +164,6 @@
       title={asForm ? t("draft.identity") : t("contribute.start")}
       bodyClass="gap-3 overflow-y-auto"
     >
-      {#if kind === "pattern"}
-        <Segmented
-          options={modeOptions}
-          bind:value={mode}
-          label={t("contribute.start")}
-        />
-      {/if}
-
       <div class="grid grid-cols-2 gap-2">
         <label class="flex flex-col gap-1 text-sm font-medium">
           {t("contribute.namespace")}
@@ -316,7 +298,7 @@
       {/if}
 
       {#if asForm && body.trim() !== ""}
-        <details class="mt-auto">
+        <details>
           <summary class="cursor-pointer text-xs text-muted-foreground">
             {t("draft.preview")}
           </summary>

@@ -38,9 +38,12 @@
     value={code}
     class="no-print absolute end-2 top-2 bg-card shadow-sm ring-1 ring-foreground/10"
   />
+  <!-- The height comes from the caller, on the wrapper, which clips to keep its
+       rounded corners. Inheriting it here is what turns a clipped block into a
+       scrolling one, and resolves to `none` when no height was set. -->
   <pre
     class={cn(
-      "overflow-x-auto p-4 font-mono text-sm leading-relaxed",
+      "max-h-[inherit] overflow-auto p-4 font-mono text-sm leading-relaxed",
       wrap && "whitespace-pre-wrap break-all",
     )}><code
       >{#if tokens}{#each tokens as token, index (index)}<span

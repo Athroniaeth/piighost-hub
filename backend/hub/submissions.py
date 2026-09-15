@@ -131,11 +131,6 @@ def _check_submission(
     checked_kind: Kind = kind  # type: ignore[assignment]
     if not is_valid_name(namespace) or not is_valid_name(name):
         raise HubError("namespace and name must be kebab-case")
-    if namespace == "piighost":
-        raise HubError(
-            "the piighost namespace is reserved for the maintainers; submit under "
-            "your own namespace, and it can be promoted after review"
-        )
     path = submission_path(checked_kind, namespace, name)
     if f"{namespace}/{name}" in registry.objects:
         raise HubError(
@@ -143,6 +138,22 @@ def _check_submission(
         )
 
     findings: list[Finding] = []
+    # A note rather than a refusal. This route validates a manifest, it does not
+    # authorise anything: the pull request it prepares lands in a repository
+    # where a maintainer merges it or does not, so refusing the official
+    # namespace here stopped nobody and blocked the maintainers themselves.
+    if namespace == "piighost":
+        findings.append(
+            Finding(
+                level="warning",
+                subject=path,
+                message=(
+                    "the piighost namespace is the maintainers'; a submission here "
+                    "needs one of them to merge it"
+                ),
+            )
+        )
+
     with TemporaryDirectory() as tmp:
         root = Path(tmp) / "registry"
         _copy_registry(registry.root, root)
@@ -152,7 +163,7 @@ def _check_submission(
         try:
             candidate = Registry.load(root)
         except ManifestError as exc:
-            findings = [
+            findings += [
                 Finding(level="error", subject=path, message=line)
                 for line in str(exc).splitlines()
                 if str(root) in line or line.strip()
@@ -164,10 +175,11 @@ def _check_submission(
                 pull_request_url=None,
             )
         except HubError as exc:
+            findings.append(Finding(level="error", subject=path, message=str(exc)))
             return SubmissionResult(
                 ok=False,
                 path=path,
-                findings=[Finding(level="error", subject=path, message=str(exc))],
+                findings=_clean(findings, None),
                 pull_request_url=None,
             )
 
@@ -176,7 +188,7 @@ def _check_submission(
         report = check_registry(candidate, redos=False, require_recorded=False)
         if head.kind == "pattern":
             check_pattern(head, report)
-        findings = [
+        findings += [
             Finding(level=f.level, subject=f.subject, message=f.message)
             for f in report.findings
             if (

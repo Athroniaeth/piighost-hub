@@ -28,6 +28,19 @@
 </script>
 
 <label class="flex flex-col gap-1 text-sm font-medium">
+  {t("draft.regex")}
+  <input
+    bind:value={draft.regex}
+    placeholder={"\\bORD-[0-9]" + "{6}" + "\\b"}
+    spellcheck="false"
+    class={FIELD_MONO}
+  />
+  <span class="text-xs font-normal text-muted-foreground"
+    >{t("draft.regexNote")}</span
+  >
+</label>
+
+<label class="flex flex-col gap-1 text-sm font-medium">
   {t("draft.label")}
   <input
     bind:value={draft.label}
@@ -42,19 +55,6 @@
   {t("draft.tags")}
   <TagPicker bind:value={draft.tags} />
 </div>
-
-<label class="flex flex-col gap-1 text-sm font-medium">
-  {t("draft.regex")}
-  <input
-    bind:value={draft.regex}
-    placeholder={"\\bORD-[0-9]" + "{6}" + "\\b"}
-    spellcheck="false"
-    class={FIELD_MONO}
-  />
-  <span class="text-xs font-normal text-muted-foreground"
-    >{t("draft.regexNote")}</span
-  >
-</label>
 
 <div class="flex flex-col gap-1 text-sm font-medium">
   {t("draft.description")}

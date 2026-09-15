@@ -184,7 +184,7 @@ const STRINGS = {
       "Two sentences that must be left alone are required.",
     "draft.redos.incomplete": "The filler and the suffix are required.",
     "contribute.lede":
-      "Publishing is a pull request against the registry. Describe your pattern here, see what the engine makes of each example as you type, and run the same checks the maintainers do.",
+      "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
     "contribute.pattern.note": "One shape and the label it emits.",
     "contribute.group.note": "A reusable set of patterns.",
@@ -410,7 +410,7 @@ const STRINGS = {
       "Deux phrases qui ne doivent rien déclencher sont nécessaires.",
     "draft.redos.incomplete": "Le remplissage et la fin sont obligatoires.",
     "contribute.lede":
-      "Publier passe par une pull request sur le registre. Décrivez votre motif ici, voyez ce que le moteur fait de chaque exemple à mesure que vous tapez, et lancez les mêmes vérifications que les mainteneurs.",
+      "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",
     "contribute.pattern.note": "Un motif et le label qu'il produit.",
     "contribute.group.note": "Un ensemble de motifs réutilisable.",

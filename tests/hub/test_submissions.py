@@ -116,11 +116,17 @@ class TestChecking:
 
 
 class TestRules:
-    async def test_the_official_namespace_is_reserved(self, registry: Registry) -> None:
-        with pytest.raises(HubError, match="reserved"):
-            await check_submission(
-                registry, "pattern", "piighost", "order-id", MANIFEST
-            )
+    async def test_the_official_namespace_warns_without_refusing(
+        self, registry: Registry
+    ) -> None:
+        """The maintainers submit here too, and this route authorises nothing."""
+        result = await check_submission(
+            registry, "pattern", "piighost", "order-id", MANIFEST
+        )
+        assert result.ok
+        assert [f.level for f in result.findings] == ["warning"]
+        assert "maintainers" in result.findings[0].message
+        assert result.pull_request_url is not None
 
     async def test_an_existing_object_is_refused(
         self, registry: Registry, root

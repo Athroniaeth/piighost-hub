@@ -306,9 +306,10 @@ text = "ORD-12"
         assert body["pull_request_url"] is None
         assert any("must not be detected" in f["message"] for f in body["findings"])
 
-    async def test_the_official_namespace_is_reserved(
+    async def test_the_official_namespace_warns_without_refusing(
         self, client: AsyncTestClient[Litestar]
     ) -> None:
+        """It is the default in the form, because the maintainers publish too."""
         response = await client.post(
             "/api/v1/submissions/check",
             json={
@@ -318,5 +319,8 @@ text = "ORD-12"
                 "manifest": self.MANIFEST,
             },
         )
-        assert response.status_code == 422
-        assert "reserved" in response.json()["detail"]
+        assert response.status_code == 200
+        body = response.json()
+        assert body["ok"] is True
+        assert [f["level"] for f in body["findings"]] == ["warning"]
+        assert "maintainers" in body["findings"][0]["message"]
