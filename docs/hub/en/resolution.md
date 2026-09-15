@@ -8,7 +8,7 @@ pipeline. The file format is in [manifest.md](manifest.md), the HTTP API in
 ## References
 
 ```
-hub:piighost/fr-notariat:prod         tag, movable, set by the owner
+hub:alice/fr-notariat:prod            tag, movable, set by the owner
 hub:piighost/fr-notariat:3fa9c2e1     commit, immutable
 hub:piighost/fr-notariat:latest       computed tag, the latest commit
 hub:piighost/fr-notariat              the same as :latest
@@ -58,11 +58,16 @@ is computed and always points at the head; nobody moves it by hand. The others,
 `prod`, `preprod`, whatever you like, live in the object's `tags.toml` and move
 by a git commit, which leaves a trace. A tag must point at a recorded commit.
 
+The `piighost` namespace sets none, deliberately. An official object therefore
+has only `latest` and its commits: what is published is what is served, and a
+team wanting a staging step keeps it at home, in its own namespace, where it
+alone decides when `prod` moves. The mechanism exists for them, not for us.
+
 An author writes tags in their manifests; publication pins them to commits and
 stores both, the reference as written and the commit it resolved to:
 
 ```json
-{"ref": "piighost/fr-base:prod", "commit": "b41d09aa", "exclude": ["FR_PHONE"], "only": []}
+{"ref": "alice/fr-base:prod", "commit": "b41d09aa", "exclude": ["FR_PHONE"], "only": []}
 ```
 
 A group therefore never silently follows its parents' `prod` between two

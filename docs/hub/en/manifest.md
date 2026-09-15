@@ -106,7 +106,7 @@ description = { en = "French notarial deeds", fr = "Actes notariés français" }
 tags = ["fr", "notarial"]
 
 [[sources]]
-ref = "piighost/fr-siret:prod"
+ref = "piighost/fr-siret"
 
 [[sources]]
 ref = "piighost/fr"
@@ -143,7 +143,7 @@ tags = ["fr", "chat"]
 piighost = ">=1.7,<2"
 
 [[extends]]
-ref = "piighost/regex-default:prod"
+ref = "piighost/regex-default"
 exclude = ["detector:regex-us", "label:CREDIT_CARD", "stage:guard"]
 
 [[detectors]]

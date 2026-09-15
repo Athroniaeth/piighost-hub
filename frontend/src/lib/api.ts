@@ -10,7 +10,6 @@
 import {
   apiV1BadgeNamespaceBadge,
   apiV1CompareCompare,
-  apiV1DiffNamespaceDiff,
   apiV1LabelsLabels,
   apiV1PlaygroundCandidateCandidate,
   apiV1PlaygroundChatChat,
@@ -21,7 +20,6 @@ import {
   apiV1RefsNamespaceSelectorExportExportLabels,
   apiV1RefsNamespaceSelectorPipelineTomlPipelineToml,
   apiV1RefsNamespaceSelectorResolvedResolved,
-  apiV1RefsNamespaceSelectorScoreScore,
   apiV1RefsNamespaceSelectorSnippetsSnippetsFor,
   apiV1SamplesSamples,
   apiV1SearchSearch,
@@ -32,14 +30,12 @@ import type {
   ChatOut,
   CommitDetail,
   CompareOut,
-  DiffOut,
   LabelsOut,
   ManifestOut,
   ObjectDetail,
   Resolved,
   RunOut,
   SamplesOut,
-  ScoreOut,
   SearchOut,
   SnippetsOut,
   SubmissionResult,
@@ -120,10 +116,6 @@ export const api = {
     );
   },
 
-  async score(ref: Ref): Promise<ScoreOut> {
-    return unwrap(await apiV1RefsNamespaceSelectorScoreScore({ path: ref }));
-  },
-
   async snippets(ref: Ref): Promise<SnippetsOut> {
     return unwrap(
       await apiV1RefsNamespaceSelectorSnippetsSnippetsFor({ path: ref }),
@@ -155,20 +147,6 @@ export const api = {
       parseAs: "text",
     });
     return unwrap(result as unknown as Envelope<string>);
-  },
-
-  async diff(
-    namespace: string,
-    name: string,
-    before: string,
-    after: string,
-  ): Promise<DiffOut> {
-    return unwrap(
-      await apiV1DiffNamespaceDiff({
-        path: { namespace, name },
-        query: { before, after },
-      }),
-    );
   },
 
   async badge(namespace: string, name: string, tag: string) {

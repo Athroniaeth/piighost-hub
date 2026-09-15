@@ -7,7 +7,7 @@ tags = ["international", "secrets", "network", "software-dev", "code-assistant",
 piighost = ">=1.7,<2"
 
 [[extends]]
-ref = "piighost/regex-default:prod"
+ref = "piighost/regex-default"
 exclude = [
   "detector:regex-fr",
   "detector:regex-eu",

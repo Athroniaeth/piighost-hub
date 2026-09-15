@@ -1,3 +1,0 @@
-# Le commit servi aux consommateurs qui épinglent :prod. Déplacez-le après
-# revue, jamais en même temps que la modification du manifeste.
-prod = "5c0fe0c5"

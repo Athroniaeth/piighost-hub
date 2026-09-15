@@ -14,7 +14,7 @@ il ne débloque pas un usage.
 ```toml
 [detector]
 type = "regex"
-catalogs = ["generic", "hub:piighost/fr-extended:prod"]
+catalogs = ["generic", "hub:alice/fr-extended:prod"]
 ```
 
 `RegexDetectorConfig.catalogs` accepte aujourd'hui quatre littéraux. Il faudrait
@@ -29,7 +29,7 @@ garantit.
 ```python
 from piighost.config import load_pipeline
 
-pipeline = load_pipeline("hub:piighost/fr-default:prod")
+pipeline = load_pipeline("hub:alice/fr-default:prod")
 ```
 
 `load_config`, `load_pipeline` et `load_thread_pipeline` prennent un chemin. Ils

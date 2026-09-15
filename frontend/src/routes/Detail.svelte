@@ -2,12 +2,7 @@
   import Download from "@lucide/svelte/icons/download";
   import GitCommit from "@lucide/svelte/icons/git-commit-horizontal";
   import Play from "@lucide/svelte/icons/play";
-  import type {
-    CommitDetail,
-    ObjectDetail,
-    Resolved,
-    ScoreOut,
-  } from "../generated/api";
+  import type { CommitDetail, ObjectDetail, Resolved } from "../generated/api";
   import Async from "../components/Async.svelte";
   import EntityLabel from "../components/EntityLabel.svelte";
   import EntityRow from "../components/EntityRow.svelte";
@@ -33,7 +28,7 @@
     selector = "latest",
   }: { namespace: string; name: string; selector?: string } = $props();
 
-  type Tab = "content" | "pipeline" | "use" | "coverage";
+  type Tab = "content" | "pipeline" | "use";
 
   const ref = $derived({ namespace, name, selector });
 
@@ -48,16 +43,13 @@
     })(),
   );
 
-  // Secondary loads: a failure must not blank the page.
-  const score = $derived(api.score(ref).catch(() => null));
+  // A secondary load: a failure must not blank the page.
   const snippets = $derived(api.snippets(ref).catch(() => null));
 
   let tab = $state<Tab>("content");
   let form = $state<"flattened" | "referenced">("flattened");
   let memory = $state<"" | "in_memory" | "redis" | "sqlalchemy">("");
   let snippet = $state("cli");
-  let diffAgainst = $state("");
-  let diffResult = $state<Awaited<ReturnType<typeof api.diff>> | null>(null);
 
   const pipeline = $derived(
     api
@@ -75,17 +67,11 @@
     { value: "content", label: t("detail.content") },
     { value: "pipeline", label: t("detail.pipeline") },
     { value: "use", label: t("detail.use") },
-    { value: "coverage", label: t("detail.coverage") },
   ]);
   const formOptions = $derived([
     { value: "flattened" as const, label: t("detail.flattened") },
     { value: "referenced" as const, label: t("detail.referenced") },
   ]);
-
-  async function runDiff() {
-    if (diffAgainst)
-      diffResult = await api.diff(namespace, name, diffAgainst, selector);
-  }
 
   async function saveExport(format: "json" | "presidio" | "spacy") {
     const body = await api.exported(ref, format);
@@ -501,80 +487,6 @@
                     >
                   {/each}
                 </div>
-              </Card>
-            {/if}
-          {:else}
-            <Card title={t("detail.coverage")}>
-              <Async promise={score}>
-                {#snippet children(value: ScoreOut | null)}
-                  {#if !value || value.annotated === 0}
-                    <p class="text-sm text-muted-foreground">
-                      {t("detail.noCoverage")}
-                    </p>
-                  {:else}
-                    <dl
-                      class="grid max-w-md grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-sm"
-                    >
-                      <dt>{t("detail.exact")}</dt>
-                      <dd class="text-end tabular-nums">
-                        {value.exact} / {value.annotated}
-                      </dd>
-                      <dt>{t("detail.mislabelled")}</dt>
-                      <dd class="text-end tabular-nums">{value.mislabelled}</dd>
-                      <dt>{t("detail.missed")}</dt>
-                      <dd class="text-end tabular-nums">{value.missed}</dd>
-                      <dt>{t("detail.extra")}</dt>
-                      <dd class="text-end tabular-nums">{value.extra}</dd>
-                    </dl>
-                    <p class="mt-3 text-xs text-muted-foreground">
-                      {value.scope === "labels"
-                        ? t("detail.scopeLabels")
-                        : t("detail.scopeCorpus")}
-                      {t("detail.scoreHelp")}
-                    </p>
-                  {/if}
-                {/snippet}
-              </Async>
-            </Card>
-            {#if object.commits.length > 1}
-              <Card title={t("detail.diff")} bodyClass="space-y-3">
-                <div class="flex items-center gap-2">
-                  <select
-                    bind:value={diffAgainst}
-                    class="{FIELD} font-mono"
-                    aria-label={t("detail.diff")}
-                  >
-                    <option value="">{t("detail.diff")}</option>
-                    {#each object.commits as entry (entry.commit)}
-                      <option value={entry.commit}>{entry.commit}</option>
-                    {/each}
-                  </select>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onclick={runDiff}
-                    disabled={!diffAgainst}>{t("detail.diff")}</Button
-                  >
-                </div>
-                {#if diffResult}
-                  {#if !diffResult.behavioural}
-                    <p class="text-xs text-muted-foreground">
-                      {t("detail.diffNone")}
-                    </p>
-                  {:else}
-                    <ul class="space-y-1 font-mono text-xs">
-                      {#each diffResult.changes as change, index (index)}
-                        <li class="rounded-md bg-muted/40 p-2">
-                          {change.text}
-                          <span class="text-muted-foreground"
-                            >{change.before ?? t("detail.none")} → {change.after ??
-                              t("detail.none")} · {change.sample}</span
-                          >
-                        </li>
-                      {/each}
-                    </ul>
-                  {/if}
-                {/if}
               </Card>
             {/if}
           {/if}

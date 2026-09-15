@@ -7,7 +7,7 @@ tags = ["fr", "eu", "lang-fr", "notarial", "legal", "document", "identity"]
 piighost = ">=1.7,<2"
 
 [[extends]]
-ref = "piighost/fr-default:prod"
+ref = "piighost/fr-default"
 
 [[detectors]]
 name = "ner"

@@ -161,7 +161,9 @@ avec le site qui les expose. Les manifestes sont dans `registry/`, le moteur dan
 
 Un objet est versionné par son contenu : son identifiant est le sha256 de son
 manifeste figé, et on l'épingle par commit (`piighost/fr-default:240a672d`) ou
-par tag mobile (`:prod`). Chaque motif porte ses exemples, et la CI rejoue ces
+par tag mobile, que chaque espace de noms pose chez lui (`alice/support:prod`).
+L'espace `piighost` n'en pose aucun : un objet officiel n'a que `latest` et ses
+commits. Chaque motif porte ses exemples, et la CI rejoue ces
 exemples une fois les motifs composés, ce qui attrape une valeur volée par un
 motif voisin avant qu'elle n'arrive chez un utilisateur.
 

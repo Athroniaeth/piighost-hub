@@ -10,7 +10,7 @@ format des fichiers est dans [manifest.md](manifest.md), l'API HTTP dans
 ## Références
 
 ```
-hub:piighost/fr-notariat:prod         tag, mobile, posé par le propriétaire
+hub:alice/fr-notariat:prod            tag, mobile, posé par le propriétaire
 hub:piighost/fr-notariat:3fa9c2e1     commit, immuable
 hub:piighost/fr-notariat:latest       tag calculé, dernier commit
 hub:piighost/fr-notariat              équivaut à :latest
@@ -61,11 +61,17 @@ main. Les autres, `prod`, `preprod`, ce que vous voulez, vivent dans le
 `tags.toml` de l'objet et se déplacent par un commit git, ce qui laisse une
 trace. Un tag doit pointer un commit enregistré.
 
+L'espace de noms `piighost` n'en pose aucun, volontairement. Un objet officiel
+n'a donc que `latest` et ses commits : ce qui est publié est ce qui est servi,
+et une équipe qui veut un palier de recette le tient chez elle, dans son propre
+espace de noms, où elle décide seule quand `prod` bouge. Le mécanisme existe
+pour les autres, pas pour nous.
+
 Un auteur écrit des tags dans ses manifestes ; la publication les fige en
 commits et stocke les deux, la référence écrite et le commit résolu :
 
 ```json
-{"ref": "piighost/fr-base:prod", "commit": "b41d09aa", "exclude": ["FR_PHONE"], "only": []}
+{"ref": "alice/fr-base:prod", "commit": "b41d09aa", "exclude": ["FR_PHONE"], "only": []}
 ```
 
 Un groupe ne suit donc jamais silencieusement le `prod` de ses parents entre
