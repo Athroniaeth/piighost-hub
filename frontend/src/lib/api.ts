@@ -22,6 +22,7 @@ import {
   apiV1RefsNamespaceSelectorSnippetsSnippetsFor,
   apiV1SamplesSamples,
   apiV1SearchSearch,
+  apiV1StatsStats,
   apiV1SubmissionsCheckSubmission,
   apiV1VocabularyVocabulary,
 } from "../generated/api";
@@ -37,6 +38,7 @@ import type {
   SamplesOut,
   SearchOut,
   SnippetsOut,
+  StatsOut,
   SubmissionResult,
   VocabularyOut,
 } from "../generated/api";
@@ -87,6 +89,10 @@ export const api = {
 
   async labels(): Promise<LabelsOut> {
     return unwrap(await apiV1LabelsLabels());
+  },
+
+  async stats(days: number): Promise<StatsOut> {
+    return unwrap(await apiV1StatsStats({ query: { days } }));
   },
 
   async samples(): Promise<SamplesOut> {

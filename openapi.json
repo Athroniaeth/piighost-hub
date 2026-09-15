@@ -272,6 +272,22 @@
         "title": "CompareRequest",
         "type": "object"
       },
+      "CountOut": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "count",
+          "key"
+        ],
+        "title": "CountOut",
+        "type": "object"
+      },
       "DiffOut": {
         "properties": {
           "after": {
@@ -972,6 +988,58 @@
           "ref"
         ],
         "title": "SnippetsOut",
+        "type": "object"
+      },
+      "StatsOut": {
+        "properties": {
+          "browses": {
+            "type": "integer"
+          },
+          "clients": {
+            "items": {
+              "$ref": "#/components/schemas/CountOut"
+            },
+            "type": "array"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "per_day": {
+            "items": {
+              "$ref": "#/components/schemas/CountOut"
+            },
+            "type": "array"
+          },
+          "pulls": {
+            "type": "integer"
+          },
+          "searches": {
+            "type": "integer"
+          },
+          "selectors": {
+            "items": {
+              "$ref": "#/components/schemas/CountOut"
+            },
+            "type": "array"
+          },
+          "top_objects": {
+            "items": {
+              "$ref": "#/components/schemas/CountOut"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "browses",
+          "clients",
+          "days",
+          "per_day",
+          "pulls",
+          "searches",
+          "selectors",
+          "top_objects"
+        ],
+        "title": "StatsOut",
         "type": "object"
       },
       "SubmissionRequest": {
@@ -2618,6 +2686,83 @@
           }
         },
         "summary": "Search",
+        "tags": [
+          "hub"
+        ]
+      }
+    },
+    "/api/v1/stats": {
+      "get": {
+        "deprecated": false,
+        "operationId": "ApiV1StatsStats",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Window in days, 1 to 365.",
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "description": "Window in days, 1 to 365.",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Stats",
         "tags": [
           "hub"
         ]

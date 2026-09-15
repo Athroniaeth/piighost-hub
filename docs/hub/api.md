@@ -18,6 +18,7 @@ taille de corps s'appliquent comme au reste de l'API. Le contrat exact est
 | `GET /api/v1/refs/{ns}/{name}/{selector}/export?format=` | le jeu de labels pour un autre outil : `json`, `presidio`, `spacy` |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/snippets` | des extraits prêts à coller, un par cible |
 | `GET /api/v1/search?q=&kind=&tag=&label=&sort=` | la recherche et les compteurs de facettes du résultat ; `sort` vaut `relevance`, `updated`, `used`, `labels` ou `name` |
+| `GET /api/v1/stats?days=` | l'usage du registre sur une fenêtre, agrégé depuis des compteurs |
 | `GET /api/v1/labels` | tous les labels que le registre peut émettre |
 | `GET /api/v1/samples` | les textes annotés, avec leurs annotations |
 | `GET /api/v1/diff/{ns}/{name}?before=&after=` | ce que deux commits détectent différemment. Pas d'écran sur le site : c'est la matière de `piighost hub log` |
@@ -79,3 +80,26 @@ curl -s http://127.0.0.1:5173/api/v1/refs?kind=group | jq '.items[].key'
 curl -s http://127.0.0.1:5173/api/v1/refs/piighost/fr/latest/resolved | jq '.labels[] | {label, pattern}'
 curl -s "http://127.0.0.1:5173/api/v1/refs/piighost/fr-default/latest/pipeline.toml?memory=redis" -o pipeline.toml
 ```
+
+## Ce qui est compté
+
+Le hub compte son usage, et la forme du stockage est le garde-fou plutôt que la
+discipline. Ce n'est pas un journal de requêtes auquel on aurait retiré des
+colonnes : c'est une table de compteurs, agrégée à l'écriture.
+
+- La résolution la plus fine est l'heure. Aucune ligne ne correspond à une
+  requête, donc il n'y a rien à corréler.
+- Les colonnes sont la forme de l'appel : son genre, l'objet du registre nommé,
+  si la référence était épinglée, si l'appelant était un navigateur ou la
+  bibliothèque, et le statut. Jamais d'adresse, jamais la chaîne user-agent,
+  jamais de session, jamais de corps.
+- L'écriture est un `INSERT ... ON CONFLICT DO UPDATE SET count = count + 1`,
+  donc deux appels identiques dans la même heure sont indistinguables par
+  construction.
+
+Le comptage se fait en mémoire et se vide sur minuterie, donc le chemin chaud
+est une incrémentation de dictionnaire : un disque lent ne retarde jamais une
+réponse. Le fichier vit dans `HUB_USAGE_DB`, un volume en production.
+
+`piighost hub pull` récupère `pipeline.toml`, c'est donc ce chemin qui compte
+comme une récupération, distinct de la simple lecture des métadonnées d'un objet.

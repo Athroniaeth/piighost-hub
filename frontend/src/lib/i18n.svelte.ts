@@ -222,6 +222,24 @@ const STRINGS = {
     "contribute.findings": "Findings",
     "contribute.empty": "Check to see the findings.",
 
+    "stats.title": "Usage",
+    "stats.lede": "What the registry is asked for, counted rather than logged.",
+    "stats.window": "Window",
+    "stats.7": "7 days",
+    "stats.30": "30 days",
+    "stats.90": "90 days",
+    "stats.pulls": "pipelines pulled",
+    "stats.browses": "objects looked at",
+    "stats.searches": "searches",
+    "stats.perDay": "Pulls per day",
+    "stats.top": "Most pulled",
+    "stats.selectors": "Pinned or floating",
+    "stats.selectorsNote":
+      "A commit is pinned and reproducible. A tag follows what its owner moves. The bare name follows the head.",
+    "stats.clients": "Who is asking",
+    "stats.privacy":
+      "These are counters, not a log. The finest resolution is the hour, a row is a shape rather than a request, and no address, browser identity or text is recorded anywhere.",
+
     "labels.title": "Labels",
     "labels.lede":
       "Every label this registry can emit, and the pattern that defines it.",
@@ -454,6 +472,24 @@ const STRINGS = {
     "contribute.openPr": "Ouvrir la pull request",
     "contribute.findings": "Constats",
     "contribute.empty": "Vérifiez pour voir les constats.",
+
+    "stats.title": "Usage",
+    "stats.lede": "Ce qu'on demande au registre, compté et non journalisé.",
+    "stats.window": "Fenêtre",
+    "stats.7": "7 jours",
+    "stats.30": "30 jours",
+    "stats.90": "90 jours",
+    "stats.pulls": "pipelines récupérés",
+    "stats.browses": "objets consultés",
+    "stats.searches": "recherches",
+    "stats.perDay": "Récupérations par jour",
+    "stats.top": "Les plus récupérés",
+    "stats.selectors": "Épinglé ou flottant",
+    "stats.selectorsNote":
+      "Un commit est épinglé et reproductible. Un tag suit ce que son propriétaire déplace. Le nom nu suit la tête.",
+    "stats.clients": "Qui demande",
+    "stats.privacy":
+      "Ce sont des compteurs, pas un journal. La résolution la plus fine est l'heure, une ligne est une forme et non une requête, et aucune adresse, aucune identité de navigateur, aucun texte n'est enregistré nulle part.",
 
     "labels.title": "Labels",
     "labels.lede":

@@ -48,6 +48,9 @@
           >
         </li>
         <li>
+          <a class="hover:text-foreground" href="/stats">{t("stats.title")}</a>
+        </li>
+        <li>
           <a class="hover:text-foreground" href="/contribute"
             >{t("nav.contribute")}</a
           >

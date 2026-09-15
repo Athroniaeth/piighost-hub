@@ -28,8 +28,13 @@ COPY --chown=app:app backend /app/backend
 # refuses to start, which is the right failure but an avoidable one.
 COPY --chown=app:app registry /app/registry
 
+# Where the usage counters live. Created here so a volume mounted over it
+# inherits the ownership, which a bind mount would otherwise hand to root.
+RUN mkdir -p /app/data && chown app:app /app/data
+
 ENV PATH="/app/.venv/bin:$PATH" PYTHONPATH=/app PYTHONUNBUFFERED=1 \
-    LITESTAR_APP=backend.app:app HUB_REGISTRY_DIR=/app/registry
+    LITESTAR_APP=backend.app:app HUB_REGISTRY_DIR=/app/registry \
+    HUB_USAGE_DB=/app/data/usage.db
 
 USER app
 WORKDIR /app

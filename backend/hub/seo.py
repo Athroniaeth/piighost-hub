@@ -31,6 +31,7 @@ TEXT_MEDIA_TYPE = "text/plain"
 STATIC_PATHS = (
     "/",
     "/labels",
+    "/stats",
     "/playground",
     "/playground/compare",
     "/playground/chat",

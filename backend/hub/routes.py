@@ -29,6 +29,7 @@ from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.samples import Sample
 from backend.hub.search import Index
 from backend.hub.store import Snapshot
+from backend.hub.usage import database_path, report
 
 STATE_KEY = "hub_registry"
 INDEX_KEY = "hub_index"
@@ -87,6 +88,24 @@ class ObjectDetail(msgspec.Struct):
     latest: str
     pointers: dict[str, str]
     commits: list[CommitSummary]
+
+
+class CountOut(msgspec.Struct):
+    key: str
+    count: int
+
+
+class StatsOut(msgspec.Struct):
+    """How the hub is used, over a window, from counters rather than a log."""
+
+    days: int
+    pulls: int
+    browses: int
+    searches: int
+    per_day: list[CountOut]
+    top_objects: list[CountOut]
+    selectors: list[CountOut]
+    clients: list[CountOut]
 
 
 class ManifestOut(msgspec.Struct):
@@ -466,6 +485,38 @@ class HubController(Controller):
             ],
             total=len(entries),
         )
+
+    @get("/stats", name="hub:stats")
+    async def stats(
+        self,
+        days: Annotated[
+            int,
+            QueryParameter(
+                description="Window in days, 1 to 365.",
+            ),
+        ] = 30,
+    ) -> Response[StatsOut]:
+        """Public on purpose, like a package registry's download counts.
+
+        There is nothing here to keep private: the finest resolution is the
+        hour, the rows are shapes rather than requests, and no address, user
+        agent or body is recorded anywhere. See `backend/hub/usage.py`.
+        """
+        window = max(1, min(days, 365))
+        out = report(database_path(), days=window)
+        body = StatsOut(
+            days=out.days,
+            pulls=out.pulls,
+            browses=out.browses,
+            searches=out.searches,
+            per_day=[CountOut(key=r.key, count=r.count) for r in out.per_day],
+            top_objects=[CountOut(key=r.key, count=r.count) for r in out.top_objects],
+            selectors=[CountOut(key=r.key, count=r.count) for r in out.selectors],
+            clients=[CountOut(key=r.key, count=r.count) for r in out.clients],
+        )
+        # A window of counters that only grows: a minute of staleness is fine
+        # and it keeps a refreshed dashboard off the disk.
+        return Response(body, headers={"Cache-Control": "public, max-age=60"})
 
     @get("/labels", name="hub:labels")
     async def labels(self, state: State) -> LabelsOut:

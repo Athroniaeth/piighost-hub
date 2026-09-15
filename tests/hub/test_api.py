@@ -118,3 +118,62 @@ class TestCommits:
         assert tomllib.loads(refs.text)["detector"]["catalogs"][0].startswith(
             "hub:piighost/all:"
         )
+
+
+class TestStats:
+    async def test_stats_answers_before_anything_is_counted(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """A fresh deployment has no file yet, and the dashboard still draws."""
+        response = await client.get("/api/v1/stats", params={"days": 7})
+        assert response.status_code == 200
+        body = response.json()
+        assert body["pulls"] == 0
+        assert len(body["per_day"]) == 7
+
+    async def test_the_window_is_clamped_rather_than_refused(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        for days, expected in ((0, 1), (9999, 365)):
+            response = await client.get("/api/v1/stats", params={"days": days})
+            assert response.json()["days"] == expected
+
+    async def test_a_pull_is_counted_and_a_health_check_is_not(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """End to end: through the hook, into the file, back out of the report.
+
+        Measured as a delta. The client is session-scoped, so other tests have
+        already pulled things, and an absolute count would be an assertion about
+        the order the suite happens to run in.
+        """
+        from backend.app import USAGE_KEY
+
+        usage = client.app.state[USAGE_KEY]
+        await usage.flush()
+        before = (await client.get("/api/v1/stats", params={"days": 1})).json()
+
+        await client.get(
+            "/api/v1/refs/piighost/child/latest/pipeline.toml",
+            headers={"user-agent": "piighost-hub/1.7.2"},
+        )
+        await client.get("/api/health")
+        await usage.flush()
+        after = (await client.get("/api/v1/stats", params={"days": 1})).json()
+
+        def count(body: dict, field: str, key: str) -> int:
+            return next((row["count"] for row in body[field] if row["key"] == key), 0)
+
+        assert after["pulls"] - before["pulls"] == 1
+        assert (
+            count(after, "top_objects", "piighost/child")
+            - count(before, "top_objects", "piighost/child")
+            == 1
+        )
+        assert (
+            count(after, "clients", "piighost") - count(before, "clients", "piighost")
+            == 1
+        )
+        # The health check touched nothing: only stats calls are browses, and
+        # those are not counted either.
+        assert after["browses"] == before["browses"]

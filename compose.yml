@@ -28,6 +28,12 @@ services:
       # Target of the pull request link the contribution page builds.
       HUB_REGISTRY_REPO: ${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub-registry}
       HUB_REGISTRY_BRANCH: ${HUB_REGISTRY_BRANCH:-develop}
+      # Usage counters. A volume rather than the image, else a deployment
+      # forgets how the hub was used. See backend/hub/usage.py for what is in
+      # it, which is deliberately not much.
+      HUB_USAGE_DB: ${HUB_USAGE_DB:-/app/data/usage.db}
+    volumes:
+      - usage:/app/data
     # No `ports`: the API is reachable only by web, over the compose network.
     expose:
       - "8000"
@@ -41,3 +47,6 @@ services:
       timeout: 3s
       retries: 5
       start_period: 15s
+
+volumes:
+  usage:

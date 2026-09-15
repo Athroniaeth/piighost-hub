@@ -169,3 +169,6 @@ cython_debug/
 # Aperçu local routé par le Traefik de la machine : propre à un poste, et il
 # porte un hash d'authentification, donc il ne se versionne pas.
 compose.preview.yml
+
+# Usage counters, written at runtime. Data, never source.
+.data/

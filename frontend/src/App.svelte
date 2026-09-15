@@ -9,6 +9,7 @@
   import Labels from "./routes/Labels.svelte";
   import NotFound from "./routes/NotFound.svelte";
   import Playground from "./routes/Playground.svelte";
+  import Stats from "./routes/Stats.svelte";
   import { i18n, t, type Key } from "./lib/i18n.svelte";
   import { interceptLinks, router } from "./lib/router.svelte";
 
@@ -25,6 +26,7 @@
       return `${route.params.namespace}/${route.params.name} · ${suffix}`;
     const heading: Record<string, Key> = {
       labels: "labels.title",
+      stats: "stats.title",
       playground: "nav.playground",
       compare: "play.compare",
       chat: "play.chat",
@@ -56,6 +58,8 @@
       <Home />
     {:else if route.name === "labels"}
       <Labels />
+    {:else if route.name === "stats"}
+      <Stats />
     {:else if route.name === "playground"}
       <Playground />
     {:else if route.name === "compare"}

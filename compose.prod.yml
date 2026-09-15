@@ -53,6 +53,11 @@ services:
       # Target of the pull request link the contribution page builds.
       - HUB_REGISTRY_REPO=${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub-registry}
       - HUB_REGISTRY_BRANCH=${HUB_REGISTRY_BRANCH:-develop}
+      # Usage counters. A volume rather than the image, else a deployment
+      # forgets how the hub was used.
+      - HUB_USAGE_DB=${HUB_USAGE_DB:-/app/data/usage.db}
+    volumes:
+      - usage:/app/data
     healthcheck:
       # No curl in the image; the venv's python is on PATH. /api/health is public on
       # purpose, since this check bypasses nginx and therefore carries no key.
@@ -66,3 +71,6 @@ services:
       retries: 5
       start_period: 15s
     restart: unless-stopped
+
+volumes:
+  usage:

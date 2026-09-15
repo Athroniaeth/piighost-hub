@@ -17,6 +17,7 @@ export type Match = {
 const ROUTES: [string, string][] = [
   ["/", "home"],
   ["/labels", "labels"],
+  ["/stats", "stats"],
   ["/playground", "playground"],
   ["/playground/compare", "compare"],
   ["/playground/chat", "chat"],

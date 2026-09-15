@@ -7,6 +7,7 @@ from litestar.testing import AsyncTestClient
 
 from backend.app import app
 from backend.hub.routes import REGISTRY_DIR_ENV_VAR
+from backend.hub.usage import DB_ENV_VAR
 from backend.security import API_KEY_ENV_VAR
 from tests.hub.fixtures import make_registry
 
@@ -38,12 +39,15 @@ async def client(
     The app refuses to start without an API key, so one is set before the lifespan
     runs. The hub registry is pointed at a small fixture tree for the same reason:
     the real one is data under edit, and a test must not depend on it. The context
-    manager restores the environment afterwards.
+    manager restores the environment afterwards. The usage counters go to a
+    temporary file too, else a test run would leave rows in the working tree.
     """
-    registry_root = make_registry(tmp_path_factory.mktemp("hub") / "registry")
+    root = tmp_path_factory.mktemp("hub")
+    registry_root = make_registry(root / "registry")
     with pytest.MonkeyPatch.context() as monkeypatch:
         monkeypatch.setenv(API_KEY_ENV_VAR, TEST_API_KEY)
         monkeypatch.setenv(REGISTRY_DIR_ENV_VAR, str(registry_root))
+        monkeypatch.setenv(DB_ENV_VAR, str(root / "usage.db"))
         app.debug = True
         async with AsyncTestClient(app=app) as _client:
             yield _client

@@ -1,3 +1,6 @@
+import asyncio
+from contextlib import suppress
+
 from litestar import Litestar, Router
 from litestar.data_extractors import RequestExtractorField, ResponseExtractorField
 from litestar.middleware.rate_limit import DurationUnit, RateLimitConfig
@@ -8,6 +11,7 @@ from litestar.plugins.structlog import (
     StructlogConfig,
     StructlogPlugin,
 )
+from litestar.types import Message, Scope
 from litestar_granian import GranianPlugin
 from litestar_vite import TypeGenConfig, ViteConfig, VitePlugin
 from litestar_vite.config import PathConfig, RuntimeConfig
@@ -17,6 +21,7 @@ from backend.exceptions import AppError, app_error_handler
 from backend.hub.interact import PlaygroundController
 from backend.hub.routes import HubController, load_hub_registry
 from backend.hub.seo import robots, sitemap
+from backend.hub.usage import Usage, database_path
 from backend.routes import ApiController
 from backend.security import API_KEY_HEADER, ensure_api_key_configured, identify_client
 
@@ -147,6 +152,46 @@ def build_rate_limit_config(
 
 rate_limit_config = build_rate_limit_config()
 
+USAGE_KEY = "hub_usage"
+
+
+async def open_usage(app: Litestar) -> None:
+    """Open the counter file and start the flush timer."""
+    usage = Usage.open(database_path())
+    usage.task = asyncio.create_task(usage.run())
+    app.state[USAGE_KEY] = usage
+
+
+async def close_usage(app: Litestar) -> None:
+    """Stop the timer, which flushes what is still in memory on its way out."""
+    usage: Usage | None = app.state.get(USAGE_KEY)
+    if usage is None or usage.task is None:
+        return
+    usage.task.cancel()
+    with suppress(asyncio.CancelledError):
+        await usage.task
+
+
+async def count_usage(message: Message, scope: Scope) -> None:
+    """Count one answered request, from the response side.
+
+    An `after_response` hook would miss the status, and a middleware would sit
+    on the hot path of every static asset. This runs once per response start,
+    reads four fields, and increments a dictionary.
+    """
+    if message["type"] != "http.response.start":
+        return
+    usage: Usage | None = scope["app"].state.get(USAGE_KEY)
+    if usage is None:
+        return
+    headers = {key.lower(): value for key, value in scope.get("headers", [])}
+    usage.record(
+        scope.get("path", ""),
+        int(message["status"]),
+        headers.get(b"user-agent", b"").decode("latin-1", "replace"),
+    )
+
+
 app = Litestar(
     plugins=plugins,
     # robots.txt and sitemap.xml sit at the root, where a crawler looks for
@@ -159,5 +204,7 @@ app = Litestar(
     # loads this module without needing a key.
     # The registry loads once here too: an invalid tree stops the app instead of
     # serving half a hub.
-    on_startup=[ensure_api_key_configured, load_hub_registry],
+    on_startup=[ensure_api_key_configured, load_hub_registry, open_usage],
+    on_shutdown=[close_usage],
+    before_send=[count_usage],
 )

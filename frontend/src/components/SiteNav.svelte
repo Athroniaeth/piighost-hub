@@ -40,6 +40,8 @@
         return [{ label: t("nav.contribute") }];
       case "labels":
         return [{ label: t("labels.title") }];
+      case "stats":
+        return [{ label: t("stats.title") }];
       default:
         return [];
     }

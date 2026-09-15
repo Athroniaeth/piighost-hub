@@ -30,6 +30,7 @@ class TestSeo:
 
         assert "http://testserver.local/" in locations
         assert "http://testserver.local/contribute" in locations
+        assert "http://testserver.local/stats" in locations
         # The fixture registry holds seven objects, each with a detail page.
         assert sum(1 for loc in locations if "/r/" in loc) == 7
         assert "http://testserver.local/r/piighost/base" in locations
