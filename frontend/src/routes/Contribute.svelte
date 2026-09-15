@@ -5,6 +5,8 @@
   import Loader from "@lucide/svelte/icons/loader-circle";
   import type { SubmissionResult } from "../generated/api";
   import KindIcon from "../components/KindIcon.svelte";
+  import GroupFields from "../components/GroupFields.svelte";
+  import GroupSources from "../components/GroupSources.svelte";
   import PatternExamples from "../components/PatternExamples.svelte";
   import PatternFields from "../components/PatternFields.svelte";
   import RefPicker from "../components/RefPicker.svelte";
@@ -15,6 +17,15 @@
   import { cn } from "../lib/cn";
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
   import { t, type Key } from "../lib/i18n.svelte";
+  import {
+    emptyGroupDraft,
+    GROUP_PLACEHOLDER,
+    groupDraftFrom,
+    groupProblems,
+    groupStarted,
+    toGroupManifest,
+    type GroupDraft,
+  } from "../lib/group-draft";
   import {
     draftFrom,
     PLACEHOLDER,
@@ -32,21 +43,38 @@
   let base = $state("piighost/email");
   let manifest = $state("");
   let draft = $state<PatternDraft>(emptyDraft());
+  let group = $state<GroupDraft>(emptyGroupDraft());
   let labelPinned = $state(false);
   let result = $state<SubmissionResult | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
 
-  // A pattern is written as a form; a group and a configuration stay TOML,
-  // since what they hold is references and pipeline sections, which a form
-  // would only retype.
-  const asForm = $derived(kind === "pattern");
+  // A pattern and a group are written as forms. A configuration stays TOML:
+  // what it holds is detectors and pipeline stages passed straight through to
+  // piighost, which a form would only retype and would date every time piighost
+  // gains a stage.
+  const asForm = $derived(kind !== "config");
   // A form nobody has touched is not a form with eight faults, so the list
   // waits for the first keystroke, in the draft or in the name above it.
-  const found = $derived(asForm ? problems(draft) : []);
-  const showing = $derived(found.length > 0 && (started(draft) || name !== ""));
-  const body = $derived(asForm ? toManifest(draft) : manifest);
+  const found = $derived(
+    kind === "pattern"
+      ? problems(draft)
+      : kind === "group"
+        ? groupProblems(group)
+        : [],
+  );
+  const touched = $derived(
+    kind === "pattern" ? started(draft) : groupStarted(group),
+  );
+  const showing = $derived(found.length > 0 && (touched || name !== ""));
+  const body = $derived(
+    kind === "pattern"
+      ? toManifest(draft)
+      : kind === "group"
+        ? toGroupManifest(group)
+        : manifest,
+  );
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
   );
@@ -86,9 +114,14 @@
           name: object,
           selector: "latest",
         });
-        draft = draftFrom(commit);
-        labelPinned = true;
-        if (name === "") name = draft.name;
+        if (kind === "pattern") {
+          draft = draftFrom(commit);
+          labelPinned = true;
+          if (name === "") name = draft.name;
+        } else {
+          group = groupDraftFrom(commit);
+          if (name === "") name = group.name;
+        }
         result = null;
       } else {
         start(basedOn(kind, name, await api.manifest(namespaceOf, object)));
@@ -183,7 +216,11 @@
           {t("contribute.name")}
           <input
             bind:value={name}
-            placeholder={kind === "pattern" ? PLACEHOLDER.name : "my-" + kind}
+            placeholder={kind === "pattern"
+              ? PLACEHOLDER.name
+              : kind === "group"
+                ? GROUP_PLACEHOLDER.name
+                : "my-config"}
             spellcheck="false"
             class={FIELD_MONO}
           />
@@ -210,8 +247,10 @@
         </Button>
       </div>
 
-      {#if asForm}
+      {#if kind === "pattern"}
         <PatternFields bind:draft bind:labelPinned {name} />
+      {:else if kind === "group"}
+        <GroupFields bind:draft={group} {name} />
       {:else}
         <Button
           variant="outline"
@@ -227,10 +266,16 @@
     <Region
       step={2}
       done={body.trim() !== ""}
-      title={asForm ? t("draft.examples") : t("contribute.manifest")}
+      title={kind === "pattern"
+        ? t("draft.examples")
+        : kind === "group"
+          ? t("draft.sources")
+          : t("contribute.manifest")}
     >
-      {#if asForm}
+      {#if kind === "pattern"}
         <PatternExamples bind:draft />
+      {:else if kind === "group"}
+        <GroupSources bind:draft={group} />
       {:else}
         <textarea
           bind:value={manifest}

@@ -166,6 +166,14 @@ const STRINGS = {
     "draft.ok": "Caught as expected",
     "draft.nothing": "nothing caught",
     "draft.preview": "Generated manifest",
+    "draft.sources": "Sources",
+    "draft.source": "Source",
+    "draft.sourcesNote":
+      "In order. On two identical spans the first source declared wins, so moving a row changes which label a value comes out under.",
+    "draft.addSource": "Add a source",
+    "draft.exclude": "Leave out of this source",
+    "draft.moveUp": "Move up",
+    "draft.moveDown": "Move down",
     "draft.name.kebab": "The name is lower case words joined by dashes.",
     "draft.label.snake": "The label is upper case words joined by underscores.",
     "draft.tags.empty": "Pick at least one tag.",
@@ -183,6 +191,8 @@ const STRINGS = {
     "draft.noMatches.two":
       "Two sentences that must be left alone are required.",
     "draft.redos.incomplete": "The filler and the suffix are required.",
+    "draft.sources.one": "A group needs at least one source.",
+    "draft.sources.twice": "The same source is listed twice.",
     "contribute.lede":
       "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
@@ -388,6 +398,14 @@ const STRINGS = {
     "draft.ok": "Reconnu comme prévu",
     "draft.nothing": "rien reconnu",
     "draft.preview": "Manifeste généré",
+    "draft.sources": "Sources",
+    "draft.source": "Source",
+    "draft.sourcesNote":
+      "Dans l'ordre. Sur deux spans identiques, la première source déclarée gagne, donc déplacer une ligne change le label sous lequel une valeur ressort.",
+    "draft.addSource": "Ajouter une source",
+    "draft.exclude": "Écarter de cette source",
+    "draft.moveUp": "Monter",
+    "draft.moveDown": "Descendre",
     "draft.name.kebab":
       "Le nom s'écrit en minuscules, les mots reliés par des tirets.",
     "draft.label.snake":
@@ -409,6 +427,8 @@ const STRINGS = {
     "draft.noMatches.two":
       "Deux phrases qui ne doivent rien déclencher sont nécessaires.",
     "draft.redos.incomplete": "Le remplissage et la fin sont obligatoires.",
+    "draft.sources.one": "Un groupe demande au moins une source.",
+    "draft.sources.twice": "La même source est listée deux fois.",
     "contribute.lede":
       "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",
