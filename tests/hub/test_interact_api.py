@@ -229,13 +229,6 @@ class TestExportsAndBadges:
 
 
 class TestScoreAndDiff:
-    async def test_score_is_zero_without_a_corpus(
-        self, client: AsyncTestClient[Litestar]
-    ) -> None:
-        body = (await client.get("/api/v1/refs/piighost/base/latest/score")).json()
-        assert body["annotated"] == 0
-        assert body["recall"] == 0.0
-
     async def test_diff_of_a_commit_against_itself_is_empty(
         self, client: AsyncTestClient[Litestar]
     ) -> None:

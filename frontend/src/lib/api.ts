@@ -8,7 +8,6 @@
  */
 
 import {
-  apiV1BadgeNamespaceBadge,
   apiV1CompareCompare,
   apiV1LabelsLabels,
   apiV1PlaygroundCandidateCandidate,
@@ -147,15 +146,6 @@ export const api = {
       parseAs: "text",
     });
     return unwrap(result as unknown as Envelope<string>);
-  },
-
-  async badge(namespace: string, name: string, tag: string) {
-    return unwrap(
-      await apiV1BadgeNamespaceBadge({
-        path: { namespace, name },
-        query: { tag },
-      }),
-    );
   },
 
   async run(ref: string, text: string): Promise<RunOut> {

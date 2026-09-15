@@ -17,12 +17,11 @@ taille de corps s'appliquent comme au reste de l'API. Le contrat exact est
 | `GET /api/v1/refs/{ns}/{name}/{selector}/pipeline.toml?memory=&keep_refs=` | le pipeline piighost en TOML, `application/toml` |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/export?format=` | le jeu de labels pour un autre outil : `json`, `presidio`, `spacy` |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/snippets` | des extraits prêts à coller, un par cible |
-| `GET /api/v1/refs/{ns}/{name}/{selector}/score` | la couverture mesurée sur les textes annotés |
 | `GET /api/v1/search?q=&kind=&tag=&label=&sort=` | la recherche et les compteurs de facettes du résultat ; `sort` vaut `relevance`, `updated`, `used`, `labels` ou `name` |
 | `GET /api/v1/labels` | tous les labels que le registre peut émettre |
 | `GET /api/v1/samples` | les textes annotés, avec leurs annotations |
-| `GET /api/v1/diff/{ns}/{name}?before=&after=` | ce que deux commits détectent différemment |
-| `GET /api/v1/badge/{ns}/{name}?tag=` | un endpoint shields.io, pour afficher un commit dans un README |
+| `GET /api/v1/diff/{ns}/{name}?before=&after=` | ce que deux commits détectent différemment. Pas d'écran sur le site : c'est la matière de `piighost hub log` |
+| `GET /api/v1/badge/{ns}/{name}?tag=` | un endpoint shields.io, pour afficher un commit dans un README. Pas d'écran non plus, par construction |
 
 `{selector}` est un tag, `latest` compris, ou un commit de huit caractères
 hexadécimaux. Les tags d'une recherche se combinent en ET : cocher deux facettes

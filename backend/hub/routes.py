@@ -20,7 +20,7 @@ from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_E
 from backend import REGISTRY_ROOT
 from backend.exceptions import AppError, NotFoundError
 from backend.hub.errors import RefError, ResolutionError
-from backend.hub.evaluate import diff_commits, score_config
+from backend.hub.evaluate import diff_commits
 from backend.hub.exports import FORMATS, export, snippets
 from backend.hub.refs import Ref, is_commit, parse_ref
 from backend.hub.registry import REGISTRY_DIR_ENV_VAR, Registry
@@ -190,21 +190,6 @@ class SampleOut(msgspec.Struct):
 
 class SamplesOut(msgspec.Struct):
     items: list[SampleOut]
-
-
-class ScoreOut(msgspec.Struct):
-    """How a config did against the annotated corpus."""
-
-    ref: str
-    exact: int
-    mislabelled: int
-    missed: int
-    extra: int
-    annotated: int
-    recall: float
-    protected: float
-    per_sample: dict[str, list[int]]
-    scope: str
 
 
 class ChangeOut(msgspec.Struct):
@@ -542,45 +527,6 @@ class HubController(Controller):
         return SnippetsOut(
             ref=snapshot.ref, items=snippets(snapshot.ref, snapshot.kind)
         )
-
-    @get("/refs/{namespace:str}/{name:str}/{selector:str}/score", name="hub:score")
-    async def score(
-        self,
-        state: State,
-        namespace: FromPath[str],
-        name: FromPath[str],
-        selector: FromPath[str],
-    ) -> Response[ScoreOut]:
-        """Measure this reference against the annotated corpus.
-
-        Read it as coverage, not as a grade: the corpus is this registry's own
-        samples, so it says what a config catches on texts the maintainers wrote,
-        not how it behaves on yours.
-        """
-        registry = registry_of(state)
-        snapshot = _snapshot(registry, _ref(namespace, name, selector))
-        try:
-            result = await score_config(
-                registry,
-                snapshot,
-                list(registry.samples.values()),
-                scoped=snapshot.kind != "config",
-            )
-        except ResolutionError as exc:
-            raise UnprocessableError(str(exc)) from exc
-        body = ScoreOut(
-            ref=snapshot.ref,
-            exact=result.exact,
-            mislabelled=result.mislabelled,
-            missed=result.missed,
-            extra=result.extra,
-            annotated=result.annotated,
-            recall=round(result.recall, 4),
-            protected=round(result.protected, 4),
-            per_sample={k: list(v) for k, v in result.per_sample.items()},
-            scope=result.scope,
-        )
-        return Response(body, headers=_cache_headers(selector, snapshot))
 
     @get("/diff/{namespace:str}/{name:str}", name="hub:diff")
     async def diff(

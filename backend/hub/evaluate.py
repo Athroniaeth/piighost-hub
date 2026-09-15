@@ -1,8 +1,9 @@
-"""Measure configs against the annotated samples, and diff two commits.
+"""Diff two commits: which values do they treat differently?
 
-Both answer the same question from different ends: what does this change for the
-text I actually handle? A score says how much of the corpus a config catches; a
-diff says which values two commits treat differently. Neither reads a regex.
+Behavioural rather than textual. Two manifests can differ in every character and
+catch exactly the same things, and two that differ by a single quantifier can
+change what a user sees. So both commits run over the annotated samples and the
+answer is the values whose label moved. No regex is read.
 """
 
 from dataclasses import dataclass, field
@@ -11,7 +12,7 @@ from backend.hub.errors import ResolutionError
 from backend.hub.playground import Hit, detector_sets, pattern_index, run_sets
 from backend.hub.registry import Registry
 from backend.hub.resolve import resolve_config, resolve_labels
-from backend.hub.samples import Sample, Score
+from backend.hub.samples import Sample
 from backend.hub.store import Snapshot
 
 
@@ -41,57 +42,6 @@ def _labels_of(registry: Registry, snapshot: Snapshot) -> set[str]:
             for label in detector.labels.labels
         }
     return set(resolve_labels(registry, snapshot).labels)
-
-
-async def score_config(
-    registry: Registry,
-    snapshot: Snapshot,
-    samples: list[Sample],
-    *,
-    scoped: bool = False,
-) -> Score:
-    """Run an object over every sample and compare with the annotations.
-
-    ``scoped`` restricts the denominator to the labels the object can emit. A
-    configuration is meant to cover a whole text, so it is measured against every
-    annotated value; one pattern is not, and scoring `fr-nir` against a corpus
-    full of emails and card numbers would report a failure that is really a
-    scope. Which one was used is reported alongside, so the number is never read
-    as the other.
-    """
-    score = Score()
-    score.scope = "labels" if scoped else "corpus"
-    emitted = _labels_of(registry, snapshot) if scoped else None
-    for sample in samples:
-        hits = await _run(registry, snapshot, sample.text)
-        caught = 0
-        expected = [
-            span for span in sample.spans() if emitted is None or span[2] in emitted
-        ]
-        if not expected:
-            continue
-        covered: set[int] = set()
-        for start, end, label in expected:
-            match = next(
-                (
-                    index
-                    for index, hit in enumerate(hits)
-                    if hit.start < end and hit.end > start
-                ),
-                None,
-            )
-            if match is None:
-                score.missed += 1
-                continue
-            covered.add(match)
-            caught += 1
-            if hits[match].label == label:
-                score.exact += 1
-            else:
-                score.mislabelled += 1
-        score.extra += sum(1 for index in range(len(hits)) if index not in covered)
-        score.per_sample[sample.name] = (caught, len(expected))
-    return score
 
 
 @dataclass(slots=True)

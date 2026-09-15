@@ -8,7 +8,7 @@ and every occurrence of an annotated value is expected to be caught.
 """
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import msgspec
@@ -104,44 +104,3 @@ def load_samples(
             annotations=list(manifest.annotations),
         )
     return samples
-
-
-# ---------------------------------------------------------------- evaluation
-
-
-@dataclass(slots=True)
-class Score:
-    """How a config did on the corpus.
-
-    ``mislabelled`` is counted apart from ``missed`` on purpose: a value caught
-    under another label is still de-identified, so the user is protected, which
-    is not the same failure as a value left in clear.
-    """
-
-    exact: int = 0
-    mislabelled: int = 0
-    missed: int = 0
-    extra: int = 0
-    """Kept detections covering nothing annotated. Over-detection costs a token,
-    not a leak, so it is reported rather than punished."""
-    per_sample: dict[str, tuple[int, int]] = field(default_factory=dict)
-    """Sample name to (values caught under any label, values annotated)."""
-    scope: str = "corpus"
-    """``corpus`` counts every annotated value; ``labels`` counts only those the
-    object can emit, which is the only meaningful denominator for one pattern."""
-
-    @property
-    def annotated(self) -> int:
-        return self.exact + self.mislabelled + self.missed
-
-    @property
-    def recall(self) -> float:
-        """Share of annotated values caught under their expected label."""
-        return self.exact / self.annotated if self.annotated else 0.0
-
-    @property
-    def protected(self) -> float:
-        """Share of annotated values de-identified at all, label aside."""
-        if not self.annotated:
-            return 0.0
-        return (self.exact + self.mislabelled) / self.annotated

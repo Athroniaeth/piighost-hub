@@ -3,8 +3,7 @@ from pathlib import Path
 import pytest
 
 from backend.hub.errors import ResolutionError
-from backend.hub.evaluate import diff_commits, score_config
-from backend.hub.refs import parse_ref
+from backend.hub.evaluate import diff_commits
 from backend.hub.registry import Registry
 from backend.hub.samples import load_samples
 from tests.hub.fixtures import EMAIL, write, write_pattern
@@ -56,73 +55,6 @@ class TestSamples:
         problems: list[str] = []
         load_samples(root, {"contact"}, problems)
         assert any("unknown tag 'nope'" in p for p in problems)
-
-
-class TestScoring:
-    async def test_a_covering_config_scores_every_value(
-        self, with_sample: Registry
-    ) -> None:
-        snapshot = with_sample.resolve(parse_ref("piighost/base"))
-        score = await score_config(
-            with_sample, snapshot, list(with_sample.samples.values())
-        )
-        assert (score.exact, score.missed, score.annotated) == (2, 0, 2)
-        assert score.recall == 1.0
-        assert score.per_sample["one"] == (2, 2)
-
-    async def test_a_value_caught_under_another_label_counts_apart(
-        self, root: Path
-    ) -> None:
-        # `child` drops FR_SIRET, so the card pattern claims that span instead:
-        # the value is still de-identified, which is not the same as a miss.
-        write(root / "samples/one/sample.toml", SAMPLE)
-        from tests.hub.fixtures import write_config
-
-        write_config(
-            root,
-            "cards-only",
-            '\n[[detectors]]\nname = "rx"\ntype = "regex"\ngroups = ["piighost/credit-card"]\n',
-        )
-        registry = Registry.load(root)
-        snapshot = registry.resolve(parse_ref("piighost/cards-only"))
-        score = await score_config(registry, snapshot, list(registry.samples.values()))
-        assert (score.exact, score.mislabelled, score.missed) == (0, 1, 1)
-        assert score.protected == 0.5
-
-    async def test_scoping_counts_only_the_labels_the_object_emits(
-        self, with_sample: Registry
-    ) -> None:
-        # The corpus annotates an email and a SIRET; the email pattern alone is
-        # not a failed config, it is a narrower scope.
-        snapshot = with_sample.resolve(parse_ref("piighost/email"))
-        wide = await score_config(
-            with_sample, snapshot, list(with_sample.samples.values())
-        )
-        narrow = await score_config(
-            with_sample, snapshot, list(with_sample.samples.values()), scoped=True
-        )
-        assert (wide.scope, wide.exact, wide.missed) == ("corpus", 1, 1)
-        assert (narrow.scope, narrow.exact, narrow.missed) == ("labels", 1, 0)
-        assert narrow.recall == 1.0
-
-    async def test_an_unannotated_detection_is_extra_not_a_failure(
-        self, root: Path
-    ) -> None:
-        write(
-            root / "samples/one/sample.toml",
-            SAMPLE.replace(
-                'text = "write to john.doe@example.com about SIRET 73282932000074"',
-                'text = "write to john.doe@example.com about SIRET 73282932000074 from 4111 1111 1111 1111"',
-            ),
-        )
-        registry = Registry.load(root)
-        score = await score_config(
-            registry,
-            registry.resolve(parse_ref("piighost/base")),
-            list(registry.samples.values()),
-        )
-        assert score.extra == 1
-        assert score.missed == 0
 
 
 class TestDiff:
