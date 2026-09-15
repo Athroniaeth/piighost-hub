@@ -3,6 +3,7 @@
   import Async from "../components/Async.svelte";
   import FacetSection from "../components/FacetSection.svelte";
   import ObjectRow from "../components/ObjectRow.svelte";
+  import Wordmark from "../components/Wordmark.svelte";
   import Badge from "../components/ui/Badge.svelte";
   import Button from "../components/ui/Button.svelte";
   import type { SearchOut } from "../generated/api";
@@ -103,8 +104,8 @@
 
 <section class="border-b">
   <div class="mx-auto max-w-3xl px-4 pt-14 pb-10 text-center">
-    <h1 class="font-mono text-4xl font-semibold tracking-tight">
-      {t("home.title")}
+    <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+      <Wordmark />
     </h1>
     <!-- Balanced: the French line is long enough that the browser otherwise
          drops its last word alone on a third line. -->

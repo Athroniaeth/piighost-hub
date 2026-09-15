@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Wordmark from "./Wordmark.svelte";
   import { cn } from "../lib/cn";
 
   /**
@@ -9,8 +10,8 @@
 </script>
 
 <nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-2 text-sm">
-  <a href="/" class="shrink-0 font-mono text-base font-bold tracking-tight">
-    piighost <span class="text-primary">hub</span>
+  <a href="/" class="shrink-0 text-base font-bold tracking-tight">
+    <Wordmark />
   </a>
   {#each items as item, index (index)}
     <span class="text-muted-foreground/60" aria-hidden="true">/</span>

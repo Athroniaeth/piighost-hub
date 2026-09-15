@@ -1,8 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="piighost hub">
   <rect width="1200" height="630" fill="#ffffff"/>
-  <rect x="0" y="0" width="1200" height="8" fill="#5b4bdb"/>
-  <text x="80" y="300" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="96" font-weight="600" fill="#0b0b0f">piighost <tspan fill="#5b4bdb">hub</tspan></text>
-  <text x="80" y="370" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="34" fill="#55555f">Tested de-identification patterns, groups and configurations.</text>
-  <text x="80" y="424" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="34" fill="#55555f">Versioned by content, pinnable by tag.</text>
-  <text x="80" y="540" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="28" fill="#8a8a96">piighost/fr-default:prod</text>
+  <g transform="translate(80 148)">
+    <rect width="104" height="104" rx="26" fill="#4f46e5"/>
+    <g transform="translate(52 52) scale(3.25) translate(-16 -16)" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11.6 9.8 6.6 16l5 6.2"/>
+      <path d="M20.4 9.8 25.4 16l-5 6.2"/>
+      <path d="M16 11.4v9.2"/>
+    </g>
+  </g>
+  <text x="216" y="228" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="86" font-weight="600" fill="#0b0b0f">piighost <tspan fill="#4f46e5">hub</tspan></text>
+  <text x="80" y="356" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="34" fill="#55555f">Tested de-identification patterns, groups and configurations.</text>
+  <text x="80" y="410" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="34" fill="#55555f">Versioned by content, pinnable by tag.</text>
+  <text x="80" y="536" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="28" fill="#8a8a96">piighost/fr-default:3fa9c2e1</text>
 </svg>

@@ -1,11 +1,12 @@
 <script lang="ts">
+  import Wordmark from "./Wordmark.svelte";
   import { t } from "../lib/i18n.svelte";
 </script>
 
 <footer class="border-t">
   <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-3">
     <div>
-      <p class="font-mono text-lg font-bold">piighost hub</p>
+      <p class="text-lg font-bold"><Wordmark /></p>
       <p class="mt-2 max-w-xs text-sm text-muted-foreground">
         {t("footer.tagline")}
       </p>
