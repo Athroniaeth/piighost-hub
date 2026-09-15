@@ -14,13 +14,20 @@
   import { SvelteURLSearchParams } from "svelte/reactivity";
 
   type Kind = "pattern" | "group" | "config";
-  type Sort = "relevance" | "updated" | "used" | "labels" | "name";
+  type Sort = "relevance" | "updated" | "used" | "labels" | "pulls" | "name";
 
   const PER_PAGE = 15;
   const KINDS: Kind[] = ["pattern", "group", "config"];
   // Widest coverage leads: a visitor who has not typed anything is looking for
   // the configuration that covers the most, not the one edited most recently.
-  const SORTS: Sort[] = ["labels", "relevance", "updated", "used", "name"];
+  const SORTS: Sort[] = [
+    "labels",
+    "pulls",
+    "relevance",
+    "updated",
+    "used",
+    "name",
+  ];
   const FACET_ORDER = ["region", "category", "domain", "use-case", "language"];
 
   // The query string is the state: a filtered view is shareable, and the back

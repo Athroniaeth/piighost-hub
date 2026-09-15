@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Download from "@lucide/svelte/icons/download";
   import GitCommit from "@lucide/svelte/icons/git-commit-horizontal";
   import Link from "@lucide/svelte/icons/link";
   import Play from "@lucide/svelte/icons/play";
@@ -77,5 +78,13 @@
       ><Link class="size-3.5" />{item.used_by.length}
       {t("home.usedCount")}</span
     >
+    <!-- Only once someone has: a row of zeroes is noise on a young registry. -->
+    {#if item.pulls > 0}
+      <span aria-hidden="true">•</span>
+      <span class="inline-flex items-center gap-1 text-primary"
+        ><Download class="size-3.5" />{item.pulls}
+        {t("home.pullsCount")}</span
+      >
+    {/if}
   </p>
 </li>

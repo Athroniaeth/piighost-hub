@@ -29,7 +29,7 @@ from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.samples import Sample
 from backend.hub.search import Index
 from backend.hub.store import Snapshot
-from backend.hub.usage import database_path, report
+from backend.hub.usage import database_path, pulls_by_object, report
 
 STATE_KEY = "hub_registry"
 INDEX_KEY = "hub_index"
@@ -37,6 +37,9 @@ INDEX_KEY = "hub_index"
 IMMUTABLE = "public, max-age=31536000, immutable"
 REVALIDATE = "public, no-cache"
 TOML_MEDIA_TYPE = "application/toml"
+
+#: The window a pull count is shown over, everywhere it is shown.
+PULL_WINDOW_DAYS = 30
 
 
 class BadRequestError(AppError):
@@ -88,6 +91,8 @@ class ObjectDetail(msgspec.Struct):
     latest: str
     pointers: dict[str, str]
     commits: list[CommitSummary]
+    pulls: int
+    """Pipelines fetched over the last thirty days. Zero until someone pulls."""
 
 
 class CountOut(msgspec.Struct):
@@ -171,6 +176,8 @@ class SearchHit(msgspec.Struct):
     description: Localized
     updated_at: str | None
     commits: int
+    pulls: int
+    """Pipelines fetched over the last thirty days."""
 
 
 class FacetOut(msgspec.Struct):
@@ -322,6 +329,7 @@ class HubController(Controller):
         summary = _summary(registry, head)
         return ObjectDetail(
             **msgspec.structs.asdict(summary),
+            pulls=pulls_by_object(database_path(), PULL_WINDOW_DAYS).get(ref.key, 0),
             commits=[
                 CommitSummary(
                     commit=s.short, digest=s.digest, recorded_at=s.recorded_at
@@ -453,13 +461,16 @@ class HubController(Controller):
         ] = None,
         label: Annotated[str | None, QueryParameter()] = None,
         sort: Annotated[
-            Literal["relevance", "updated", "used", "labels", "name"],
+            Literal["relevance", "updated", "used", "labels", "pulls", "name"],
             QueryParameter(description="Order of the results."),
         ] = "relevance",
     ) -> SearchOut:
         """Search the registry and return the facet counts of the result set."""
         index = index_of(state)
-        entries = index.search(q, kind=kind, tags=tag, label=label, sort=sort)
+        pulls = pulls_by_object(database_path(), PULL_WINDOW_DAYS)
+        entries = index.search(
+            q, kind=kind, tags=tag, label=label, sort=sort, pulls=pulls
+        )
         return SearchOut(
             items=[
                 SearchHit(
@@ -476,6 +487,7 @@ class HubController(Controller):
                     ),
                     updated_at=e.updated_at,
                     commits=e.commits,
+                    pulls=pulls.get(e.key, 0),
                 )
                 for e in entries
             ],

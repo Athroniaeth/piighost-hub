@@ -129,6 +129,7 @@ class Index:
         tags: list[str] | None = None,
         label: str | None = None,
         sort: str = "relevance",
+        pulls: dict[str, int] | None = None,
     ) -> list[Entry]:
         """Return matching entries, ordered by ``sort``, then by key.
 
@@ -136,7 +137,11 @@ class Index:
         visitor expects from a facet list and what makes the counts meaningful.
         ``relevance`` is the match score, which is flat without a query, so the
         other orders exist for browsing: ``updated`` newest first, ``used`` most
-        referenced first, ``labels`` widest first, ``name`` alphabetical.
+        referenced first, ``labels`` widest first, ``pulls`` most fetched first,
+        ``name`` alphabetical.
+
+        ``pulls`` comes from the caller rather than the index because it changes
+        with every request while the index is built once at startup.
         """
         needle = fold(query.strip())
         wanted = set(tags or [])
@@ -152,7 +157,8 @@ class Index:
             if score is None:
                 continue
             results.append((-score, entry.key, entry))
-        return [entry for _, _, entry in sorted(results, key=_sort_key(sort))]
+        order = _sort_key(sort, pulls or {})
+        return [entry for _, _, entry in sorted(results, key=order)]
 
     @staticmethod
     def _score(entry: Entry, needle: str) -> int | None:
@@ -198,10 +204,10 @@ class Index:
         return {label: sorted(keys) for label, keys in sorted(found.items())}
 
 
-SORTS = ("relevance", "updated", "used", "labels", "name")
+SORTS = ("relevance", "updated", "used", "labels", "pulls", "name")
 
 
-def _sort_key(sort: str):
+def _sort_key(sort: str, pulls: dict[str, int]):
     if sort == "updated":
         return lambda item: (
             item[2].updated_at is None,
@@ -212,6 +218,8 @@ def _sort_key(sort: str):
         return lambda item: (-len(item[2].used_by), item[1])
     if sort == "labels":
         return lambda item: (-len(item[2].labels), item[1])
+    if sort == "pulls":
+        return lambda item: (-pulls.get(item[1], 0), item[1])
     if sort == "name":
         return lambda item: (item[2].name, item[1])
     return lambda item: (item[0], item[1])

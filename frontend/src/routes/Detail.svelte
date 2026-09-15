@@ -245,6 +245,16 @@
             >{relativeTime(commit.recorded_at, i18n.locale) ??
               t("detail.unrecorded")}</span
           >
+          {#if object.pulls > 0}
+            <span
+              class="inline-flex items-center gap-1 text-xs text-primary"
+              title={t("detail.pullsWindow")}
+            >
+              <Download class="size-3.5" />
+              {object.pulls}
+              {t("home.pullsCount")}
+            </span>
+          {/if}
         </div>
 
         <div role="tablist" class="no-print mt-4 flex flex-wrap gap-1">

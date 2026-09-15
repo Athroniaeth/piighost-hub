@@ -285,3 +285,25 @@ def _series(per_day: dict[str, int], days: int) -> list[Row]:
         day = datetime.fromtimestamp(today - offset * 86400, UTC).strftime("%Y-%m-%d")
         out.append(Row(key=day, count=per_day.get(day, 0)))
     return out
+
+
+def pulls_by_object(path: Path, days: int = 30) -> dict[str, int]:
+    """How many times each object was pulled over a window.
+
+    Read on the request rather than cached in the index: the table is measured
+    in kilobytes and holds one row per (hour, shape), so the query is cheaper
+    than the invalidation logic a cache would need.
+    """
+    if not path.exists():
+        return {}
+    since = _since(days)
+    with sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5.0) as db:
+        return {
+            str(key): int(count)
+            for key, count in db.execute(
+                "SELECT object, SUM(count) FROM usage"
+                " WHERE hour >= ? AND kind = 'pull' AND status < 400 AND object != ''"
+                " GROUP BY object",
+                (since,),
+            )
+        }

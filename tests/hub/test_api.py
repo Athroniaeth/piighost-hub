@@ -177,3 +177,26 @@ class TestStats:
         # The health check touched nothing: only stats calls are browses, and
         # those are not counted either.
         assert after["browses"] == before["browses"]
+
+    async def test_pull_counts_reach_the_catalogue_and_the_detail_page(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """The number is only useful where a configuration is chosen."""
+        from backend.app import USAGE_KEY
+
+        # Twenty, which is more than any other test in the suite pulls, so the
+        # ranking holds whatever order the session-scoped client ran them in.
+        usage = client.app.state[USAGE_KEY]
+        for _ in range(20):
+            await client.get(
+                "/api/v1/refs/piighost/email/latest/pipeline.toml",
+                headers={"user-agent": "piighost-hub/1.7.2"},
+            )
+        await usage.flush()
+
+        detail = (await client.get("/api/v1/refs/piighost/email")).json()
+        assert detail["pulls"] == 20
+
+        ranked = (await client.get("/api/v1/search", params={"sort": "pulls"})).json()
+        assert ranked["items"][0]["key"] == "piighost/email"
+        assert ranked["items"][0]["pulls"] == 20

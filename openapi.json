@@ -557,6 +557,9 @@
             },
             "type": "object"
           },
+          "pulls": {
+            "type": "integer"
+          },
           "tags": {
             "items": {
               "type": "string"
@@ -573,6 +576,7 @@
           "name",
           "namespace",
           "pointers",
+          "pulls",
           "tags"
         ],
         "title": "ObjectDetail",
@@ -906,6 +910,9 @@
           "namespace": {
             "type": "string"
           },
+          "pulls": {
+            "type": "integer"
+          },
           "tags": {
             "items": {
               "type": "string"
@@ -938,6 +945,7 @@
           "labels",
           "name",
           "namespace",
+          "pulls",
           "tags",
           "updated_at",
           "used_by"
@@ -2628,6 +2636,7 @@
                 "updated",
                 "used",
                 "labels",
+                "pulls",
                 "name"
               ],
               "type": "string"
