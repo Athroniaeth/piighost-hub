@@ -14,6 +14,13 @@
 </script>
 
 <span class={cn("inline-flex items-center gap-[0.4em] font-mono", extra)}>
-  <Logo class="size-[1.05em] shrink-0" />
-  <span>piighost <span class="text-primary">hub</span></span>
+  <!-- A hair lower than the box centre: the mono face has no ascender on most
+       of `piighost`, so a mathematically centred square reads as floating. -->
+  <Logo class="size-[1.05em] shrink-0 translate-y-[0.06em]" />
+  <!-- Tighter than a mono space, which is a full character wide and pushes the
+       two words apart as if they were unrelated. -->
+  <span class="inline-flex items-center gap-[0.2em]">
+    <span>piighost</span>
+    <span class="text-primary">hub</span>
+  </span>
 </span>
