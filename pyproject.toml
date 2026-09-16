@@ -12,6 +12,7 @@ dependencies = [
     "structlog>=26.1.0",
     "piighost[config]>=1.7",
     "packaging>=26.3",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]

@@ -11,6 +11,7 @@
   import Button from "../components/ui/Button.svelte";
   import Region from "../components/ui/Region.svelte";
   import Segmented from "../components/ui/Segmented.svelte";
+  import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
   import { assignLabelColors } from "../lib/labels";
@@ -66,6 +67,14 @@
           ? await api.run(ref, text)
           : await api.candidate(regex, text, "CANDIDATE");
       view = "anonymized";
+      track({
+        name: "playground_run",
+        props: {
+          source,
+          kept: run.hits.filter((hit) => hit.kept).length,
+          elapsedMs: Math.round(run.elapsed_ms),
+        },
+      });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
       run = null;

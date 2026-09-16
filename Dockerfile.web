@@ -9,14 +9,24 @@ RUN corepack enable && pnpm -C frontend install --frozen-lockfile
 
 COPY openapi.json ./openapi.json
 COPY frontend ./frontend
+
+# Vite inlines VITE_* at build time, so the analytics client id is a build
+# argument rather than a runtime variable. It is public by design: it only lets
+# a caller post events to the project it names. The secret that lets anything be
+# read stays on the API side and never reaches this image.
+ARG VITE_OPENPANEL_CLIENT_ID=""
+ARG VITE_OPENPANEL_API_URL=""
+ENV VITE_OPENPANEL_CLIENT_ID=$VITE_OPENPANEL_CLIENT_ID
+ENV VITE_OPENPANEL_API_URL=$VITE_OPENPANEL_API_URL
+
 RUN pnpm -C frontend generate-types && pnpm -C frontend build
 
 # Unprivileged nginx image: runs as the `nginx` user and listens on 8080.
 FROM nginxinc/nginx-unprivileged:1.29-alpine AS runtime
 
-# Templates are rendered by the entrypoint at startup; the filter keeps envsubst away
-# from nginx's own variables, so only ${API_KEY} is replaced.
-ENV NGINX_ENVSUBST_FILTER="^API_KEY$"
+# Templates are rendered by the entrypoint at startup; the filter keeps envsubst
+# away from nginx's own variables, so only these three are replaced.
+ENV NGINX_ENVSUBST_FILTER="^(API_KEY|OPENPANEL_HOST|SITE_URL)$"
 COPY deploy/default.conf.template /etc/nginx/templates/default.conf.template
 # Outside templates/ on purpose: it holds no variable to substitute, and the server
 # config includes it by absolute path.

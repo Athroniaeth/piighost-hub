@@ -13,6 +13,7 @@
   import CodeBlock from "../components/ui/CodeBlock.svelte";
   import CopyButton from "../components/ui/CopyButton.svelte";
   import Segmented from "../components/ui/Segmented.svelte";
+  import { track } from "../lib/analytics";
   import { ApiError, api, download } from "../lib/api";
   import { cn } from "../lib/cn";
   import { segments } from "../lib/highlight";
@@ -78,10 +79,17 @@
     const extension =
       format === "json" ? "json" : format === "presidio" ? "py" : "jsonl";
     download(`${name}-${format}.${extension}`, body, "text/plain");
+    track({ name: "labels_exported", props: { format } });
   }
 
   async function savePipeline() {
     download(`${name}-pipeline.toml`, await pipeline, "application/toml");
+    // Which rendering people take away is the question `keep_refs` exists to
+    // answer: a flattened file works offline, a referenced one needs the hub.
+    track({
+      name: "pipeline_copied",
+      props: { form, memory: memory || "none" },
+    });
   }
 
   function exampleParts(text: string, value: string, label: string) {

@@ -7,6 +7,7 @@
   import Badge from "../components/ui/Badge.svelte";
   import Button from "../components/ui/Button.svelte";
   import type { SearchOut } from "../generated/api";
+  import { track } from "../lib/analytics";
   import { api } from "../lib/api";
   import { cn } from "../lib/cn";
   import { t, type Key } from "../lib/i18n.svelte";
@@ -125,6 +126,9 @@
       onsubmit={(event) => {
         event.preventDefault();
         update((params) => params.set("q", draft));
+        // The words someone searched for are theirs. What is useful is whether
+        // the catalogue is browsed by filter or by query at all.
+        track({ name: "search", props: { sort, kind, tags: tags.length } });
       }}
     >
       <label class="relative block">

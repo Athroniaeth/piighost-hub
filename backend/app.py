@@ -18,10 +18,11 @@ from litestar_vite.config import PathConfig, RuntimeConfig
 
 from backend import DOCS_ENABLED, FRONTEND_ROOT, OPENAPI_SCHEMA
 from backend.exceptions import AppError, app_error_handler
+from backend.hub.analytics import Analytics
 from backend.hub.interact import PlaygroundController
 from backend.hub.routes import HubController, load_hub_registry
 from backend.hub.seo import robots, sitemap
-from backend.hub.usage import Usage, database_path
+from backend.hub.usage import Usage, classify, client_of, database_path
 from backend.routes import ApiController
 from backend.security import API_KEY_HEADER, ensure_api_key_configured, identify_client
 
@@ -153,6 +154,7 @@ def build_rate_limit_config(
 rate_limit_config = build_rate_limit_config()
 
 USAGE_KEY = "hub_usage"
+ANALYTICS_KEY = "hub_analytics"
 
 
 async def open_usage(app: Litestar) -> None:
@@ -160,6 +162,25 @@ async def open_usage(app: Litestar) -> None:
     usage = Usage.open(database_path())
     usage.task = asyncio.create_task(usage.run())
     app.state[USAGE_KEY] = usage
+
+
+async def open_analytics(app: Litestar) -> None:
+    """Start the dashboard sender, if one is configured. Absent is fine."""
+    analytics = Analytics.from_env()
+    if analytics is None:
+        return
+    analytics.task = asyncio.create_task(analytics.run())
+    app.state[ANALYTICS_KEY] = analytics
+
+
+async def close_analytics(app: Litestar) -> None:
+    """Stop the sender, which drains what is queued on its way out."""
+    analytics: Analytics | None = app.state.get(ANALYTICS_KEY)
+    if analytics is None or analytics.task is None:
+        return
+    analytics.task.cancel()
+    with suppress(asyncio.CancelledError):
+        await analytics.task
 
 
 async def close_usage(app: Litestar) -> None:
@@ -185,10 +206,25 @@ async def count_usage(message: Message, scope: Scope) -> None:
     if usage is None:
         return
     headers = {key.lower(): value for key, value in scope.get("headers", [])}
-    usage.record(
-        scope.get("path", ""),
-        int(message["status"]),
-        headers.get(b"user-agent", b"").decode("latin-1", "replace"),
+    path = scope.get("path", "")
+    status = int(message["status"])
+    agent = headers.get(b"user-agent", b"").decode("latin-1", "replace")
+    usage.record(path, status, agent)
+
+    # The dashboard hears only what the browser cannot report for itself. A page
+    # sends its own event through the web SDK, so forwarding its API calls too
+    # would double every number in a way that still looks plausible.
+    analytics: Analytics | None = scope["app"].state.get(ANALYTICS_KEY)
+    client = client_of(agent)
+    if analytics is None or client == "browser":
+        return
+    shape = classify(path)
+    if shape is None:
+        return
+    kind, obj, selector = shape
+    analytics.track(
+        kind,
+        {"object": obj, "selector": selector, "client": client, "status": status},
     )
 
 
@@ -204,7 +240,12 @@ app = Litestar(
     # loads this module without needing a key.
     # The registry loads once here too: an invalid tree stops the app instead of
     # serving half a hub.
-    on_startup=[ensure_api_key_configured, load_hub_registry, open_usage],
-    on_shutdown=[close_usage],
+    on_startup=[
+        ensure_api_key_configured,
+        load_hub_registry,
+        open_usage,
+        open_analytics,
+    ],
+    on_shutdown=[close_usage, close_analytics],
     before_send=[count_usage],
 )

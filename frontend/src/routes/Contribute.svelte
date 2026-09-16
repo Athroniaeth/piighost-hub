@@ -13,6 +13,7 @@
   import Button from "../components/ui/Button.svelte";
   import CodeBlock from "../components/ui/CodeBlock.svelte";
   import Region from "../components/ui/Region.svelte";
+  import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
   import { cn } from "../lib/cn";
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
@@ -126,6 +127,7 @@
       } else {
         start(basedOn(kind, name, await api.manifest(namespaceOf, object)));
       }
+      track({ name: "submission_forked", props: { kind } });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
     } finally {
@@ -143,6 +145,15 @@
     error = null;
     try {
       result = await api.submit({ kind, namespace, name, manifest: body });
+      track({
+        name: "submission_checked",
+        props: {
+          kind,
+          mode: asForm ? "form" : "toml",
+          ok: result.ok,
+          findings: result.findings.length,
+        },
+      });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
       result = null;

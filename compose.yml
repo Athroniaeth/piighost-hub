@@ -4,10 +4,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
+      args:
+        # Inlined into the bundle by Vite, so it is set here and not below.
+        # Empty means the site loads no analytics at all.
+        VITE_OPENPANEL_CLIENT_ID: ${VITE_OPENPANEL_CLIENT_ID:-}
     # Injected into /api/ requests server-side, so the browser never sees it.
     # `:?` on purpose: a missing key must stop the deployment, not ship an open API.
     environment:
       API_KEY: ${API_KEY:?set API_KEY in .env (see .env.example)}
+      # The host /api/op forwards events to, and the origin it presents to
+      # OpenPanel's allow list. Only read when the template is rendered.
+      OPENPANEL_HOST: ${OPENPANEL_HOST:-opapi.athroniaeth.cloud}
+      SITE_URL: ${SITE_URL:-http://localhost:8000}
     ports:
       - "8000:8080"
     depends_on:
@@ -32,6 +40,13 @@ services:
       # forgets how the hub was used. See backend/hub/usage.py for what is in
       # it, which is deliberately not much.
       HUB_USAGE_DB: ${HUB_USAGE_DB:-/app/data/usage.db}
+      # Where the API reports the calls a browser cannot report for itself,
+      # which is `piighost hub pull`. All three or none: see
+      # backend/hub/analytics.py. The secret stays here and never reaches the
+      # bundle.
+      OPENPANEL_API_URL: ${OPENPANEL_API_URL:-}
+      OPENPANEL_CLIENT_ID: ${OPENPANEL_CLIENT_ID:-}
+      OPENPANEL_CLIENT_SECRET: ${OPENPANEL_CLIENT_SECRET:-}
     volumes:
       - usage:/app/data
     # No `ports`: the API is reachable only by web, over the compose network.

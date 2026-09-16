@@ -8,6 +8,7 @@
   import RestoredText from "../components/RestoredText.svelte";
   import Button from "../components/ui/Button.svelte";
   import Region from "../components/ui/Region.svelte";
+  import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
   import { assignLabelColors, labelStyle } from "../lib/labels";
@@ -43,6 +44,13 @@
       result = await api.chat(ref, next);
       messages = next;
       draft = "";
+      track({
+        name: "chat_sent",
+        props: {
+          turns: result.turns.length,
+          tokens: Object.keys(result.mapping).length,
+        },
+      });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
     } finally {

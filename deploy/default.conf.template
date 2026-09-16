@@ -78,6 +78,31 @@ server {
         proxy_set_header X-Forwarded-Proto $forwarded_proto;
     }
 
+    # OpenPanel ingestion, relayed so that it is same-origin.
+    #
+    # Two things come from this and both matter. The Content-Security-Policy
+    # below stays `connect-src 'self'`, with no analytics host punched into it,
+    # and a request to /api/op looks like every other request this site makes,
+    # so an ad blocker that drops calls to an analytics domain has nothing to
+    # recognise. The SDK itself is bundled, so no script is fetched anywhere.
+    #
+    # The SDK posts to ${OPENPANEL_API_URL}/track, which arrives here as
+    # /api/op/track and is rewritten back to /track upstream. resolver is
+    # Docker's DNS: with a variable in proxy_pass the host is resolved per
+    # request rather than frozen at start-up.
+    location /api/op/ {
+        resolver 127.0.0.11 valid=30s ipv6=off;
+        set $op_host "${OPENPANEL_HOST}";
+        rewrite ^/api/op/(.*)$ /$1 break;
+        proxy_pass https://$op_host;
+        proxy_ssl_server_name on;
+        proxy_set_header Host "${OPENPANEL_HOST}";
+        # OpenPanel checks the origin against the client's allow list, and the
+        # browser sends this site's. Forcing it keeps the check meaningful and
+        # the relay honest about who it speaks for.
+        proxy_set_header Origin "${SITE_URL}";
+    }
+
     # Generated from the registry rather than kept as static files, so the URL
     # list follows the catalogue instead of drifting behind it. Two exact
     # locations: a crawler asks for these paths and nothing else here.
