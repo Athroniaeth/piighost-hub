@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends string">
+  import type { Snippet } from "svelte";
   import { cn } from "../../lib/cn";
 
   /** The studio's pill toggle: muted track, active option lifted with a shadow. */
@@ -7,11 +8,14 @@
     value = $bindable(),
     label,
     size = "sm",
+    icon = null,
   }: {
     options: { value: T; label: string }[];
     value: T;
     label: string;
     size?: "sm" | "default";
+    /** Drawn before each label, given that option's value. */
+    icon?: Snippet<[T]> | null;
   } = $props();
 </script>
 
@@ -28,7 +32,7 @@
       type="button"
       aria-pressed={value === option.value}
       class={cn(
-        "rounded-md font-medium transition-colors",
+        "inline-flex items-center gap-1.5 rounded-md font-medium transition-colors",
         size === "sm" ? "px-2 py-1" : "px-3 py-1.5",
         value === option.value
           ? "bg-background text-foreground shadow-sm"
@@ -36,6 +40,7 @@
       )}
       onclick={() => (value = option.value)}
     >
+      {#if icon}{@render icon(option.value)}{/if}
       {option.label}
     </button>
   {/each}

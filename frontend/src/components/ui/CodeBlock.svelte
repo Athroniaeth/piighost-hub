@@ -1,6 +1,11 @@
 <script lang="ts">
   import CopyButton from "./CopyButton.svelte";
-  import { regexTokens, tomlTokens } from "../../lib/highlight";
+  import {
+    pythonTokens,
+    regexTokens,
+    shellTokens,
+    tomlTokens,
+  } from "../../lib/highlight";
   import { cn } from "../../lib/cn";
 
   /**
@@ -14,17 +19,20 @@
     class: extra = "",
   }: {
     code: string;
-    language?: "toml" | "regex" | "plain";
+    language?: "toml" | "regex" | "python" | "shell" | "plain";
     wrap?: boolean;
     class?: string;
   } = $props();
 
+  const TOKENISERS = {
+    toml: tomlTokens,
+    regex: regexTokens,
+    python: pythonTokens,
+    shell: shellTokens,
+  };
+
   const tokens = $derived(
-    language === "toml"
-      ? tomlTokens(code)
-      : language === "regex"
-        ? regexTokens(code)
-        : null,
+    language === "plain" ? null : TOKENISERS[language](code),
   );
 </script>
 

@@ -251,6 +251,7 @@ const STRINGS = {
     "common.close": "Close",
     "common.copy": "Copy",
     "common.copied": "Copied",
+    "common.copyFailed": "Copy failed",
 
     "footer.tagline":
       "Tested, versioned de-identification configurations for piighost.",
@@ -503,6 +504,7 @@ const STRINGS = {
     "common.close": "Fermer",
     "common.copy": "Copier",
     "common.copied": "Copié",
+    "common.copyFailed": "Copie impossible",
 
     "footer.tagline":
       "Des configurations de dé-identification testées et versionnées pour piighost.",

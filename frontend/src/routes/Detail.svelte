@@ -2,11 +2,13 @@
   import Download from "@lucide/svelte/icons/download";
   import GitCommit from "@lucide/svelte/icons/git-commit-horizontal";
   import Play from "@lucide/svelte/icons/play";
+  import Terminal from "@lucide/svelte/icons/terminal";
   import type { CommitDetail, ObjectDetail, Resolved } from "../generated/api";
   import Async from "../components/Async.svelte";
   import EntityLabel from "../components/EntityLabel.svelte";
   import EntityRow from "../components/EntityRow.svelte";
   import KindIcon from "../components/KindIcon.svelte";
+  import BrandIcon from "../components/BrandIcon.svelte";
   import Badge from "../components/ui/Badge.svelte";
   import Button from "../components/ui/Button.svelte";
   import Card from "../components/ui/Card.svelte";
@@ -484,11 +486,23 @@
                         }))}
                         bind:value={snippet}
                         label={t("detail.use")}
-                      />
+                        size="default"
+                      >
+                        {#snippet icon(name)}
+                          {#if name === "cli"}
+                            <Terminal class="size-4 shrink-0" />
+                          {:else}
+                            <BrandIcon
+                              name={name as "curl" | "docker" | "python"}
+                            />
+                          {/if}
+                        {/snippet}
+                      </Segmented>
                     {/snippet}
                     <CodeBlock
                       code={value.items[snippet] ??
                         Object.values(value.items)[0]}
+                      language={snippet === "python" ? "python" : "shell"}
                     />
                   </Card>
                 {/if}
