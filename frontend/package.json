@@ -13,7 +13,8 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write . && eslint --fix .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@hey-api/openapi-ts": "0.99.0",
+    "@playwright/test": "^1.63.0",
     "@sveltejs/vite-plugin-svelte": "7.3.0",
     "@tailwindcss/postcss": "4.3.3",
     "@tailwindcss/vite": "4.3.3",

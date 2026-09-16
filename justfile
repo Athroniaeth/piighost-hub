@@ -68,6 +68,13 @@ test:
     uv run pytest
     pnpm -C frontend test
 
+# End to end, in a real browser against a real API and the repository's own
+# registry. Separate from `test` because it downloads a browser the first time:
+# `pnpm -C frontend exec playwright install chromium`. This is what guards the
+# layer the unit tests cannot see, where a value is in the DOM and painted away.
+e2e:
+    pnpm -C frontend run test:e2e
+
 # The registry is data with tests of its own: examples, backtracking bounds,
 # composition, recorded commits. See docs/hub/resolution.md.
 

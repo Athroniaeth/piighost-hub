@@ -57,6 +57,17 @@
 
   let draft = $derived(query);
 
+  // Which facet sections are open, held here rather than in each section: a
+  // filter change builds a new result, which remounts them all, and an
+  // expansion kept inside would vanish on the click that used it.
+  let expanded = $state<string[]>([]);
+
+  function expand(group: string, next: boolean) {
+    expanded = next
+      ? [...expanded, group]
+      : expanded.filter((entry) => entry !== group);
+  }
+
   function update(
     mutate: (params: URLSearchParams) => void,
     { keepPage = false } = {},
@@ -264,6 +275,8 @@
               rows={kindRows(result)}
               selected={kind ? [kind] : []}
               ontoggle={toggleKind}
+              expanded={expanded.includes("type")}
+              onexpand={(next) => expand("type", next)}
             />
             {#each facetGroups(result) as section (section.group)}
               <FacetSection
@@ -273,6 +286,8 @@
                 ontoggle={toggleTag}
                 open={section.group === "region" ||
                   section.group === "category"}
+                expanded={expanded.includes(section.group)}
+                onexpand={(next) => expand(section.group, next)}
               />
             {/each}
           </div>

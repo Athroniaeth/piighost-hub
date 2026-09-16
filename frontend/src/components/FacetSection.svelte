@@ -13,20 +13,24 @@
     selected,
     ontoggle,
     open = true,
+    expanded = false,
+    onexpand,
   }: {
     title: string;
     rows: { value: string; label?: string; count: number }[];
     selected: string[];
     ontoggle: (value: string) => void;
     open?: boolean;
+    /** Held by the caller: choosing a facet rebuilds this list, and an
+     *  expansion kept here would be lost on every click. */
+    expanded?: boolean;
+    onexpand?: (next: boolean) => void;
   } = $props();
 
   // The region facet held nineteen countries and now holds twenty-seven, which
   // is more than a screen on its own. A selected row is always shown, so a
   // filter you applied never hides behind the fold.
   const LIMIT = 8;
-
-  let expanded = $state(false);
 
   const shown = $derived(
     expanded || rows.length <= LIMIT
@@ -72,7 +76,7 @@
     <button
       type="button"
       class="mt-1 px-1 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-      onclick={() => (expanded = !expanded)}
+      onclick={() => onexpand?.(!expanded)}
     >
       {expanded
         ? t("facet.less")

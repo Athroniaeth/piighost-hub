@@ -56,3 +56,32 @@ describe("FacetSection", () => {
     expect(ontoggle).toHaveBeenCalledWith("c1");
   });
 });
+
+describe("the expansion", () => {
+  it("reports outward rather than holding its own flag", () => {
+    // A filter click rebuilds the result and remounts every section, so a flag
+    // kept in here would be lost on the very click that used it.
+    const onexpand = vi.fn();
+    render(FacetSection, {
+      title: "Region",
+      rows,
+      selected: [],
+      ontoggle: () => {},
+      expanded: false,
+      onexpand,
+    });
+    screen.getByRole("button").click();
+    expect(onexpand).toHaveBeenCalledWith(true);
+  });
+
+  it("shows every row when the caller says it is expanded", () => {
+    render(FacetSection, {
+      title: "Region",
+      rows,
+      selected: [],
+      ontoggle: () => {},
+      expanded: true,
+    });
+    expect(screen.getAllByRole("checkbox")).toHaveLength(rows.length);
+  });
+});

@@ -40,3 +40,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+test-results/
+playwright-report/
+blob-report/

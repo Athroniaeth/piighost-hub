@@ -1,0 +1,63 @@
+import { expect, test } from "@playwright/test";
+
+test.describe("the playground", () => {
+  test("opens on a sample and runs it", async ({ page }) => {
+    await page.goto("/playground");
+    const text = page.getByLabel("Text", { exact: true });
+    await expect(text).not.toHaveValue("");
+
+    await page.getByRole("button", { name: "Run", exact: true }).click();
+    // Detections land in the results column, with their label.
+    await expect(page.getByText(/kept/)).toBeVisible();
+    await expect(page.locator("main").getByText("IPV4").first()).toBeVisible();
+  });
+
+  test("shows the coverage count on every row of the object picker", async ({
+    page,
+  }) => {
+    // This shipped broken once: the number was in the DOM, at coordinates
+    // inside the popover, and an ancestor's overflow painted it away. Only a
+    // browser sees that, so only a browser can guard it.
+    await page.goto("/playground");
+    await page.locator("#play-ref").click();
+
+    const listbox = page.getByRole("listbox");
+    const options = listbox.getByRole("option");
+    await expect(options.first()).toBeVisible();
+
+    const box = await listbox.boundingBox();
+    const rows = await options.all();
+    for (const row of rows.slice(0, 5)) {
+      await expect(row).toContainText(/\d+$/);
+      const count = row.locator("span").last();
+      const rect = await count.boundingBox();
+      expect(rect).not.toBeNull();
+      expect(rect!.width).toBeGreaterThan(0);
+      expect(rect!.x + rect!.width).toBeLessThanOrEqual(
+        box!.x + box!.width + 1,
+      );
+    }
+  });
+
+  test("leads with the configurations in the picker", async ({ page }) => {
+    await page.goto("/playground");
+    await page.locator("#play-ref").click();
+    const first = page.getByRole("listbox").getByRole("option").first();
+    await expect(first).toHaveAttribute("title", /configuration/);
+  });
+
+  test("shows what the model sees, checked from the start", async ({
+    page,
+  }) => {
+    await page.goto("/playground/chat");
+    await expect(page.getByRole("checkbox")).toBeChecked();
+    await page.getByRole("button", { name: "Send" }).click();
+    // The placeholder is what leaves, and it is coloured like a detection.
+    await expect(
+      page
+        .locator("main")
+        .getByText(/<<EMAIL:1>>/)
+        .first(),
+    ).toBeVisible();
+  });
+});
