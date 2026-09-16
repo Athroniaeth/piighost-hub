@@ -127,7 +127,8 @@ const STRINGS = {
     "compare.add": "Add",
     "compare.remove": "Remove",
     "compare.agreed": "Caught by all",
-    "compare.disputed": "Caught by ID",
+    "compare.disputed": "Caught by",
+    "compare.noDispute": "Every object caught the same values.",
     "compare.go": "Compare",
 
     "chat.lede":
@@ -376,7 +377,8 @@ const STRINGS = {
     "compare.add": "Ajouter",
     "compare.remove": "Retirer",
     "compare.agreed": "Reconnu par tous",
-    "compare.disputed": "Reconnu par ID",
+    "compare.disputed": "Repéré par",
+    "compare.noDispute": "Tous les objets ont repéré les mêmes valeurs.",
     "compare.go": "Comparer",
 
     "chat.lede":

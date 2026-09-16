@@ -11,7 +11,7 @@
   import Region from "../components/ui/Region.svelte";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
-  import { refPath } from "../lib/router.svelte";
+  import { parseRef, refPath } from "../lib/router.svelte";
   import { assignLabelColors } from "../lib/labels";
   import { EYEBROW, TEXTAREA } from "../lib/ui";
 
@@ -29,20 +29,29 @@
   const slots = $derived(refs.map((_, index) => index));
 
   /**
-   * A disputed value and the objects that caught it.
+   * The disputed values, under the object that caught them.
    *
    * "Caught by some" said a value was contested without saying by whom, which
-   * is the one thing a comparison is for. The catchers are derived here rather
-   * than asked of the API: the runs already carry every kept hit.
+   * is the one thing a comparison is for. Grouping is done here rather than
+   * asked of the API: the runs already carry every kept hit. An object that
+   * caught nothing the others missed gets no heading — its agreement is
+   * already the list above.
    */
-  const disputed = $derived(
-    (result?.disputed ?? []).map((value) => ({
-      value,
-      by: (result?.runs ?? [])
-        .filter((run) => run.hits.some((hit) => hit.kept && hit.text === value))
-        .map((run) => run.ref),
-    })),
-  );
+  const contested = $derived.by(() => {
+    const only = new Set(result?.disputed ?? []);
+    return (result?.runs ?? [])
+      .map((run) => ({
+        ref: run.ref,
+        values: [
+          ...new Set(
+            run.hits
+              .filter((hit) => hit.kept && only.has(hit.text))
+              .map((hit) => hit.text),
+          ),
+        ].sort(),
+      }))
+      .filter((group) => group.values.length > 0);
+  });
   const colors = $derived(
     assignLabelColors(
       result?.runs.flatMap((run) => run.hits.map((hit) => hit.label)) ?? [],
@@ -156,26 +165,28 @@
           <li class="text-sm text-muted-foreground">{t("play.nothing")}</li>
         {/each}
       </ul>
-      <h3 class="{EYEBROW} mt-5 mb-2">{t("compare.disputed")}</h3>
-      <ul class="space-y-1.5">
-        {#each disputed as entry (entry.value)}
-          <li class="rounded-md bg-muted/40 p-2">
-            <p class="font-mono text-sm break-all">{entry.value}</p>
-            <p class="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
-              {#each entry.by as ref (ref)}
-                <a
-                  href={refPath(ref)}
-                  class="font-mono text-xs text-muted-foreground hover:text-foreground hover:underline"
-                >
-                  {ref}
-                </a>
-              {/each}
-            </p>
-          </li>
-        {:else}
-          <li class="text-sm text-muted-foreground">{t("play.nothing")}</li>
-        {/each}
-      </ul>
+      {#each contested as group (group.ref)}
+        <h3 class="{EYEBROW} mt-5 mb-2">
+          {t("compare.disputed")}
+          <a
+            href={refPath(group.ref)}
+            class="font-mono normal-case hover:text-foreground hover:underline"
+          >
+            {parseRef(group.ref).key}
+          </a>
+        </h3>
+        <ul class="space-y-1.5">
+          {#each group.values as value (value)}
+            <li class="rounded-md bg-muted/40 p-2 font-mono text-sm break-all">
+              {value}
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <p class="mt-5 text-sm text-muted-foreground">
+          {t("compare.noDispute")}
+        </p>
+      {/each}
     {/if}
   </Region>
 </PlaygroundShell>
