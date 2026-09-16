@@ -4,6 +4,8 @@
   import GitFork from "@lucide/svelte/icons/git-fork";
   import Loader from "@lucide/svelte/icons/loader-circle";
   import type { SubmissionResult } from "../generated/api";
+  import ConfigComposition from "../components/ConfigComposition.svelte";
+  import ConfigFields from "../components/ConfigFields.svelte";
   import KindIcon from "../components/KindIcon.svelte";
   import GroupFields from "../components/GroupFields.svelte";
   import GroupSources from "../components/GroupSources.svelte";
@@ -18,6 +20,16 @@
   import { cn } from "../lib/cn";
   import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
   import { t, type Key } from "../lib/i18n.svelte";
+  import {
+    CONFIG_PLACEHOLDER,
+    configDraftFrom,
+    configProblems,
+    configStarted,
+    emptyConfigDraft,
+    toConfigManifest,
+    unsupported,
+    type ConfigDraft,
+  } from "../lib/config-draft";
   import {
     emptyGroupDraft,
     GROUP_PLACEHOLDER,
@@ -45,36 +57,46 @@
   let manifest = $state("");
   let draft = $state<PatternDraft>(emptyDraft());
   let group = $state<GroupDraft>(emptyGroupDraft());
+  let config = $state<ConfigDraft>(emptyConfigDraft());
+  // Why the editor is showing instead of the form, when it is.
+  let cannotForm = $state<string[]>([]);
   let labelPinned = $state(false);
   let result = $state<SubmissionResult | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
 
-  // A pattern and a group are written as forms. A configuration stays TOML:
-  // what it holds is detectors and pipeline stages passed straight through to
-  // piighost, which a form would only retype and would date every time piighost
-  // gains a stage.
-  const asForm = $derived(kind !== "config");
+  // All three are written as forms. A configuration falls back to the editor
+  // for the shapes the form has no field for, a detector with a model or a
+  // stage outside the three standard ones, rather than dropping them quietly.
+  const asForm = $derived(cannotForm.length === 0);
   // A form nobody has touched is not a form with eight faults, so the list
   // waits for the first keystroke, in the draft or in the name above it.
   const found = $derived(
-    kind === "pattern"
-      ? problems(draft)
-      : kind === "group"
-        ? groupProblems(group)
-        : [],
+    !asForm
+      ? []
+      : kind === "pattern"
+        ? problems(draft)
+        : kind === "group"
+          ? groupProblems(group)
+          : configProblems(config),
   );
   const touched = $derived(
-    kind === "pattern" ? started(draft) : groupStarted(group),
+    kind === "pattern"
+      ? started(draft)
+      : kind === "group"
+        ? groupStarted(group)
+        : configStarted(config),
   );
   const showing = $derived(found.length > 0 && (touched || name !== ""));
   const body = $derived(
-    kind === "pattern"
-      ? toManifest(draft)
-      : kind === "group"
-        ? toGroupManifest(group)
-        : manifest,
+    !asForm
+      ? manifest
+      : kind === "pattern"
+        ? toManifest(draft)
+        : kind === "group"
+          ? toGroupManifest(group)
+          : toConfigManifest(config),
   );
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
@@ -83,6 +105,9 @@
   /** The kind drives the base too: a config extends a config, not a pattern. */
   function pickKind(next: Kind) {
     kind = next;
+    // Each kind starts from its own form again, so a configuration the editor
+    // had to hold does not keep the editor open for the next one.
+    cannotForm = [];
     base =
       next === "pattern"
         ? "piighost/email"
@@ -106,27 +131,32 @@
     loading = true;
     error = null;
     try {
-      if (asForm) {
-        // The frozen commit rather than the manifest: it is already parsed, so
-        // the form is filled by Python's reading of the file and not by a
-        // second TOML parser written in the browser.
-        const commit = await api.commit({
-          namespace: namespaceOf,
-          name: object,
-          selector: "latest",
-        });
-        if (kind === "pattern") {
-          draft = draftFrom(commit);
-          labelPinned = true;
-          if (name === "") name = draft.name;
-        } else {
-          group = groupDraftFrom(commit);
-          if (name === "") name = group.name;
-        }
-        result = null;
-      } else {
+      // The frozen commit rather than the manifest: it is already parsed, so
+      // the form is filled by Python's reading of the file and not by a second
+      // TOML parser written in the browser.
+      const commit = await api.commit({
+        namespace: namespaceOf,
+        name: object,
+        selector: "latest",
+      });
+      // A configuration can hold things this form has no field for. Dropping
+      // them would hand back a manifest missing a piece its author never chose
+      // to remove, so the editor takes it whole and says which piece.
+      cannotForm = kind === "config" ? unsupported(commit) : [];
+      if (!asForm) {
         start(basedOn(kind, name, await api.manifest(namespaceOf, object)));
+      } else if (kind === "pattern") {
+        draft = draftFrom(commit);
+        labelPinned = true;
+        if (name === "") name = draft.name;
+      } else if (kind === "group") {
+        group = groupDraftFrom(commit);
+        if (name === "") name = group.name;
+      } else {
+        config = configDraftFrom(commit);
+        if (name === "") name = config.name;
       }
+      result = null;
       track({ name: "submission_forked", props: { kind } });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
@@ -231,7 +261,7 @@
               ? PLACEHOLDER.name
               : kind === "group"
                 ? GROUP_PLACEHOLDER.name
-                : "my-config"}
+                : CONFIG_PLACEHOLDER.name}
             spellcheck="false"
             class={FIELD_MONO}
           />
@@ -258,11 +288,15 @@
         </Button>
       </div>
 
-      {#if kind === "pattern"}
-        <PatternFields bind:draft bind:labelPinned {name} />
-      {:else if kind === "group"}
-        <GroupFields bind:draft={group} {name} />
-      {:else}
+      {#if !asForm}
+        <div class="rounded-lg bg-muted/40 p-2 text-xs text-muted-foreground">
+          {t("draft.unsupported")}
+          <ul class="mt-1 space-y-0.5 font-mono">
+            {#each cannotForm as reason (reason)}
+              <li>{reason}</li>
+            {/each}
+          </ul>
+        </div>
         <Button
           variant="outline"
           size="sm"
@@ -271,28 +305,38 @@
           <FilePlus />
           {t("contribute.blank")}
         </Button>
+      {:else if kind === "pattern"}
+        <PatternFields bind:draft bind:labelPinned {name} />
+      {:else if kind === "group"}
+        <GroupFields bind:draft={group} {name} />
+      {:else}
+        <ConfigFields bind:draft={config} {name} />
       {/if}
     </Region>
 
     <Region
       step={2}
       done={body.trim() !== ""}
-      title={kind === "pattern"
-        ? t("draft.examples")
-        : kind === "group"
-          ? t("draft.sources")
-          : t("contribute.manifest")}
+      title={!asForm
+        ? t("contribute.manifest")
+        : kind === "pattern"
+          ? t("draft.examples")
+          : kind === "group"
+            ? t("draft.sources")
+            : t("draft.detectors")}
     >
-      {#if kind === "pattern"}
-        <PatternExamples bind:draft />
-      {:else if kind === "group"}
-        <GroupSources bind:draft={group} />
-      {:else}
+      {#if !asForm}
         <textarea
           bind:value={manifest}
           spellcheck="false"
           aria-label={t("contribute.manifest")}
           class="{TEXTAREA} flex-1"></textarea>
+      {:else if kind === "pattern"}
+        <PatternExamples bind:draft />
+      {:else if kind === "group"}
+        <GroupSources bind:draft={group} />
+      {:else}
+        <ConfigComposition bind:draft={config} />
       {/if}
     </Region>
 
