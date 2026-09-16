@@ -13,7 +13,6 @@ function draft(overrides: Partial<GroupDraft> = {}): GroupDraft {
     name: "logs",
     tags: ["international", "network"],
     en: "What a server log carries.",
-    fr: "Ce que porte un log serveur.",
     sources: [
       { ref: "piighost/secrets", exclude: [] },
       { ref: "piighost/generic", exclude: ["URL"] },
@@ -46,9 +45,9 @@ describe("groupProblems", () => {
     expect(found.map((p) => p.message)).toContain("sources.twice");
   });
 
-  it("names which description is missing", () => {
-    expect(groupProblems(draft({ fr: "" })).map((p) => p.message)).toEqual([
-      "description.empty.fr",
+  it("asks for the one description", () => {
+    expect(groupProblems(draft({ en: "" })).map((p) => p.message)).toEqual([
+      "description.empty",
     ]);
   });
 });

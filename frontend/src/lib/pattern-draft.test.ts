@@ -17,7 +17,6 @@ function draft(overrides: Partial<PatternDraft> = {}): PatternDraft {
     tags: ["international", "business"],
     regex: "\\bORD-[0-9]{6}\\b",
     en: "Internal order identifier.",
-    fr: "Identifiant de commande interne.",
     matches: [
       { text: "Order ORD-123456 shipped.", value: "ORD-123456" },
       { text: "Cancel ORD-987654 please.", value: "ORD-987654" },
@@ -53,8 +52,8 @@ describe("problems", () => {
   });
 
   it("names which description is missing, rather than saying both", () => {
-    const found = problems(draft({ fr: "" }));
-    expect(found.map((p) => p.message)).toEqual(["description.empty.fr"]);
+    const found = problems(draft({ en: "" }));
+    expect(found.map((p) => p.message)).toEqual(["description.empty"]);
   });
 
   it("refuses an em-dash in a description", () => {
@@ -170,7 +169,7 @@ describe("draftFrom", () => {
       schema_version: 1,
       label: "FR_NIR",
       regex: "\\b[12]\\d{14}\\b",
-      description: { en: "French NIR.", fr: "NIR français." },
+      description: { en: "French NIR." },
       tags: ["fr", "government-id", "health"],
       resilience: true,
       examples: {

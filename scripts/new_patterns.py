@@ -26,7 +26,6 @@ A bare list is equivalent to that object with no new tags. The list holds:
         "tags": ["jp", "government-id", "identity"],
         "regex": "(?<!\\\\d)\\\\d{4}[\\\\s-]?\\\\d{4}[\\\\s-]?\\\\d{4}(?!\\\\d)",
         "en": "Japanese individual number ...",
-        "fr": "Numéro individuel japonais ...",
         "match": [["My Number 1234 5678 9012 on the form.", "1234 5678 9012"]],
         "no_match": ["1234 5678 901"],
         "redos": ["1234 ", "5678 ", "x"]
@@ -36,7 +35,7 @@ A bare list is equivalent to that object with no new tags. The list holds:
 Everything is validated before a single file is written: the regex compiles
 under re.ASCII, each match value appears exactly once in its sentence and is
 matched whole, each value survives the punctuation wrappers the registry check
-applies, no example is missing, both languages are present, no em-dash, and the
+applies, no example is missing, the description is present, no em-dash, and the
 tags exist in the vocabulary. Standard library only.
 """
 
@@ -63,7 +62,6 @@ regex = '{regex}'
 
 [pattern.description]
 en = "{en}"
-fr = "{fr}"
 {matches}{no_matches}
 [redos]
 prefix = "{prefix}"
@@ -88,12 +86,14 @@ def check(proposal: dict, vocabulary: set[str], existing: set[str]) -> list[str]
         if tag not in vocabulary:
             problems.append(f"unknown tag {tag!r}; add it to vocabulary.toml first")
 
-    for language in ("en", "fr"):
-        text = proposal.get(language, "")
-        if not text:
-            problems.append(f"the {language} description is missing")
-        if "—" in text or "–" in text:
-            problems.append(f"the {language} description holds an em-dash")
+    # English only. The registry was bilingual because the site was, and a
+    # French description is accepted where one already exists rather than asked
+    # for. See backend/hub/manifests.py.
+    text = proposal.get("en", "")
+    if not text:
+        problems.append("the description is missing")
+    if "—" in text or "–" in text:
+        problems.append("the description holds an em-dash")
 
     regex = proposal.get("regex", "")
     if "'" in regex:
@@ -155,7 +155,6 @@ def render(proposal: dict) -> str:
         tags=", ".join(f'"{t}"' for t in proposal.get("tags", [])),
         regex=proposal["regex"],
         en=proposal["en"],
-        fr=proposal["fr"],
         matches=matches,
         no_matches=no_matches,
         prefix=prefix,

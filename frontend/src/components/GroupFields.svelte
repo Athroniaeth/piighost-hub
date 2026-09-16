@@ -18,18 +18,14 @@
   <TagPicker bind:value={draft.tags} />
 </div>
 
-<div class="flex flex-col gap-1 text-sm font-medium">
+<label class="flex flex-col gap-1 text-sm font-medium">
   {t("draft.description")}
   <input
     bind:value={draft.en}
     placeholder={GROUP_PLACEHOLDER.en}
-    aria-label="{t('draft.description')} (en)"
     class={FIELD}
   />
-  <input
-    bind:value={draft.fr}
-    placeholder={GROUP_PLACEHOLDER.fr}
-    aria-label="{t('draft.description')} (fr)"
-    class={FIELD}
-  />
-</div>
+  <span class="text-xs font-normal text-muted-foreground"
+    >{t("draft.descriptionNote")}</span
+  >
+</label>

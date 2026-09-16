@@ -6,24 +6,33 @@
   import EntityRow from "./EntityRow.svelte";
   import SamplePicker from "./SamplePicker.svelte";
   import type { SampleOut } from "../generated/api";
-  import type { GroupDraft } from "../lib/group-draft";
-  import { ApiError, api } from "../lib/api";
+  import { ApiError } from "../lib/api";
   import { assignLabelColors } from "../lib/labels";
   import { t } from "../lib/i18n.svelte";
   import { engine, run, type Hit } from "../lib/pyodide.svelte";
   import { TEXTAREA } from "../lib/ui";
 
   /**
-   * Try the group being written, without publishing it and without sending the
+   * Try what is being written, without publishing it and without sending the
    * text anywhere.
    *
-   * Two halves, split where the privacy argument is. Flattening the sources is
-   * the registry's own rule, so the API does it and there is one implementation
-   * of what happens when two sources carry one label. Running the result is
-   * piighost itself, compiled to WebAssembly in this tab, so the text a visitor
-   * pastes to see whether their group works never leaves the machine.
+   * The caller supplies the catalogue, because where it comes from differs and
+   * the difference matters. A pattern already holds its own regex, so nothing
+   * leaves the browser at all. A group is a list of references, and flattening
+   * it is the registry's own rule, so the API does that and there is one
+   * implementation of what happens when two sources carry one label.
+   *
+   * Running it is piighost itself, compiled to WebAssembly in this tab. The
+   * text a visitor pastes to see whether their work does what they meant never
+   * leaves the machine either way.
    */
-  let { draft }: { draft: GroupDraft } = $props();
+  let {
+    catalogue,
+    ready,
+  }: {
+    catalogue: () => Promise<Record<string, string>>;
+    ready: boolean;
+  } = $props();
 
   let text = $state(
     "Write to john.doe@example.com or call +33 6 39 98 12 34. Card 4111 1111 1111 1111.",
@@ -32,8 +41,6 @@
   let elapsed = $state(0);
   let error = $state<string | null>(null);
   let busy = $state(false);
-
-  const ready = $derived(draft.sources.some((source) => source.ref !== ""));
 
   /** The registry's own annotated texts, rather than one anybody must invent. */
   function pick(sample: SampleOut) {
@@ -49,15 +56,7 @@
     busy = true;
     error = null;
     try {
-      const catalogue = await api.preview(
-        draft.sources
-          .filter((source) => source.ref !== "")
-          .map((source) => ({ ref: source.ref, exclude: source.exclude })),
-      );
-      const patterns = Object.fromEntries(
-        catalogue.labels.map((entry) => [entry.label, entry.regex]),
-      );
-      const answer = await run(patterns, text);
+      const answer = await run(await catalogue(), text);
       hits = answer.hits;
       elapsed = answer.elapsedMs;
     } catch (caught) {

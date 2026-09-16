@@ -4,7 +4,7 @@
   import Loader from "@lucide/svelte/icons/loader-circle";
   import Play from "@lucide/svelte/icons/play";
   import type { SubmissionResult } from "../generated/api";
-  import GroupTry from "../components/GroupTry.svelte";
+  import TryPanel from "../components/TryPanel.svelte";
   import KindIcon from "../components/KindIcon.svelte";
   import GroupFields from "../components/GroupFields.svelte";
   import GroupSources from "../components/GroupSources.svelte";
@@ -80,6 +80,32 @@
   );
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
+  );
+
+  /**
+   * What the try panel runs, per kind.
+   *
+   * A pattern is its own catalogue and needs nothing from the server. A group
+   * is a list of references, and only the registry knows how to flatten it.
+   */
+  async function catalogue(): Promise<Record<string, string>> {
+    if (kind === "pattern")
+      return { [draft.label || "CANDIDATE"]: draft.regex };
+    const flattened = await api.preview(
+      group.sources
+        .filter((source) => source.ref !== "")
+        .map((source) => ({ ref: source.ref, exclude: source.exclude })),
+    );
+    return Object.fromEntries(
+      flattened.labels.map((entry) => [entry.label, entry.regex]),
+    );
+  }
+
+  /** Enough to run: a shape for a pattern, at least one source for a group. */
+  const runnable = $derived(
+    kind === "pattern"
+      ? draft.regex.trim() !== ""
+      : group.sources.some((source) => source.ref !== ""),
   );
 
   /** The kind drives the base too: a group is composed of groups and patterns. */
@@ -193,9 +219,37 @@
     <Region
       step={1}
       done={namespace !== "" && name !== ""}
-      title={t("draft.identity")}
+      title={t("draft.information")}
       bodyClass="gap-3 overflow-y-auto"
     >
+      <div class="space-y-2 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="min-w-0 flex-1">
+            <RefPicker
+              id="contribute-base"
+              bind:value={base}
+              kinds={[kind]}
+              label={t("contribute.base")}
+            />
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            class="shrink-0"
+            disabled={loading}
+            onclick={fork}
+          >
+            {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
+            {t("contribute.fork")}
+          </Button>
+        </div>
+        <p class="text-xs text-muted-foreground">
+          {t("contribute.fork.draft")}
+        </p>
+      </div>
+
+      <hr class="-mx-4 border-t" />
+
       <div class="grid grid-cols-2 gap-2">
         <label class="flex flex-col gap-1 text-sm font-medium">
           {t("contribute.namespace")}
@@ -219,33 +273,16 @@
         </label>
       </div>
 
-      <div class="space-y-2 rounded-lg bg-muted/40 p-2">
-        <RefPicker
-          id="contribute-base"
-          bind:value={base}
-          kinds={[kind]}
-          label={t("contribute.base")}
-        />
-        <p class="text-xs text-muted-foreground">
-          {t("contribute.fork.draft")}
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          class="w-full"
-          disabled={loading}
-          onclick={fork}
-        >
-          {#if loading}<Loader class="animate-spin" />{:else}<GitFork />{/if}
-          {t("contribute.fork")}
-        </Button>
-      </div>
-
       {#if kind === "pattern"}
         <PatternFields bind:draft bind:labelPinned {name} />
       {:else}
         <GroupFields bind:draft={group} {name} />
       {/if}
+
+      <!-- Half a column of room under the last field. Scrolled to the bottom,
+           a description flush against the edge reads as the end of the form
+           when it is only the end of the list. -->
+      <div class="min-h-64 shrink-0 grow" aria-hidden="true"></div>
     </Region>
 
     <Region
@@ -270,16 +307,14 @@
           </ul>
         {/if}
         {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
-        <div class="flex items-center gap-2">
-          {#if kind === "group"}
-            <Button variant="outline" onclick={() => (trying = true)}>
-              <Play />
-              {t("try.title")}
-            </Button>
-          {/if}
-          <Button class="ms-auto" onclick={check} disabled={busy || !ready}>
+        <div class="flex items-center justify-end gap-2">
+          <Button variant="outline" onclick={() => (trying = true)}>
+            <Play />
+            {t("try.title")}
+          </Button>
+          <Button onclick={check} disabled={busy || !ready}>
             {#if busy}<Loader class="animate-spin" />{/if}
-            {busy ? t("play.running") : t("contribute.check")}
+            {busy ? t("play.running") : t("contribute.create")}
           </Button>
         </div>
       </div>
@@ -331,10 +366,8 @@
       {/if}
     </Modal>
 
-    {#if kind === "group"}
-      <Modal bind:open={trying} title={t("try.title")} wide>
-        <GroupTry draft={group} />
-      </Modal>
-    {/if}
+    <Modal bind:open={trying} title={t("try.title")} wide>
+      <TryPanel {catalogue} ready={runnable} />
+    </Modal>
   </div>
 </div>

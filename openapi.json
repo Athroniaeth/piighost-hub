@@ -499,12 +499,18 @@
             "type": "string"
           },
           "fr": {
-            "type": "string"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
-          "en",
-          "fr"
+          "en"
         ],
         "title": "Localized",
         "type": "object"

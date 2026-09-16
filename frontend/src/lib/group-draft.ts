@@ -19,7 +19,6 @@ export type GroupDraft = {
   name: string;
   tags: string[];
   en: string;
-  fr: string;
   sources: Source[];
 };
 
@@ -28,7 +27,6 @@ export function emptyGroupDraft(): GroupDraft {
     name: "",
     tags: [],
     en: "",
-    fr: "",
     sources: [{ ref: "", exclude: [] }],
   };
 }
@@ -36,7 +34,6 @@ export function emptyGroupDraft(): GroupDraft {
 export const GROUP_PLACEHOLDER = {
   name: "logs",
   en: "What a server log or a traceback carries: addresses, machine identifiers, and the credentials that end up in them by accident.",
-  fr: "Ce que porte un log serveur ou une traceback : adresses, identifiants machine, et les secrets qui s'y retrouvent par accident.",
 } as const;
 
 export type Problem = { field: string; message: string };
@@ -55,12 +52,10 @@ export function groupProblems(draft: GroupDraft): Problem[] {
     found.push({ field: "name", message: "name.kebab" });
   if (draft.tags.length === 0)
     found.push({ field: "tags", message: "tags.empty" });
-  for (const language of ["en", "fr"] as const) {
-    if (draft[language].trim() === "")
-      found.push({ field: language, message: `description.empty.${language}` });
-    if (/[—–]/.test(draft[language]))
-      found.push({ field: language, message: "description.dash" });
-  }
+  if (draft.en.trim() === "")
+    found.push({ field: "en", message: "description.empty" });
+  if (/[—–]/.test(draft.en))
+    found.push({ field: "en", message: "description.dash" });
 
   const sources = draft.sources.filter((source) => source.ref !== "");
   if (sources.length === 0)
@@ -79,7 +74,6 @@ export function groupStarted(draft: GroupDraft): boolean {
   return (
     draft.tags.length > 0 ||
     draft.en.trim() !== "" ||
-    draft.fr.trim() !== "" ||
     draft.sources.some((source) => source.ref !== "")
   );
 }
@@ -100,7 +94,7 @@ export function toGroupManifest(draft: GroupDraft): string {
 
 [group]
 name = "${draft.name}"
-description = { en = ${quoted(draft.en)}, fr = ${quoted(draft.fr)} }
+description = { en = ${quoted(draft.en)} }
 tags = [${draft.tags.map((tag) => `"${tag}"`).join(", ")}]
 ${sources}`;
 }
@@ -128,7 +122,6 @@ export function groupDraftFrom(commit: CommitDetail): GroupDraft {
     name: content.name ?? "",
     tags: [...(content.tags ?? [])],
     en: content.description?.en ?? "",
-    fr: content.description?.fr ?? "",
     sources: sources.length > 0 ? sources : emptyGroupDraft().sources,
   };
 }

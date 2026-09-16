@@ -2,7 +2,6 @@
   import Breadcrumb from "./Breadcrumb.svelte";
   import Button from "./ui/Button.svelte";
   import GithubIcon from "./GithubIcon.svelte";
-  import LangToggle from "./LangToggle.svelte";
   import ThemeToggle from "./ThemeToggle.svelte";
   import { t } from "../lib/i18n.svelte";
   import { router } from "../lib/router.svelte";
@@ -79,7 +78,6 @@
         <GithubIcon class="size-5" />
       </Button>
       <ThemeToggle />
-      <LangToggle />
     </div>
   </div>
 </header>

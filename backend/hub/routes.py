@@ -57,7 +57,7 @@ class UnprocessableError(AppError):
 
 class Localized(msgspec.Struct):
     en: str
-    fr: str
+    fr: str | None = None
 
 
 class ObjectSummary(msgspec.Struct):

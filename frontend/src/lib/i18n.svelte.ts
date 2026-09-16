@@ -8,8 +8,6 @@
 
 export type Locale = "en" | "fr";
 
-const STORAGE_KEY = "piighost-hub-locale";
-
 const STRINGS = {
   en: {
     "nav.catalogue": "Catalogue",
@@ -143,7 +141,7 @@ const STRINGS = {
 
     "draft.form": "Form",
     "draft.toml": "TOML",
-    "draft.identity": "Identity",
+    "draft.information": "Information",
     "draft.name": "Name",
     "draft.label": "Label",
     "draft.tags": "Tags",
@@ -182,8 +180,9 @@ const STRINGS = {
     "draft.regex.empty": "Write the regex.",
     "draft.regex.quote":
       "The regex holds a single quote, which the manifest cannot carry.",
-    "draft.description.empty.en": "The English description is required.",
-    "draft.description.empty.fr": "The French description is required.",
+    "draft.description.empty": "A description is required.",
+    "draft.descriptionNote":
+      "In English. The registry and the site are English.",
     "draft.description.dash":
       "Replace the em-dash with a comma or a full stop.",
     "draft.matches.two": "Two sentences that must be caught are required.",
@@ -202,7 +201,7 @@ const STRINGS = {
     "try.caught": "caught",
     "try.note": "piighost runs in this tab. Your text stays on your machine.",
     "contribute.lede":
-      "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
+      "Propose a pattern or a group of patterns. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
     "contribute.pattern.note": "One shape and the label it emits.",
     "contribute.group.note": "A reusable set of patterns.",
@@ -213,7 +212,7 @@ const STRINGS = {
     "contribute.fork": "Start from this one",
     "contribute.fork.draft":
       "Fills the form with it, examples included. Change the shape and keep the cases it already gets right.",
-    "contribute.check": "Check",
+    "contribute.create": "Create",
     "contribute.path": "Path",
     "contribute.ok": "Every check passed.",
     "contribute.openPr": "Open the pull request",
@@ -391,7 +390,7 @@ const STRINGS = {
 
     "draft.form": "Formulaire",
     "draft.toml": "TOML",
-    "draft.identity": "Identité",
+    "draft.information": "Informations",
     "draft.name": "Nom",
     "draft.label": "Label",
     "draft.tags": "Tags",
@@ -432,8 +431,9 @@ const STRINGS = {
     "draft.regex.empty": "Écrivez le regex.",
     "draft.regex.quote":
       "Le regex contient une apostrophe droite, que le manifeste ne peut pas porter.",
-    "draft.description.empty.en": "La description anglaise est obligatoire.",
-    "draft.description.empty.fr": "La description française est obligatoire.",
+    "draft.description.empty": "Une description est obligatoire.",
+    "draft.descriptionNote":
+      "En anglais. Le registre et le site sont en anglais.",
     "draft.description.dash":
       "Remplacez le tiret cadratin par une virgule ou un point.",
     "draft.matches.two":
@@ -454,7 +454,7 @@ const STRINGS = {
     "try.caught": "reconnus",
     "try.note": "piighost tourne dans cet onglet. Votre texte reste chez vous.",
     "contribute.lede":
-      "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
+      "Proposez un motif ou un groupe de motifs. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",
     "contribute.pattern.note": "Un motif et le label qu'il produit.",
     "contribute.group.note": "Un ensemble de motifs réutilisable.",
@@ -463,7 +463,7 @@ const STRINGS = {
     "contribute.name": "Nom",
     "contribute.base": "Objet de base",
     "contribute.fork": "Partir de celui-ci",
-    "contribute.check": "Vérifier",
+    "contribute.create": "Créer",
     "contribute.path": "Chemin",
     "contribute.ok": "Tous les contrôles passent.",
     "contribute.openPr": "Ouvrir la pull request",
@@ -512,30 +512,27 @@ const STRINGS = {
 
 export type Key = keyof (typeof STRINGS)["en"];
 
-function initial(): Locale {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "en" || stored === "fr") return stored;
-  return navigator.language.toLowerCase().startsWith("fr") ? "fr" : "en";
-}
-
+/**
+ * English, and only English.
+ *
+ * The site was bilingual because it was a showcase. It is a tool now, its
+ * registry is written in English and so is everything a contributor submits,
+ * and a language switch on a tool is a setting nobody came to change. The
+ * French half of the table below is kept rather than deleted: it costs nothing
+ * to carry, and reversing this is one line if the site ever faces outward
+ * again.
+ */
 class I18n {
-  locale = $state<Locale>(initial());
-
-  set(next: Locale) {
-    this.locale = next;
-    localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.lang = next;
-  }
+  locale = $state<Locale>("en");
 
   t(key: Key): string {
     const table = STRINGS[this.locale] as Record<string, string>;
     return table[key] ?? STRINGS.en[key] ?? key;
   }
 
-  /** Pick the right side of a `{ en, fr }` pair coming from the registry. */
-  pick(text: { en: string; fr: string } | null | undefined): string {
-    if (!text) return "";
-    return this.locale === "fr" ? text.fr : text.en;
+  /** The English side of a text from the registry, where French is optional. */
+  pick(text: { en: string; fr?: string | null } | null | undefined): string {
+    return text?.en ?? "";
   }
 }
 

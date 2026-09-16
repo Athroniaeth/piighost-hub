@@ -16,12 +16,7 @@ test.describe("contributing", () => {
     await page.getByPlaceholder("alice").fill("alice");
     await page.getByLabel("Name", { exact: true }).fill("order-id");
     await page.getByLabel("Regex").fill("\\bORD-[0-9]{6}\\b");
-    await page
-      .getByLabel("Description (en)")
-      .fill("Internal order identifier.");
-    await page
-      .getByLabel("Description (fr)")
-      .fill("Identifiant de commande interne.");
+    await page.getByLabel("Description").fill("Internal order identifier.");
 
     await page.getByPlaceholder("Filter the vocabulary").fill("business");
     await page.getByRole("checkbox").first().check();
@@ -41,7 +36,7 @@ test.describe("contributing", () => {
     // Every example is answered by the Python engine, not by the browser.
     await expect(page.getByLabel("Caught as expected")).toHaveCount(4);
 
-    await page.getByRole("button", { name: "Check" }).click();
+    await page.getByRole("button", { name: "Create" }).click();
     // The outcome is a dialog, in the top layer, dismissed once read.
     const outcome = page.locator("dialog[open]");
     await expect(outcome.getByText("Every check passed.")).toBeVisible();

@@ -22,7 +22,6 @@ export type PatternDraft = {
   tags: string[];
   regex: string;
   en: string;
-  fr: string;
   matches: Example[];
   noMatches: { text: string }[];
   redos: { prefix: string; filler: string; suffix: string };
@@ -44,7 +43,6 @@ export const PLACEHOLDER = {
   regex:
     "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}",
   en: "Email address, simplified RFC 5322. The lookbehind pins the start of the local part.",
-  fr: "Adresse e-mail, RFC 5322 simplifiée. Le lookbehind ancre le début de la partie locale.",
   matches: [
     {
       text: "Write to john.doe@example.com for any question.",
@@ -66,7 +64,6 @@ export function emptyDraft(): PatternDraft {
     tags: [],
     regex: "",
     en: "",
-    fr: "",
     matches: [
       { text: "", value: "" },
       { text: "", value: "" },
@@ -100,7 +97,6 @@ export function started(draft: PatternDraft): boolean {
     draft.label.trim() !== "" ||
     draft.tags.length > 0 ||
     draft.en.trim() !== "" ||
-    draft.fr.trim() !== "" ||
     draft.matches.some((row) => row.text !== "" || row.value !== "") ||
     draft.noMatches.some((row) => row.text !== "") ||
     Object.values(draft.redos).some((value) => value !== "")
@@ -132,12 +128,10 @@ export function problems(draft: PatternDraft): Problem[] {
   // string early and the manifest stops parsing where nobody would look.
   if (draft.regex.includes("'"))
     found.push({ field: "regex", message: "regex.quote" });
-  for (const language of ["en", "fr"] as const) {
-    if (draft[language].trim() === "")
-      found.push({ field: language, message: `description.empty.${language}` });
-    if (/[—–]/.test(draft[language]))
-      found.push({ field: language, message: "description.dash" });
-  }
+  if (draft.en.trim() === "")
+    found.push({ field: "en", message: "description.empty" });
+  if (/[—–]/.test(draft.en))
+    found.push({ field: "en", message: "description.dash" });
 
   const matches = draft.matches.filter(
     (example) => example.text.trim() !== "" || example.value.trim() !== "",
@@ -193,7 +187,6 @@ regex = '${draft.regex}'
 
 [pattern.description]
 en = ${quoted(draft.en)}
-fr = ${quoted(draft.fr)}
 ${matches}${noMatches}
 [redos]
 prefix = ${quoted(draft.redos.prefix)}
@@ -242,7 +235,6 @@ export function draftFrom(commit: CommitDetail): PatternDraft {
     tags: [...(content.tags ?? [])],
     regex: content.regex ?? "",
     en: content.description?.en ?? "",
-    fr: content.description?.fr ?? "",
     // A fork of a pattern with a single example would open on one row and look
     // like the form had lost one, so the minimum the registry asks for is also
     // the minimum shown.
