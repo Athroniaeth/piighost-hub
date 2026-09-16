@@ -12,7 +12,7 @@ origine unique. Huit routes, aucun état côté serveur, aucun compte.
 | `/playground` | lancer un objet ou un regex candidat sur un texte |
 | `/playground/compare` | deux à quatre objets sur le même texte |
 | `/playground/chat` | l'aller-retour complet, avec un assistant scripté |
-| `/contribute` | rédiger un motif, un groupe ou une configuration, le vérifier, ouvrir une pull request |
+| `/contribute` | rédiger un motif ou un groupe, le vérifier, ouvrir une pull request |
 | `/labels` | les labels que le registre peut émettre, depuis le pied de page |
 | `/stats` | comment le registre est utilisé, depuis des compteurs agrégés à l'heure |
 
@@ -72,6 +72,15 @@ porte ce que le formulaire ne sait pas réécrire, un détecteur à modèle ou u
 d'un motif porte son verdict en direct, rendu par le moteur Python qui
 l'exécutera, parce qu'un navigateur ne peut pas répondre honnêtement à cette
 question.
+
+**La configuration ne se contribue pas ici.** Un motif et un groupe ont chacun
+leur formulaire ; la configuration en a eu un, complet et testé, puis il a été
+retiré. Assembler des détecteurs et des étages de traitement est une interface
+plus grande qu'un formulaire, et le chemin visé passe par une conversation
+plutôt que par une grille de sélecteurs. Le formulaire existant est conservé à
+l'étiquette git `config-form/v1`, avec dans son message les fichiers à
+restaurer. L'API, elle, accepte toujours une soumission de type `config`.
+
 
 **Les couleurs d'entités sont celles du studio.** Une palette de quinze teintes
 attribuée par ordre d'apparition, `PERSON` sur le primaire, portée

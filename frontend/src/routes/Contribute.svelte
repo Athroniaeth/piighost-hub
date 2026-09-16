@@ -1,11 +1,8 @@
 <script lang="ts">
   import ExternalLink from "@lucide/svelte/icons/external-link";
-  import FilePlus from "@lucide/svelte/icons/file-plus";
   import GitFork from "@lucide/svelte/icons/git-fork";
   import Loader from "@lucide/svelte/icons/loader-circle";
   import type { SubmissionResult } from "../generated/api";
-  import ConfigComposition from "../components/ConfigComposition.svelte";
-  import ConfigFields from "../components/ConfigFields.svelte";
   import KindIcon from "../components/KindIcon.svelte";
   import GroupFields from "../components/GroupFields.svelte";
   import GroupSources from "../components/GroupSources.svelte";
@@ -18,18 +15,7 @@
   import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
   import { cn } from "../lib/cn";
-  import { basedOn, blank, KINDS, type Kind } from "../lib/contribute";
   import { t, type Key } from "../lib/i18n.svelte";
-  import {
-    CONFIG_PLACEHOLDER,
-    configDraftFrom,
-    configProblems,
-    configStarted,
-    emptyConfigDraft,
-    toConfigManifest,
-    unsupported,
-    type ConfigDraft,
-  } from "../lib/config-draft";
   import {
     emptyGroupDraft,
     GROUP_PLACEHOLDER,
@@ -48,66 +34,51 @@
     toManifest,
     type PatternDraft,
   } from "../lib/pattern-draft";
-  import { FIELD_MONO, TEXTAREA } from "../lib/ui";
+  import { FIELD_MONO } from "../lib/ui";
+
+  /**
+   * A pattern and a group, each written as a form.
+   *
+   * A configuration was here too and was taken out: assembling detectors and
+   * pipeline stages is a bigger interface than a form, and the plan is to reach
+   * it through a conversation rather than a grid of pickers. The form that
+   * existed is complete and tested, at the tag `config-form/v1`.
+   */
+  type Kind = "pattern" | "group";
+
+  const KINDS: Kind[] = ["pattern", "group"];
 
   let kind = $state<Kind>("pattern");
   let namespace = $state("piighost");
   let name = $state("");
   let base = $state("piighost/email");
-  let manifest = $state("");
   let draft = $state<PatternDraft>(emptyDraft());
   let group = $state<GroupDraft>(emptyGroupDraft());
-  let config = $state<ConfigDraft>(emptyConfigDraft());
-  // Why the editor is showing instead of the form, when it is.
-  let cannotForm = $state<string[]>([]);
   let labelPinned = $state(false);
   let result = $state<SubmissionResult | null>(null);
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
 
-  // All three are written as forms. A configuration falls back to the editor
-  // for the shapes the form has no field for, a detector with a model or a
-  // stage outside the three standard ones, rather than dropping them quietly.
-  const asForm = $derived(cannotForm.length === 0);
   // A form nobody has touched is not a form with eight faults, so the list
   // waits for the first keystroke, in the draft or in the name above it.
   const found = $derived(
-    !asForm
-      ? []
-      : kind === "pattern"
-        ? problems(draft)
-        : kind === "group"
-          ? groupProblems(group)
-          : configProblems(config),
+    kind === "pattern" ? problems(draft) : groupProblems(group),
   );
   const touched = $derived(
-    kind === "pattern"
-      ? started(draft)
-      : kind === "group"
-        ? groupStarted(group)
-        : configStarted(config),
+    kind === "pattern" ? started(draft) : groupStarted(group),
   );
   const showing = $derived(found.length > 0 && (touched || name !== ""));
   const body = $derived(
-    !asForm
-      ? manifest
-      : kind === "pattern"
-        ? toManifest(draft)
-        : kind === "group"
-          ? toGroupManifest(group)
-          : toConfigManifest(config),
+    kind === "pattern" ? toManifest(draft) : toGroupManifest(group),
   );
   const ready = $derived(
     namespace !== "" && name !== "" && body.trim() !== "" && found.length === 0,
   );
 
-  /** The kind drives the base too: a config extends a config, not a pattern. */
+  /** The kind drives the base too: a group is composed of groups and patterns. */
   function pickKind(next: Kind) {
     kind = next;
-    // Each kind starts from its own form again, so a configuration the editor
-    // had to hold does not keep the editor open for the next one.
-    cannotForm = [];
     base =
       next === "pattern"
         ? "piighost/email"
@@ -119,12 +90,6 @@
     if (kind === "pattern" && name !== "" && draft.name === "")
       draft.name = name;
   });
-
-  function start(text: string) {
-    manifest = text;
-    result = null;
-    error = null;
-  }
 
   async function fork() {
     const [namespaceOf, object] = base.split("/");
@@ -139,22 +104,13 @@
         name: object,
         selector: "latest",
       });
-      // A configuration can hold things this form has no field for. Dropping
-      // them would hand back a manifest missing a piece its author never chose
-      // to remove, so the editor takes it whole and says which piece.
-      cannotForm = kind === "config" ? unsupported(commit) : [];
-      if (!asForm) {
-        start(basedOn(kind, name, await api.manifest(namespaceOf, object)));
-      } else if (kind === "pattern") {
+      if (kind === "pattern") {
         draft = draftFrom(commit);
         labelPinned = true;
         if (name === "") name = draft.name;
-      } else if (kind === "group") {
+      } else {
         group = groupDraftFrom(commit);
         if (name === "") name = group.name;
-      } else {
-        config = configDraftFrom(commit);
-        if (name === "") name = config.name;
       }
       result = null;
       track({ name: "submission_forked", props: { kind } });
@@ -165,11 +121,6 @@
     }
   }
 
-  /** The picker and the button that fills either the form or the editor. */
-  const forkNote = $derived(
-    asForm ? t("contribute.fork.draft") : t(`contribute.fork.${kind}` as Key),
-  );
-
   async function check() {
     busy = true;
     error = null;
@@ -177,12 +128,7 @@
       result = await api.submit({ kind, namespace, name, manifest: body });
       track({
         name: "submission_checked",
-        props: {
-          kind,
-          mode: asForm ? "form" : "toml",
-          ok: result.ok,
-          findings: result.findings.length,
-        },
+        props: { kind, ok: result.ok, findings: result.findings.length },
       });
     } catch (caught) {
       error = caught instanceof ApiError ? caught.message : String(caught);
@@ -201,7 +147,7 @@
 
   <fieldset>
     <legend class="mb-2 text-sm font-medium">{t("contribute.what")}</legend>
-    <div class="grid gap-3 sm:grid-cols-3">
+    <div class="grid gap-3 sm:grid-cols-2">
       {#each KINDS as option (option)}
         <button
           type="button"
@@ -240,7 +186,7 @@
     <Region
       step={1}
       done={namespace !== "" && name !== ""}
-      title={asForm ? t("draft.identity") : t("contribute.start")}
+      title={t("draft.identity")}
       bodyClass="gap-3 overflow-y-auto"
     >
       <div class="grid grid-cols-2 gap-2">
@@ -259,9 +205,7 @@
             bind:value={name}
             placeholder={kind === "pattern"
               ? PLACEHOLDER.name
-              : kind === "group"
-                ? GROUP_PLACEHOLDER.name
-                : CONFIG_PLACEHOLDER.name}
+              : GROUP_PLACEHOLDER.name}
             spellcheck="false"
             class={FIELD_MONO}
           />
@@ -275,7 +219,9 @@
           {kind}
           label={t("contribute.base")}
         />
-        <p class="text-xs text-muted-foreground">{forkNote}</p>
+        <p class="text-xs text-muted-foreground">
+          {t("contribute.fork.draft")}
+        </p>
         <Button
           variant="outline"
           size="sm"
@@ -288,55 +234,22 @@
         </Button>
       </div>
 
-      {#if !asForm}
-        <div class="rounded-lg bg-muted/40 p-2 text-xs text-muted-foreground">
-          {t("draft.unsupported")}
-          <ul class="mt-1 space-y-0.5 font-mono">
-            {#each cannotForm as reason (reason)}
-              <li>{reason}</li>
-            {/each}
-          </ul>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onclick={() => start(blank(kind, name))}
-        >
-          <FilePlus />
-          {t("contribute.blank")}
-        </Button>
-      {:else if kind === "pattern"}
+      {#if kind === "pattern"}
         <PatternFields bind:draft bind:labelPinned {name} />
-      {:else if kind === "group"}
-        <GroupFields bind:draft={group} {name} />
       {:else}
-        <ConfigFields bind:draft={config} {name} />
+        <GroupFields bind:draft={group} {name} />
       {/if}
     </Region>
 
     <Region
       step={2}
       done={body.trim() !== ""}
-      title={!asForm
-        ? t("contribute.manifest")
-        : kind === "pattern"
-          ? t("draft.examples")
-          : kind === "group"
-            ? t("draft.sources")
-            : t("draft.detectors")}
+      title={kind === "pattern" ? t("draft.examples") : t("draft.sources")}
     >
-      {#if !asForm}
-        <textarea
-          bind:value={manifest}
-          spellcheck="false"
-          aria-label={t("contribute.manifest")}
-          class="{TEXTAREA} flex-1"></textarea>
-      {:else if kind === "pattern"}
+      {#if kind === "pattern"}
         <PatternExamples bind:draft />
-      {:else if kind === "group"}
-        <GroupSources bind:draft={group} />
       {:else}
-        <ConfigComposition bind:draft={config} />
+        <GroupSources bind:draft={group} />
       {/if}
     </Region>
 
@@ -402,7 +315,7 @@
         <p class="text-sm text-muted-foreground">{t("contribute.empty")}</p>
       {/if}
 
-      {#if asForm && body.trim() !== ""}
+      {#if body.trim() !== ""}
         <details>
           <summary class="cursor-pointer text-xs text-muted-foreground">
             {t("draft.preview")}

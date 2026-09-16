@@ -10,7 +10,7 @@ single origin. Eight routes, no server-side state, no accounts.
 | `/playground` | run an object or a candidate regex over a text |
 | `/playground/compare` | two to four objects over the same text |
 | `/playground/chat` | the whole round trip, with a scripted assistant |
-| `/contribute` | write a pattern, a group or a configuration, check it, open a pull request |
+| `/contribute` | write a pattern or a group, check it, open a pull request |
 | `/labels` | every label the registry can emit, from the footer |
 | `/stats` | how the registry is used, from counters aggregated to the hour |
 
@@ -67,6 +67,14 @@ cannot write back, a detector with a model or a stage outside the three standard
 ones, naming the piece in the way. Every example of a pattern carries its verdict
 live, answered by the Python engine that will run it, because a browser cannot
 answer that question honestly.
+
+**A configuration is not contributed here.** A pattern and a group each have
+their form; a configuration had one too, complete and tested, and it was taken
+out. Assembling detectors and pipeline stages is a larger interface than a form,
+and the intended path goes through a conversation rather than a grid of pickers.
+The form that existed is kept at the git tag `config-form/v1`, whose message
+lists the files to restore. The API still accepts a `config` submission.
+
 
 **Entity colours are the studio's.** A palette of fifteen hues handed out by
 first appearance, `PERSON` on the primary, carried verbatim from `labels.ts`. A

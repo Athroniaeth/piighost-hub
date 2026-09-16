@@ -196,50 +196,16 @@ const STRINGS = {
     "draft.redos.incomplete": "The filler and the suffix are required.",
     "draft.sources.one": "A group needs at least one source.",
     "draft.sources.twice": "The same source is listed twice.",
-    "draft.piighost": "piighost version",
-    "draft.piighostNote":
-      "A PEP 440 specifier. The check refuses to validate against a version this range excludes.",
-    "draft.extends": "Inherits from",
-    "draft.detectors": "Detectors",
-    "draft.detectorsNote":
-      "Regex detectors over registry groups. A detector with a model, or a stage this form has no field for, keeps the TOML editor.",
-    "draft.detectorName": "Detector name",
-    "draft.groups": "Group",
-    "draft.addGroup": "Add a group",
-    "draft.stages": "Stages",
-    "draft.stage.linker": "Linker",
-    "draft.stage.expander": "Expander",
-    "draft.stage.placeholder": "Placeholder",
-    "draft.stagesNote":
-      "What turns detections into a pipeline: how a value is matched again, how far the match spreads, and what replaces it.",
-    "draft.unsupported":
-      "This one cannot be a form. The editor holds it whole:",
-    "draft.detectors.one":
-      "Inherit from a configuration, or declare a detector.",
-    "draft.detector.kebab":
-      "A detector name is lower case words joined by dashes.",
-    "draft.detector.twice": "Two detectors share a name.",
-    "draft.detector.empty": "A detector needs at least one group.",
     "contribute.lede":
       "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
     "contribute.pattern.note": "One shape and the label it emits.",
     "contribute.group.note": "A reusable set of patterns.",
-    "contribute.config.note": "A pipeline you can run as it is.",
     "contribute.kind": "Kind",
     "contribute.namespace": "Namespace",
     "contribute.name": "Name",
-    "contribute.manifest": "Manifest",
-    "contribute.start": "Starting point",
     "contribute.base": "Base object",
-    "contribute.blank": "Blank manifest",
     "contribute.fork": "Start from this one",
-    "contribute.fork.pattern":
-      "Copies the manifest under your name. Edit the regex and the examples.",
-    "contribute.fork.group":
-      "References it as a source, so it keeps improving under you.",
-    "contribute.fork.config":
-      "Extends it, so you only write down what differs.",
     "contribute.fork.draft":
       "Fills the form with it, examples included. Change the shape and keep the cases it already gets right.",
     "contribute.check": "Check",
@@ -477,49 +443,16 @@ const STRINGS = {
     "draft.redos.incomplete": "Le remplissage et la fin sont obligatoires.",
     "draft.sources.one": "Un groupe demande au moins une source.",
     "draft.sources.twice": "La même source est listée deux fois.",
-    "draft.piighost": "Version de piighost",
-    "draft.piighostNote":
-      "Un spécificateur PEP 440. Le check refuse de valider contre une version que cette plage exclut.",
-    "draft.extends": "Hérite de",
-    "draft.detectors": "Détecteurs",
-    "draft.detectorsNote":
-      "Des détecteurs regex sur des groupes du registre. Un détecteur à modèle, ou un étage dont ce formulaire n'a pas le champ, garde l'éditeur TOML.",
-    "draft.detectorName": "Nom du détecteur",
-    "draft.groups": "Groupe",
-    "draft.addGroup": "Ajouter un groupe",
-    "draft.stages": "Étages",
-    "draft.stage.linker": "Liaison",
-    "draft.stage.expander": "Expansion",
-    "draft.stage.placeholder": "Remplacement",
-    "draft.stagesNote":
-      "Ce qui transforme des détections en chaîne de traitement : comment une valeur est retrouvée ailleurs, jusqu'où la correspondance s'étend, et ce qui la remplace.",
-    "draft.unsupported":
-      "Celle-ci ne peut pas être un formulaire. L'éditeur la porte entière :",
-    "draft.detectors.one":
-      "Héritez d'une configuration, ou déclarez un détecteur.",
-    "draft.detector.kebab":
-      "Un nom de détecteur s'écrit en minuscules, mots reliés par des tirets.",
-    "draft.detector.twice": "Deux détecteurs portent le même nom.",
-    "draft.detector.empty": "Un détecteur demande au moins un groupe.",
     "contribute.lede":
       "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",
     "contribute.pattern.note": "Un motif et le label qu'il produit.",
     "contribute.group.note": "Un ensemble de motifs réutilisable.",
-    "contribute.config.note": "Une chaîne de traitement prête à tourner.",
     "contribute.kind": "Type",
     "contribute.namespace": "Espace de noms",
     "contribute.name": "Nom",
-    "contribute.manifest": "Manifeste",
-    "contribute.start": "Point de départ",
     "contribute.base": "Objet de base",
-    "contribute.blank": "Manifeste vierge",
     "contribute.fork": "Partir de celui-ci",
-    "contribute.fork.pattern":
-      "Copie le manifeste sous votre nom. Modifiez le regex et les exemples.",
-    "contribute.fork.group":
-      "Le référence comme source : il continue de s'améliorer sous vous.",
-    "contribute.fork.config": "L'étend : vous n'écrivez que ce qui change.",
     "contribute.check": "Vérifier",
     "contribute.path": "Chemin",
     "contribute.ok": "Tous les contrôles passent.",

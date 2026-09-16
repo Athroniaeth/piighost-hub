@@ -33,12 +33,7 @@ export type AnalyticsEvent =
   | { name: "labels_exported"; props: { format: string } }
   | {
       name: "submission_checked";
-      props: {
-        kind: string;
-        mode: "form" | "toml";
-        ok: boolean;
-        findings: number;
-      };
+      props: { kind: string; ok: boolean; findings: number };
     }
   | { name: "submission_forked"; props: { kind: string } };
 

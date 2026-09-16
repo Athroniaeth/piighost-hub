@@ -74,31 +74,6 @@ test.describe("contributing", () => {
     await expect(page.getByLabel("A sentence").first()).not.toHaveValue("");
   });
 
-  test("fills the configuration form and checks it", async ({ page }) => {
-    await page.goto("/contribute");
-    await page.getByRole("button", { name: /configuration/i }).click();
-    await forkFrom(page, "fr-default");
-
-    await expect(page.getByLabel("piighost version")).toHaveValue(">=1.7,<2");
-    await expect(page.getByLabel("Manifest")).toHaveCount(0);
-
-    await page.getByPlaceholder("alice").fill("alice");
-    await page.getByRole("button", { name: "Check" }).click();
-    await expect(page.getByText("Every check passed.")).toBeVisible();
-  });
-
-  test("refuses to form a configuration it cannot write back whole", async ({
-    page,
-  }) => {
-    await page.goto("/contribute");
-    await page.getByRole("button", { name: /configuration/i }).click();
-    await forkFrom(page, "ner-base");
-
-    await expect(page.getByText("This one cannot be a form")).toBeVisible();
-    await expect(page.getByText("detector ner (gliner2)")).toBeVisible();
-    await expect(page.getByLabel("Manifest")).toBeVisible();
-  });
-
   test("stays quiet until something is typed", async ({ page }) => {
     await page.goto("/contribute");
     await expect(page.getByText("Check to see the findings.")).toBeVisible();
