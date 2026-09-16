@@ -216,7 +216,7 @@
         <RefPicker
           id="contribute-base"
           bind:value={base}
-          {kind}
+          kinds={[kind]}
           label={t("contribute.base")}
         />
         <p class="text-xs text-muted-foreground">

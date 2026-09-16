@@ -57,6 +57,7 @@
           >
           <div class="min-w-0 flex-1">
             <RefPicker
+              kinds={["group", "pattern"]}
               id="source-{index}"
               bind:value={source.ref}
               label={t("draft.source")}

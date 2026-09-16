@@ -84,6 +84,29 @@ test.describe("contributing", () => {
   });
 });
 
+test.describe("a group's sources", () => {
+  test("offers patterns and groups, never a configuration", async ({
+    page,
+  }) => {
+    // A configuration is not a label source, so the resolver refuses it. It was
+    // offered anyway, and ranked first, so the obvious pick was the wrong one.
+    await page.goto("/contribute");
+    await page
+      .getByRole("button", { name: "Group A reusable set of patterns." })
+      .click();
+    await page.locator("#source-0").click();
+
+    const options = page.getByRole("listbox").getByRole("option");
+    await expect(options.first()).toBeVisible();
+    const kinds = await options.evaluateAll((rows) =>
+      rows.map((row) => row.getAttribute("title")?.split("\u2022")[1]?.trim()),
+    );
+    expect(kinds.length).toBeGreaterThan(20);
+    expect(kinds).not.toContain("configuration");
+    expect(new Set(kinds)).toEqual(new Set(["group", "pattern"]));
+  });
+});
+
 test.describe("trying a group", () => {
   // Pyodide is thirteen megabytes and a few seconds of start-up.
   test.setTimeout(180_000);

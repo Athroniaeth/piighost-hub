@@ -31,15 +31,25 @@
    */
   let {
     value = $bindable(),
-    kind = null,
+    kinds = null,
     id,
     label,
   }: {
     value: string;
-    kind?: "pattern" | "group" | "config" | null;
+    /**
+     * Which kinds may be chosen, or null for every one.
+     *
+     * A list rather than one kind, because the question a caller asks is not
+     * always about a single kind: a group's sources are patterns *or* groups,
+     * and a configuration is neither. Offering one anyway is how a visitor
+     * picks something the resolver then refuses, which is what happened.
+     */
+    kinds?: Kind[] | null;
     id: string;
     label: string;
   } = $props();
+
+  type Kind = "pattern" | "group" | "config";
 
   // Configurations first: a configuration is a pipeline you can run, a group is
   // a building block, a pattern is a single shape. Within a kind, the widest
@@ -56,11 +66,14 @@
   let panel = $state<HTMLDivElement | null>(null);
   let field = $state<HTMLInputElement | null>(null);
 
-  const options = $derived(api.search(kind ? { kind } : {}));
+  const options = $derived(api.search({}));
   const needle = $derived(filter.trim().toLowerCase());
 
   function ordered(result: SearchOut): SearchHit[] {
-    return [...result.items].sort(
+    const allowed = kinds
+      ? result.items.filter((item) => kinds.includes(item.kind as Kind))
+      : result.items;
+    return [...allowed].sort(
       (a, b) =>
         RANK[a.kind] - RANK[b.kind] ||
         b.labels.length - a.labels.length ||
