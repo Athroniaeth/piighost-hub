@@ -190,3 +190,11 @@
     --border: #999;
   }
 }
+
+/* A popover is `display: none` until it opens, and any author `display` beats
+   that user-agent rule, so a closed panel would draw itself inline and
+   unpositioned. Stated once here rather than as a utility: the layout the
+   picker needs is a column, and only while it is open. */
+[popover]:popover-open {
+  display: flex;
+}

@@ -12,6 +12,43 @@ test.describe("the playground", () => {
     await expect(page.locator("main").getByText("IPV4").first()).toBeVisible();
   });
 
+  test("opens its panel outside every clipping ancestor", async ({ page }) => {
+    // The group's source rows sit in a scroller inside a card that clips to
+    // draw its corners. An absolutely positioned panel was cut by whichever
+    // came first, and arrived as a sliver showing its filter and nothing else.
+    await page.goto("/contribute");
+    await page.getByRole("button", { name: /group/i }).click();
+    await page.getByRole("button", { name: "Add a source" }).click();
+    await page.getByRole("button", { name: "Add a source" }).click();
+
+    await page.locator("[id^=source-]").last().click();
+    const panel = page.getByRole("listbox");
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole("option").first()).toBeVisible();
+
+    const box = await panel.boundingBox();
+    const viewport = page.viewportSize()!;
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height + 1);
+    // Enough of the list to choose from, not a sliver.
+    expect(await panel.getByRole("option").count()).toBeGreaterThan(20);
+  });
+
+  test("keeps its options out of the DOM until it is opened", async ({
+    page,
+  }) => {
+    // Two hundred options per picker, times one per detector row, is a lot of
+    // DOM for a list nobody has opened.
+    // Scoped to the picker: a native select's own options carry the same role.
+    await page.goto("/playground");
+    await expect(page.getByRole("listbox")).toHaveCount(0);
+    await page.locator("#play-ref").click();
+    const panel = page.getByRole("listbox");
+    // `count()` does not retry, and the contents render a tick after the panel.
+    await expect(panel.getByRole("option").first()).toBeVisible();
+    expect(await panel.getByRole("option").count()).toBeGreaterThan(20);
+  });
+
   test("shows the coverage count on every row of the object picker", async ({
     page,
   }) => {
