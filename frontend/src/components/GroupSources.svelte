@@ -4,6 +4,7 @@
   import Plus from "@lucide/svelte/icons/plus";
   import Trash from "@lucide/svelte/icons/trash-2";
   import Button from "./ui/Button.svelte";
+  import GroupTry from "./GroupTry.svelte";
   import RefPicker from "./RefPicker.svelte";
   import { api } from "../lib/api";
   import { cn } from "../lib/cn";
@@ -134,4 +135,6 @@
     <Plus />
     {t("draft.addSource")}
   </Button>
+
+  <GroupTry {draft} />
 </div>

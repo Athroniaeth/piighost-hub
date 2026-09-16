@@ -329,6 +329,24 @@
         "title": "DiffOut",
         "type": "object"
       },
+      "DraftSource": {
+        "properties": {
+          "exclude": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ref"
+        ],
+        "title": "DraftSource",
+        "type": "object"
+      },
       "FacetOut": {
         "properties": {
           "count": {
@@ -646,6 +664,56 @@
           "tags"
         ],
         "title": "ObjectSummary",
+        "type": "object"
+      },
+      "PreviewLabel": {
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "regex": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "pattern",
+          "regex"
+        ],
+        "title": "PreviewLabel",
+        "type": "object"
+      },
+      "PreviewOut": {
+        "properties": {
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/PreviewLabel"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "labels"
+        ],
+        "title": "PreviewOut",
+        "type": "object"
+      },
+      "PreviewRequest": {
+        "properties": {
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/DraftSource"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "sources"
+        ],
+        "title": "PreviewRequest",
         "type": "object"
       },
       "Resolved": {
@@ -1506,6 +1574,77 @@
         "summary": "Diff",
         "tags": [
           "hub"
+        ]
+      }
+    },
+    "/api/v1/groups/preview": {
+      "post": {
+        "deprecated": false,
+        "operationId": "ApiV1GroupsPreviewPreview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewOut"
+                }
+              }
+            },
+            "description": "Request fulfilled, document follows",
+            "headers": {}
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Validation Exception",
+                  "examples": [
+                    {
+                      "detail": "Bad Request",
+                      "extra": {},
+                      "status_code": 400
+                    }
+                  ],
+                  "properties": {
+                    "detail": {
+                      "type": "string"
+                    },
+                    "extra": {
+                      "additionalProperties": {},
+                      "type": [
+                        "null",
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "status_code": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "detail",
+                    "status_code"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Bad request syntax or unsupported method"
+          }
+        },
+        "summary": "Preview",
+        "tags": [
+          "playground"
         ]
       }
     },

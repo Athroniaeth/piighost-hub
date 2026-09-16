@@ -9,6 +9,7 @@ between two patterns matching the same span: piighost's resolver keeps the first
 inserted, and the hub adds no rule of its own.
 """
 
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -85,21 +86,49 @@ def resolve_labels(
     if snapshot.kind != "group":
         raise ResolutionError(f"{snapshot.ref} is a config, not a label source")
 
-    for source in content["sources"]:
-        child = registry.snapshot(_key_of(source["ref"]), source["commit"])
-        child_labels = resolve_labels(registry, child, (*via, snapshot.ref))
+    return resolve_sources(registry, content["sources"], resolved, via)
+
+
+def _head_of(registry: Registry, key: str) -> Snapshot:
+    head = registry.heads.get(key)
+    if head is None:
+        raise ResolutionError(f"unknown object {key}")
+    return head
+
+
+def resolve_sources(
+    registry: Registry,
+    sources: Iterable[Mapping[str, Any]],
+    into: ResolvedLabels,
+    via: tuple[str, ...] = (),
+) -> ResolvedLabels:
+    """Merge a list of sources into one ordered label set.
+
+    Split out of the group branch above so that a group which is not in the
+    registry yet, the one being written on the contribution page, is resolved by
+    this code and not by a second reading of the same rules somewhere else. A
+    label arriving twice is an error here, and that is the rule the whole
+    registry rests on.
+    """
+    for source in sources:
+        key = _key_of(source["ref"])
+        commit = source.get("commit")
+        # A frozen manifest pins every source; a draft from the contribution
+        # page has not been frozen yet, so it means the head.
+        child = registry.snapshot(key, commit) if commit else _head_of(registry, key)
+        child_labels = resolve_labels(registry, child, (*via, into.ref))
         provided = set(child_labels.labels)
-        exclude = set(source["exclude"])
-        only = set(source["only"])
+        exclude = set(source.get("exclude") or ())
+        only = set(source.get("only") or ())
         for name in sorted((exclude | only) - provided):
             raise ResolutionError(
-                f"{snapshot.ref}: source {child.ref} provides no label {name}; "
+                f"{into.ref}: source {child.ref} provides no label {name}; "
                 f"it provides {sorted(provided)}"
             )
         dropped = exclude if exclude else (provided - only if only else set())
         for entry in child_labels.without(dropped).labels.values():
-            resolved.add(entry, child_labels.patterns[entry.pattern])
-    return resolved
+            into.add(entry, child_labels.patterns[entry.pattern])
+    return into
 
 
 @dataclass(slots=True)

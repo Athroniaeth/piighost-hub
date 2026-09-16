@@ -83,3 +83,36 @@ test.describe("contributing", () => {
     ).toBeVisible();
   });
 });
+
+test.describe("trying a group", () => {
+  // Pyodide is thirteen megabytes and a few seconds of start-up.
+  test.setTimeout(180_000);
+
+  test("runs piighost in the tab, and sends the text nowhere", async ({
+    page,
+  }) => {
+    const sent: string[] = [];
+    page.on("request", (request) => {
+      if (request.method() === "POST") sent.push(request.url());
+    });
+
+    await page.goto("/contribute");
+    await page
+      .getByRole("button", { name: "Group A reusable set of patterns." })
+      .click();
+    await page.locator("#source-0").click();
+    await page.getByPlaceholder("Filter by name, label or tag").fill("generic");
+    await page.getByRole("option").first().click();
+
+    await page.getByRole("button", { name: "Run here" }).click();
+    await expect(page.getByText(/caught/)).toBeVisible({ timeout: 150_000 });
+    await expect(page.getByText("john.doe@example.com").first()).toBeVisible();
+
+    // The only thing posted is the flattening of the sources, which is registry
+    // data. The text is not in it, and that is the whole reason for the worker.
+    expect(sent.filter((url) => url.includes("/groups/preview"))).toHaveLength(
+      1,
+    );
+    expect(sent.filter((url) => url.includes("/playground"))).toHaveLength(0);
+  });
+});

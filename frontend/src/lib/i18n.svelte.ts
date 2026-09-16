@@ -196,6 +196,13 @@ const STRINGS = {
     "draft.redos.incomplete": "The filler and the suffix are required.",
     "draft.sources.one": "A group needs at least one source.",
     "draft.sources.twice": "The same source is listed twice.",
+    "try.title": "Try it",
+    "try.go": "Run here",
+    "try.loading": "Loading the engine",
+    "try.text": "A text to try the group on",
+    "try.caught": "caught",
+    "try.note":
+      "piighost runs in this tab. The sources are flattened by the registry, the text stays on your machine.",
     "contribute.lede":
       "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
@@ -443,6 +450,13 @@ const STRINGS = {
     "draft.redos.incomplete": "Le remplissage et la fin sont obligatoires.",
     "draft.sources.one": "Un groupe demande au moins une source.",
     "draft.sources.twice": "La même source est listée deux fois.",
+    "try.title": "Essayer",
+    "try.go": "Lancer ici",
+    "try.loading": "Chargement du moteur",
+    "try.text": "Un texte pour essayer le groupe",
+    "try.caught": "reconnus",
+    "try.note":
+      "piighost tourne dans cet onglet. Les sources sont aplaties par le registre, le texte reste sur votre machine.",
     "contribute.lede":
       "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",

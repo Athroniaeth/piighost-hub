@@ -317,3 +317,61 @@ text = "ORD-12"
         assert body["ok"] is True
         assert [f["level"] for f in body["findings"]] == ["warning"]
         assert "maintainers" in body["findings"][0]["message"]
+
+
+class TestPreview:
+    """Flattening a group that is not in the registry yet."""
+
+    async def test_merges_sources_in_order(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.post(
+            "/api/v1/groups/preview",
+            json={"sources": [{"ref": "piighost/all"}]},
+        )
+        assert response.status_code == 200
+        labels = [entry["label"] for entry in response.json()["labels"]]
+        assert labels == ["FR_SIRET", "EMAIL", "CREDIT_CARD"]
+
+    async def test_honours_an_exclusion(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.post(
+            "/api/v1/groups/preview",
+            json={"sources": [{"ref": "piighost/all", "exclude": ["CREDIT_CARD"]}]},
+        )
+        labels = [entry["label"] for entry in response.json()["labels"]]
+        assert "CREDIT_CARD" not in labels
+
+    async def test_the_same_pattern_by_two_paths_is_a_diamond(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """A draft gets the registry's rules, exception included.
+
+        `all` already carries `email`, so naming it again is the same pattern
+        commit reached twice. That is a diamond, and it is de-duplicated rather
+        than refused; two *different* patterns emitting one label is what the
+        registry calls an error.
+        """
+        response = await client.post(
+            "/api/v1/groups/preview",
+            json={"sources": [{"ref": "piighost/all"}, {"ref": "piighost/email"}]},
+        )
+        assert response.status_code == 200
+        labels = [entry["label"] for entry in response.json()["labels"]]
+        assert labels.count("EMAIL") == 1
+
+    async def test_an_unknown_exclusion_is_an_error(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.post(
+            "/api/v1/groups/preview",
+            json={"sources": [{"ref": "piighost/all", "exclude": ["NOPE"]}]},
+        )
+        assert response.status_code == 422
+
+    async def test_no_sources_is_refused(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        response = await client.post("/api/v1/groups/preview", json={"sources": []})
+        assert response.status_code == 400

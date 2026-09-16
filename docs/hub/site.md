@@ -105,6 +105,19 @@ construction, chaque description portant `en` et `fr`. Le sélecteur de langue
 écrit aussi `document.documentElement.lang`, dont un lecteur d'écran tire sa
 voix.
 
+**Un groupe s'essaie sans être publié, et sans envoyer le texte.** Le bouton
+« Lancer ici » aplatit les sources par l'API, parce que décider ce qui arrive
+quand deux sources portent un même label est la règle du registre et qu'il ne
+doit en exister qu'une implémentation. Puis il exécute le résultat avec piighost
+lui-même, compilé en WebAssembly par Pyodide, dans l'onglet. Le catalogue est
+public ; le texte ne l'est pas, et il ne part nulle part.
+
+C'est ce qui justifie la seule concession de la CSP, `wasm-unsafe-eval` dans
+`script-src`. Le nom fait peur et la portée ne l'est pas : elle autorise la
+compilation WebAssembly, pas `eval`, pas `new Function`, pas le script en ligne.
+Pyodide et le wheel sont servis depuis cette origine, jamais depuis un CDN ni
+depuis PyPI, donc `connect-src 'self'` ne bouge pas non plus.
+
 **Aucun style en ligne.** La CSP de production autorise `style-src 'self'` sans
 `unsafe-inline`. Une coloration syntaxique qui émettrait `style="color:…"`
 marcherait en développement et casserait en production, donc la coloration passe

@@ -10,6 +10,7 @@
 import {
   apiV1CompareCompare,
   apiV1LabelsLabels,
+  apiV1GroupsPreviewPreview,
   apiV1PlaygroundCandidateCandidate,
   apiV1PlaygroundChatChat,
   apiV1PlaygroundPlayground,
@@ -33,6 +34,7 @@ import type {
   LabelsOut,
   ManifestOut,
   ObjectDetail,
+  PreviewOut,
   Resolved,
   RunOut,
   SamplesOut,
@@ -166,6 +168,12 @@ export const api = {
 
   async chat(ref: string, messages: string[]): Promise<ChatOut> {
     return unwrap(await apiV1PlaygroundChatChat({ body: { ref, messages } }));
+  },
+
+  async preview(
+    sources: { ref: string; exclude: string[] }[],
+  ): Promise<PreviewOut> {
+    return unwrap(await apiV1GroupsPreviewPreview({ body: { sources } }));
   },
 
   async compare(refs: string[], text: string): Promise<CompareOut> {

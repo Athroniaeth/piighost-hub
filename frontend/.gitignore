@@ -43,3 +43,5 @@ venv/
 test-results/
 playwright-report/
 blob-report/
+
+public/pyodide/

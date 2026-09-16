@@ -25,6 +25,7 @@ from backend.hub.playground import (
     run_ref,
 )
 from backend.hub.registry import Registry
+from backend.hub.resolve import ResolvedLabels, resolve_sources
 from backend.hub.routes import (
     BadRequestError,
     UnprocessableError,
@@ -90,6 +91,36 @@ class ChatOut(msgspec.Struct):
     ref: str
     turns: list[TurnOut]
     mapping: dict[str, str]
+
+
+#: A group with more sources than this is not being tried, it is being written
+#: by a script, and each source costs a resolution.
+MAX_SOURCES = 32
+
+
+class DraftSource(msgspec.Struct):
+    """One line of the group being written: what it takes, and what it drops."""
+
+    ref: str
+    exclude: list[str] = []
+
+
+class PreviewRequest(msgspec.Struct):
+    """A group that is not in the registry yet."""
+
+    sources: list[DraftSource]
+
+
+class PreviewLabel(msgspec.Struct):
+    label: str
+    regex: str
+    pattern: str
+
+
+class PreviewOut(msgspec.Struct):
+    """The flattened catalogue, in the order the detector will receive it."""
+
+    labels: list[PreviewLabel]
 
 
 class CompareRequest(msgspec.Struct):
@@ -234,6 +265,41 @@ class PlaygroundController(Controller):
                 for t in turns
             ],
             mapping=mapping,
+        )
+
+    @post("/groups/preview", name="hub:preview", status_code=HTTP_200_OK)
+    async def preview(
+        self,
+        state: State,
+        data: Annotated[PreviewRequest, Body(media_type=RequestEncodingType.JSON)],
+    ) -> PreviewOut:
+        """Flatten a group that has not been published, so it can be tried.
+
+        No text is taken, and that is the point. The contribution page runs the
+        catalogue this returns in the visitor's own browser, so a group can be
+        tried against a real text without the text ever being sent anywhere. The
+        registry is public; the text is not.
+        """
+        if not data.sources:
+            raise BadRequestError("a group needs at least one source")
+        if len(data.sources) > MAX_SOURCES:
+            raise BadRequestError(f"a group takes at most {MAX_SOURCES} sources")
+        registry = registry_of(state)
+        try:
+            resolved = resolve_sources(
+                registry,
+                [{"ref": s.ref, "exclude": s.exclude} for s in data.sources],
+                ResolvedLabels(ref="draft"),
+            )
+        except ResolutionError as exc:
+            raise UnprocessableError(str(exc)) from exc
+        return PreviewOut(
+            labels=[
+                PreviewLabel(
+                    label=entry.label, regex=entry.regex, pattern=entry.pattern
+                )
+                for entry in resolved.labels.values()
+            ]
         )
 
     @post("/compare", name="hub:compare", status_code=HTTP_200_OK)

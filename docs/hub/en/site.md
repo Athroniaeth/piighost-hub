@@ -98,6 +98,19 @@ construction, every description carrying `en` and `fr`. The language switch also
 writes `document.documentElement.lang`, which is where a screen reader takes its
 voice from.
 
+**A group can be tried without being published, and without sending the text.**
+The "Run here" button flattens the sources through the API, because deciding
+what happens when two sources carry one label is the registry's rule and there
+must be one implementation of it. Then it runs the result with piighost itself,
+compiled to WebAssembly by Pyodide, in the tab. The catalogue is public; the text
+is not, and it goes nowhere.
+
+That is what justifies the CSP's one concession, `wasm-unsafe-eval` in
+`script-src`. The name is alarming and the scope is not: it permits compiling
+WebAssembly, not `eval`, not `new Function`, not inline script. Pyodide and the
+wheel are served from this origin, never from a CDN and never from PyPI, so
+`connect-src 'self'` does not move either.
+
 **No inline styles.** The production CSP allows `style-src 'self'` with no
 `unsafe-inline`. Syntax highlighting that emitted `style="color:…"` would work in
 development and break in production, so highlighting goes through classes and the
