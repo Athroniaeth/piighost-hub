@@ -114,6 +114,22 @@ server {
         proxy_set_header X-Forwarded-Proto $forwarded_proto;
     }
 
+    # nginx's mime.types predates ES modules and has no entry for .mjs, so it
+    # falls back to application/octet-stream. With X-Content-Type-Options set to
+    # nosniff, which it is, a browser refuses to execute the module and the
+    # import fails naming the file rather than the reason. Pyodide ships its
+    # runtime as .mjs, so this is what lets it load at all.
+    #
+    # `default_type` rather than a `types` block: a types block in a server
+    # replaces the whole inherited table instead of extending it, which leaves
+    # index.html itself typeless and turns the site into a download.
+    location ~ \.mjs$ {
+        include /etc/nginx/security-headers.conf;
+
+        default_type text/javascript;
+        try_files $uri =404;
+    }
+
     # Asked for by browsers on their own. Without this it falls through to the SPA
     # fallback below and answers HTML with a 200, where an icon is expected.
     location = /favicon.ico {
