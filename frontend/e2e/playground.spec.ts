@@ -76,6 +76,24 @@ test.describe("the playground", () => {
     }
   });
 
+  test("scrolls the object picker under the wheel", async ({ page }) => {
+    // The panel repositions itself on scroll, and the listener captures, so it
+    // also heard the listbox's own scroll and fought every wheel tick. The
+    // list looked frozen at two hundred entries. Only a real wheel shows it.
+    await page.goto("/playground");
+    await page.locator("#play-ref").click();
+
+    const listbox = page.getByRole("listbox");
+    await expect(listbox.getByRole("option").first()).toBeVisible();
+    const box = await listbox.boundingBox();
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    for (let tick = 0; tick < 4; tick += 1) {
+      await page.mouse.wheel(0, 120);
+      await page.waitForTimeout(80);
+    }
+    expect(await listbox.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+  });
+
   test("leads with the configurations in the picker", async ({ page }) => {
     await page.goto("/playground");
     await page.locator("#play-ref").click();

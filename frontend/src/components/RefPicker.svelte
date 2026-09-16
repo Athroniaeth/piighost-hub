@@ -65,6 +65,7 @@
   let trigger = $state<HTMLButtonElement | null>(null);
   let panel = $state<HTMLDivElement | null>(null);
   let field = $state<HTMLInputElement | null>(null);
+  let list = $state<HTMLDivElement | null>(null);
 
   const options = $derived(api.search({}));
   const needle = $derived(filter.trim().toLowerCase());
@@ -112,11 +113,17 @@
     // past the bottom of a short window.
     const below = window.innerHeight - anchor.bottom - MARGIN;
     const above = anchor.top - MARGIN;
+
+    // Lifting the cap to measure the natural height un-overflows the listbox
+    // for one layout pass, and the browser clamps its scrollTop to the zero it
+    // sees. Carry the position across the measurement.
+    const keep = list?.scrollTop ?? 0;
     panel.style.maxHeight = "none";
     const natural = panel.offsetHeight;
     const underneath = natural <= below || below >= above;
     const room = underneath ? below : above;
     panel.style.maxHeight = `${Math.round(room)}px`;
+    if (list) list.scrollTop = keep;
 
     const height = Math.min(natural, room);
     const top = underneath ? anchor.bottom + 4 : anchor.top - height - 4;
@@ -165,9 +172,18 @@
   // A popover in the top layer does not move with the page, so it has to be
   // told. Scrolling a source row out from under its own panel would otherwise
   // leave the panel behind.
+  //
+  // The listener captures, because the scroller that moves the trigger is an
+  // ancestor and its scroll does not bubble. Capturing also catches the
+  // listbox's own scroll, which must be ignored: repositioning on it fought
+  // every wheel tick and the list read as stuck.
   $effect(() => {
     if (!open) return;
-    const reposition = () => place();
+    const reposition = (event: Event) => {
+      const target = event.target;
+      if (target instanceof Node && panel?.contains(target)) return;
+      place();
+    };
     window.addEventListener("scroll", reposition, true);
     window.addEventListener("resize", reposition);
     return () => {
@@ -229,9 +245,10 @@
         />
       </label>
       <div
+        bind:this={list}
         role="listbox"
         aria-label={label}
-        class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-1"
+        class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain p-1"
       >
         {#each matching(items) as item (item.key)}
           <button
