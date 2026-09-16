@@ -168,7 +168,6 @@ const STRINGS = {
     "draft.suffix": "Suffix",
     "draft.ok": "Caught as expected",
     "draft.nothing": "nothing caught",
-    "draft.preview": "Generated manifest",
     "draft.sources": "Sources",
     "draft.source": "Source",
     "draft.sourcesNote":
@@ -201,8 +200,7 @@ const STRINGS = {
     "try.loading": "Loading the engine",
     "try.text": "A text to try the group on",
     "try.caught": "caught",
-    "try.note":
-      "piighost runs in this tab. The sources are flattened by the registry, the text stays on your machine.",
+    "try.note": "piighost runs in this tab. Your text stays on your machine.",
     "contribute.lede":
       "Propose a pattern, a group or a configuration. Checked here, merged by pull request.",
     "contribute.what": "What are you proposing?",
@@ -418,7 +416,6 @@ const STRINGS = {
     "draft.suffix": "Fin",
     "draft.ok": "Reconnu comme prévu",
     "draft.nothing": "rien reconnu",
-    "draft.preview": "Manifeste généré",
     "draft.sources": "Sources",
     "draft.source": "Source",
     "draft.sourcesNote":
@@ -455,8 +452,7 @@ const STRINGS = {
     "try.loading": "Chargement du moteur",
     "try.text": "Un texte pour essayer le groupe",
     "try.caught": "reconnus",
-    "try.note":
-      "piighost tourne dans cet onglet. Les sources sont aplaties par le registre, le texte reste sur votre machine.",
+    "try.note": "piighost tourne dans cet onglet. Votre texte reste chez vous.",
     "contribute.lede":
       "Proposez un motif, un groupe ou une configuration. Vérifié ici, fusionné par pull request.",
     "contribute.what": "Que proposez-vous ?",

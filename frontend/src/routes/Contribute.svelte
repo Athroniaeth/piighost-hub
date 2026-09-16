@@ -10,7 +10,6 @@
   import PatternFields from "../components/PatternFields.svelte";
   import RefPicker from "../components/RefPicker.svelte";
   import Button from "../components/ui/Button.svelte";
-  import CodeBlock from "../components/ui/CodeBlock.svelte";
   import Region from "../components/ui/Region.svelte";
   import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
@@ -257,7 +256,7 @@
       step={3}
       done={Boolean(result?.ok)}
       title={t("contribute.findings")}
-      bodyClass="gap-3 overflow-y-auto"
+      bodyClass="gap-3 overflow-x-hidden overflow-y-auto"
     >
       <Button onclick={check} disabled={busy || !ready}>
         {#if busy}<Loader class="animate-spin" />{/if}
@@ -313,15 +312,6 @@
         {/if}
       {:else}
         <p class="text-sm text-muted-foreground">{t("contribute.empty")}</p>
-      {/if}
-
-      {#if body.trim() !== ""}
-        <details>
-          <summary class="cursor-pointer text-xs text-muted-foreground">
-            {t("draft.preview")}
-          </summary>
-          <CodeBlock code={body} language="toml" class="mt-2 max-h-64" />
-        </details>
       {/if}
     </Region>
   </div>

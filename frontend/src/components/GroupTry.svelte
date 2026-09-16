@@ -4,6 +4,8 @@
   import Button from "./ui/Button.svelte";
   import EntityHighlight from "./EntityHighlight.svelte";
   import EntityRow from "./EntityRow.svelte";
+  import SamplePicker from "./SamplePicker.svelte";
+  import type { SampleOut } from "../generated/api";
   import type { GroupDraft } from "../lib/group-draft";
   import { ApiError, api } from "../lib/api";
   import { assignLabelColors } from "../lib/labels";
@@ -32,6 +34,13 @@
   let busy = $state(false);
 
   const ready = $derived(draft.sources.some((source) => source.ref !== ""));
+
+  /** The registry's own annotated texts, rather than one anybody must invent. */
+  function pick(sample: SampleOut) {
+    text = sample.text.trim();
+    hits = null;
+    error = null;
+  }
   const colors = $derived(
     assignLabelColors((hits ?? []).map((hit) => hit.label)),
   );
@@ -60,25 +69,32 @@
   }
 </script>
 
-<section class="flex min-h-0 flex-col gap-2">
+<section class="flex min-w-0 min-h-0 flex-col gap-2 border-t pt-3">
+  <!-- One row: the column is narrow, and a heading, a picker and a button on
+       three lines push the text itself off the screen. -->
   <div class="flex items-center gap-2">
-    <h3 class="text-sm font-medium">{t("try.title")}</h3>
-    <Button
-      variant="outline"
-      size="sm"
-      class="ms-auto"
-      disabled={busy || !ready}
-      onclick={go}
-    >
-      {#if busy}<Loader class="animate-spin" />{:else}<Play />{/if}
-      {busy && !engine.ready ? t("try.loading") : t("try.go")}
-    </Button>
+    <h3 class="shrink-0 text-sm font-medium">{t("try.title")}</h3>
+    <div class="ms-auto flex min-w-0 items-center gap-2">
+      <SamplePicker onpick={pick} disabled={busy} />
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={busy || !ready}
+        onclick={go}
+      >
+        {#if busy}<Loader class="animate-spin" />{:else}<Play />{/if}
+        {busy && !engine.ready ? t("try.loading") : t("try.go")}
+      </Button>
+    </div>
   </div>
 
-  <p class="text-xs text-muted-foreground">{t("try.note")}</p>
-
   {#if hits}
-    <div class="rounded-lg border bg-muted/30 p-3 text-sm">
+    <!-- An API key has no space in it, so `pre-wrap` alone lets one line push
+         the whole column sideways. This breaks inside a word and keeps the
+         overflow here rather than on the page. -->
+    <div
+      class="max-h-56 overflow-auto rounded-lg border bg-muted/30 p-3 text-sm [&_p]:break-all"
+    >
       <EntityHighlight
         {text}
         hits={hits.map((hit) => ({
@@ -114,4 +130,6 @@
   {/if}
 
   {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+
+  <p class="text-xs text-muted-foreground">{t("try.note")}</p>
 </section>
