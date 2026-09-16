@@ -22,7 +22,7 @@ from litestar import Request, Response, get
 from litestar.datastructures import State
 
 from backend.hub.registry import Registry
-from backend.hub.routes import STATE_KEY
+from backend.hub.routes import STATE_KEY, origin_of
 
 XML_MEDIA_TYPE = "application/xml"
 TEXT_MEDIA_TYPE = "text/plain"
@@ -44,19 +44,6 @@ STATIC_PATHS = (
 CACHE = "public, max-age=3600"
 
 
-def _origin(request: Request) -> str:
-    """The public origin, honouring the proxy headers nginx sets.
-
-    Taken from the request rather than from configuration so a preview
-    deployment, a local run and production each advertise themselves and not
-    each other.
-    """
-    url = request.url
-    scheme = request.headers.get("x-forwarded-proto", url.scheme)
-    host = request.headers.get("host", url.netloc)
-    return f"{scheme}://{host}"
-
-
 @get(
     "/robots.txt",
     name="hub:robots",
@@ -75,7 +62,7 @@ async def robots(request: Request) -> Response[str]:
         "Allow: /\n"
         "Disallow: /api/\n"
         "Disallow: /schema\n"
-        f"\nSitemap: {_origin(request)}/sitemap.xml\n"
+        f"\nSitemap: {origin_of(request)}/sitemap.xml\n"
     )
     return Response(body, media_type=TEXT_MEDIA_TYPE, headers={"Cache-Control": CACHE})
 
@@ -94,7 +81,7 @@ async def sitemap(request: Request, state: State) -> Response[str]:
     to no benefit: the head page links to each of them.
     """
     registry: Registry = getattr(state, STATE_KEY)
-    origin = _origin(request)
+    origin = origin_of(request)
     today = datetime.now(UTC).date().isoformat()
 
     entries = [f"<url><loc>{origin}{path}</loc></url>" for path in STATIC_PATHS]

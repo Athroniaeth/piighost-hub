@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Annotated, Any, Literal
 
 import msgspec
-from litestar import Controller, Litestar, Response, get
+from litestar import Controller, Litestar, Request, Response, get
 from litestar.datastructures import State
 from litestar.params import FromPath, QueryParameter
 from litestar.status_codes import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY
@@ -602,14 +602,22 @@ class HubController(Controller):
     async def snippets_for(
         self,
         state: State,
+        request: Request,
         namespace: FromPath[str],
         name: FromPath[str],
         selector: FromPath[str],
     ) -> SnippetsOut:
         """Ready-to-paste ways to use this reference, one per target."""
-        snapshot = _snapshot(registry_of(state), _ref(namespace, name, selector))
+        registry = registry_of(state)
+        snapshot = _snapshot(registry, _ref(namespace, name, selector))
         return SnippetsOut(
-            ref=snapshot.ref, items=snippets(snapshot.ref, snapshot.kind)
+            ref=snapshot.ref,
+            items=snippets(
+                snapshot.ref,
+                snapshot.kind,
+                origin=origin_of(request),
+                regex_only=_is_regex_only(registry, snapshot),
+            ),
         )
 
     @get("/diff/{namespace:str}/{name:str}", name="hub:diff")
@@ -691,6 +699,38 @@ def _snapshot(registry: Registry, ref: Ref) -> Snapshot:
         return registry.resolve(ref)
     except ResolutionError as exc:
         raise NotFoundError(str(exc)) from exc
+
+
+def origin_of(request: Request) -> str:
+    """The public origin, honouring the proxy headers nginx sets.
+
+    Taken from the request rather than from configuration so a preview
+    deployment, a local run and production each advertise themselves and not
+    each other. Shared with the usage snippets, which have to hand out a URL
+    someone can paste into a shell.
+    """
+    url = request.url
+    scheme = request.headers.get("x-forwarded-proto", url.scheme)
+    host = request.headers.get("host", url.netloc)
+    return f"{scheme}://{host}"
+
+
+def _is_regex_only(registry: Registry, snapshot: Snapshot) -> bool:
+    """Whether the rendered detector is a plain regex one.
+
+    Every pattern and every group is. A config usually is too, but three carry
+    a model detector, and there the patterns are only half the pipeline: a
+    snippet that pulled them out would quietly detect less than the object
+    promises.
+    """
+    if snapshot.kind != "config":
+        return True
+    try:
+        detector = render_pipeline(resolve_config(registry, snapshot))["detector"]
+    except ResolutionError:
+        return False
+    blocks = detector["detectors"] if detector["type"] == "composite" else [detector]
+    return all(block["type"] == "regex" for block in blocks)
 
 
 def _cache_headers(selector: str, snapshot: Snapshot) -> dict[str, str]:

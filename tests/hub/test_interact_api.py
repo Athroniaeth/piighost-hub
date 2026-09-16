@@ -218,14 +218,45 @@ class TestExportsAndBadges:
         assert response.status_code == 400
 
     async def test_snippets_and_badge(self, client: AsyncTestClient[Litestar]) -> None:
+        # base carries a model detector, so its patterns are only half the
+        # pipeline and the snippet must build the whole thing.
         snippets = (
             await client.get("/api/v1/refs/piighost/base/latest/snippets")
         ).json()
         assert set(snippets["items"]) == {"cli", "curl", "docker", "python"}
-        assert "load_pipeline" in snippets["items"]["python"]
+        assert "PipelineConfig" in snippets["items"]["python"]
+        assert "RegexDetector" not in snippets["items"]["python"]
         badge = (await client.get("/api/v1/badge/piighost/all")).json()
         assert badge["schemaVersion"] == 1
         assert badge["message"].startswith("piighost/all:")
+
+    async def test_a_group_is_used_through_its_detector(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """The registry hands out regexes, so the example uses the detector."""
+        items = (await client.get("/api/v1/refs/piighost/all/latest/snippets")).json()[
+            "items"
+        ]
+        assert "RegexDetector" in items["python"]
+        assert 'config["detector"]["patterns"]' in items["python"]
+        assert "?part=detector" in items["python"]
+        # Absolute, because a snippet is meant to be pasted into a shell.
+        assert "http://" in items["curl"]
+        # The published image runs an older piighost that refuses a group's
+        # file, so no docker recipe is offered for one.
+        assert "docker" not in items
+
+    async def test_no_snippet_pretends_the_library_resolves_a_hub_ref(
+        self, client: AsyncTestClient[Litestar]
+    ) -> None:
+        """piighost 1.7 has no hub client: no `hub:` argument, no `hub` command."""
+        for key in ("piighost/all", "piighost/base", "piighost/child"):
+            items = (await client.get(f"/api/v1/refs/{key}/latest/snippets")).json()[
+                "items"
+            ]
+            for target, body in items.items():
+                assert "piighost hub" not in body, (key, target)
+                assert '"hub:' not in body, (key, target)
 
 
 class TestScoreAndDiff:
