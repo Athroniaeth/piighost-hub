@@ -53,12 +53,17 @@
   let form = $state<"flattened" | "referenced">("flattened");
   let memory = $state<"" | "in_memory" | "redis" | "sqlalchemy">("");
   let snippet = $state("cli");
+  // A config chooses a linker, an anonymizer, sometimes a guard and a memory,
+  // which are decisions about the application rather than about detection.
+  // Taking the detector alone is how you keep the registry's half.
+  let part = $state<"pipeline" | "detector">("pipeline");
 
   const pipeline = $derived(
     api
       .pipeline(ref, {
-        memory: memory || undefined,
+        memory: part === "detector" ? undefined : memory || undefined,
         keepRefs: form === "referenced",
+        part,
       })
       .catch(
         (caught: unknown) =>
@@ -75,6 +80,10 @@
     { value: "flattened" as const, label: t("detail.flattened") },
     { value: "referenced" as const, label: t("detail.referenced") },
   ]);
+  const partOptions = $derived([
+    { value: "pipeline" as const, label: t("detail.wholePipeline") },
+    { value: "detector" as const, label: t("detail.detectorOnly") },
+  ]);
 
   async function saveExport(format: "json" | "presidio" | "spacy") {
     const body = await api.exported(ref, format);
@@ -85,12 +94,13 @@
   }
 
   async function savePipeline() {
-    download(`${name}-pipeline.toml`, await pipeline, "application/toml");
+    const suffix = part === "detector" ? "detector" : "pipeline";
+    download(`${name}-${suffix}.toml`, await pipeline, "application/toml");
     // Which rendering people take away is the question `keep_refs` exists to
     // answer: a flattened file works offline, a referenced one needs the hub.
     track({
       name: "pipeline_copied",
-      props: { form, memory: memory || "none" },
+      props: { form, memory: memory || "none", part },
     });
   }
 
@@ -456,16 +466,29 @@
               <div
                 class="no-print flex flex-wrap items-center gap-3 text-xs text-muted-foreground"
               >
-                <label class="flex items-center gap-2">
-                  {t("detail.memory")}
-                  <select bind:value={memory} class="{FIELD} w-auto">
-                    <option value="">{t("detail.none")}</option>
-                    <option value="in_memory">in_memory</option>
-                    <option value="redis">redis</option>
-                    <option value="sqlalchemy">sqlalchemy</option>
-                  </select>
-                </label>
-                <Button variant="outline" size="sm" onclick={savePipeline}
+                <Segmented
+                  options={partOptions}
+                  bind:value={part}
+                  label={t("detail.part")}
+                />
+                {#if part === "pipeline"}
+                  <label class="flex items-center gap-2">
+                    {t("detail.memory")}
+                    <select bind:value={memory} class="{FIELD} w-auto">
+                      <option value="">{t("detail.none")}</option>
+                      <option value="in_memory">in_memory</option>
+                      <option value="redis">redis</option>
+                      <option value="sqlalchemy">sqlalchemy</option>
+                    </select>
+                  </label>
+                {:else}
+                  <p class="max-w-md">{t("detail.detectorNote")}</p>
+                {/if}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="ms-auto"
+                  onclick={savePipeline}
                   ><Download />{t("detail.download")}</Button
                 >
               </div>

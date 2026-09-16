@@ -2423,6 +2423,24 @@
               "description": "Keep hub: references instead of inlining regexes.",
               "type": "boolean"
             }
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "`detector` keeps the detector alone, without the stages the config chose on your behalf.",
+            "in": "query",
+            "name": "part",
+            "required": false,
+            "schema": {
+              "default": "pipeline",
+              "description": "`detector` keeps the detector alone, without the stages the config chose on your behalf.",
+              "enum": [
+                "pipeline",
+                "detector"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {

@@ -143,6 +143,22 @@ def _render_detector(
     return detector
 
 
+def detector_only(data: dict[str, Any]) -> dict[str, Any]:
+    """Keep the detector and drop what the config decided on your behalf.
+
+    A config carries a linker, an anonymizer, sometimes a guard and a memory:
+    choices about what happens once something has been found, which belong to
+    the application and not to the registry. Someone who wants the registry's
+    detection inside a pipeline they already have wants this half and none of
+    the rest, and pasting it in is easier than deleting four sections.
+
+    The result is a fragment, not a pipeline, so it is not offered to
+    ``validate_pipeline`` — piighost would rightly refuse a config with no
+    anonymizer.
+    """
+    return {"detector": data["detector"]}
+
+
 def _append_memory(data: dict[str, Any], memory: str | None) -> None:
     if memory is None:
         return

@@ -29,7 +29,10 @@ export type AnalyticsEvent =
       };
     }
   | { name: "chat_sent"; props: { turns: number; tokens: number } }
-  | { name: "pipeline_copied"; props: { form: string; memory: string } }
+  | {
+      name: "pipeline_copied";
+      props: { form: string; memory: string; part: string };
+    }
   | { name: "labels_exported"; props: { format: string } }
   | {
       name: "submission_checked";

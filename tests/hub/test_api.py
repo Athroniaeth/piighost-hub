@@ -3,6 +3,7 @@ import tomllib
 from litestar import Litestar
 from litestar.testing import AsyncTestClient
 
+from backend.hub.registry import Registry
 from backend.hub.routes import IMMUTABLE, REVALIDATE
 
 
@@ -118,6 +119,23 @@ class TestCommits:
         assert tomllib.loads(refs.text)["detector"]["catalogs"][0].startswith(
             "hub:piighost/all:"
         )
+
+    async def test_the_detector_can_be_taken_without_the_stages(
+        self, client: AsyncTestClient[Litestar], registry: Registry
+    ) -> None:
+        """What a config decides after detection belongs to the application."""
+        response = await client.get(
+            "/api/v1/refs/piighost/child/latest/pipeline.toml",
+            params={"part": "detector", "memory": "redis"},
+        )
+        assert response.status_code == 200
+        ref = registry.heads["piighost/child"].ref
+        assert response.text.startswith(f"# {ref}\n")
+        data = tomllib.loads(response.text)
+        # The ref rides in a comment: a fragment pasted into someone else's
+        # config must not bring a name that overwrites theirs.
+        assert set(data) == {"detector"}
+        assert list(data["detector"]["patterns"]) == ["FR_SIRET", "EMAIL"]
 
 
 class TestStats:

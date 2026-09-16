@@ -134,11 +134,16 @@ export const api = {
     options: {
       memory?: "in_memory" | "redis" | "sqlalchemy";
       keepRefs?: boolean;
+      part?: "pipeline" | "detector";
     } = {},
   ): Promise<string> {
     const result = await apiV1RefsNamespaceSelectorPipelineTomlPipelineToml({
       path: ref,
-      query: { memory: options.memory, keep_refs: options.keepRefs },
+      query: {
+        memory: options.memory,
+        keep_refs: options.keepRefs,
+        part: options.part,
+      },
       parseAs: "text",
     });
     return unwrap(result as unknown as Envelope<string>);

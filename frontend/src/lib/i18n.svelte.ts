@@ -76,6 +76,11 @@ const STRINGS = {
     "detail.referenced": "References",
     "detail.pullsWindow": "Over the last thirty days",
     "detail.memory": "Memory",
+    "detail.part": "Scope",
+    "detail.wholePipeline": "Whole pipeline",
+    "detail.detectorOnly": "Detector only",
+    "detail.detectorNote":
+      "The detector alone, to paste into a pipeline you already have. The linker, the anonymizer and the memory stay yours.",
     "detail.none": "none",
     "detail.use": "Use it",
     "detail.export": "Export",
@@ -327,6 +332,11 @@ const STRINGS = {
     "detail.referenced": "Références",
     "detail.pullsWindow": "Sur les trente derniers jours",
     "detail.memory": "Mémoire",
+    "detail.part": "Portée",
+    "detail.wholePipeline": "Pipeline complet",
+    "detail.detectorOnly": "Détecteur seul",
+    "detail.detectorNote":
+      "Le détecteur seul, à coller dans un pipeline que vous avez déjà. Le linker, l'anonymiseur et la mémoire restent les vôtres.",
     "detail.none": "aucune",
     "detail.use": "L'utiliser",
     "detail.export": "Exporter",

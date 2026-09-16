@@ -24,7 +24,12 @@ from backend.hub.evaluate import diff_commits
 from backend.hub.exports import FORMATS, export, snippets
 from backend.hub.refs import Ref, is_commit, parse_ref
 from backend.hub.registry import REGISTRY_DIR_ENV_VAR, Registry
-from backend.hub.render import render_labels_pipeline, render_pipeline, to_toml
+from backend.hub.render import (
+    detector_only,
+    render_labels_pipeline,
+    render_pipeline,
+    to_toml,
+)
 from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.samples import Sample
 from backend.hub.search import Index
@@ -418,6 +423,15 @@ class HubController(Controller):
                 description="Keep hub: references instead of inlining regexes."
             ),
         ] = False,
+        part: Annotated[
+            Literal["pipeline", "detector"],
+            QueryParameter(
+                description=(
+                    "`detector` keeps the detector alone, without the stages "
+                    "the config chose on your behalf."
+                )
+            ),
+        ] = "pipeline",
     ) -> Response[str]:
         registry = registry_of(state)
         snapshot = _snapshot(registry, _ref(namespace, name, selector))
@@ -436,8 +450,15 @@ class HubController(Controller):
                 )
         except ResolutionError as exc:
             raise UnprocessableError(str(exc)) from exc
+        if part == "detector":
+            # The ref moves into a comment: a fragment pasted into someone
+            # else's config must not bring a `name` that overwrites theirs,
+            # and where it came from is worth keeping.
+            body = f"# {snapshot.ref}\n{to_toml(detector_only(data))}"
+        else:
+            body = to_toml(data)
         return Response(
-            to_toml(data),
+            body,
             media_type=TOML_MEDIA_TYPE,
             headers=_cache_headers(selector, snapshot),
         )
