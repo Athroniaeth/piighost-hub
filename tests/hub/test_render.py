@@ -6,6 +6,7 @@ from backend.hub.errors import ResolutionError
 from backend.hub.refs import parse_ref
 from backend.hub.registry import Registry
 from backend.hub.render import (
+    _fold,
     render_labels_pipeline,
     render_pipeline,
     to_toml,
@@ -39,6 +40,51 @@ class TestRender:
         ]
         assert "name" not in data["detector"]["detectors"][1]
         validate_pipeline(data)
+
+    def test_neighbouring_regex_detectors_fold_into_one(self) -> None:
+        # Three blocks reading `type = 'regex'` and nothing else were three
+        # ways of writing one. Order is what has to survive the fold, since
+        # that is what decides an overlap.
+        folded = _fold(
+            [
+                {"type": "regex", "patterns": {"FR_SIRET": "a"}},
+                {"type": "regex", "patterns": {"EMAIL": "b", "URL": "c"}},
+            ]
+        )
+        assert folded == [
+            {"type": "regex", "patterns": {"FR_SIRET": "a", "EMAIL": "b", "URL": "c"}}
+        ]
+
+    def test_a_detector_of_another_kind_keeps_its_neighbours_apart(self) -> None:
+        folded = _fold(
+            [
+                {"type": "regex", "patterns": {"EMAIL": "a"}},
+                {"type": "gliner2", "labels": ["PERSON"]},
+                {"type": "regex", "patterns": {"URL": "c"}},
+            ]
+        )
+        assert [d["type"] for d in folded] == ["regex", "gliner2", "regex"]
+
+    def test_a_label_carried_twice_with_two_shapes_blocks_the_fold(self) -> None:
+        # One mapping cannot hold both, and the second would silently win.
+        folded = _fold(
+            [
+                {"type": "regex", "patterns": {"EMAIL": "a"}},
+                {"type": "regex", "patterns": {"EMAIL": "b"}},
+            ]
+        )
+        assert [d["patterns"] for d in folded] == [{"EMAIL": "a"}, {"EMAIL": "b"}]
+
+    def test_catalogs_fold_by_concatenation(self) -> None:
+        folded = _fold(
+            [
+                {"type": "regex", "catalogs": ["hub:piighost/fr"]},
+                {"type": "regex", "catalogs": ["hub:piighost/contact"]},
+            ]
+        )
+        assert folded == [
+            {"type": "regex", "catalogs": ["hub:piighost/fr", "hub:piighost/contact"]}
+        ]
 
     def test_keep_refs_writes_hub_catalogs(self, registry: Registry) -> None:
         data = render_pipeline(config(registry, "child"), keep_refs=True)

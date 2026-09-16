@@ -37,10 +37,12 @@ def render_pipeline(
     resolved: ResolvedConfig, *, keep_refs: bool = False, memory: str | None = None
 ) -> dict[str, Any]:
     """Return the piighost config of a resolved config, as a plain mapping."""
-    detectors = [
-        _render_detector(d.spec, d.labels, d.groups, keep_refs)
-        for d in resolved.detectors
-    ]
+    detectors = _fold(
+        [
+            _render_detector(d.spec, d.labels, d.groups, keep_refs)
+            for d in resolved.detectors
+        ]
+    )
     if not detectors:
         raise ResolutionError(f"{resolved.ref} has no detector left to render")
     data: dict[str, Any] = {"name": resolved.ref}
@@ -69,6 +71,60 @@ def render_labels_pipeline(
     }
     _append_memory(data, memory)
     return data
+
+
+# What a detector carries, as opposed to how it is configured.
+_CONTENT = ("patterns", "catalogs")
+
+
+def _fold(detectors: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Merge neighbouring detectors that differ only by what they carry.
+
+    A config names several regex detectors because that is how its sources are
+    kept apart in the registry: one per group, so a child can exclude one by
+    name and the composition check can replay them in order. None of that
+    survives rendering — the flattened form keeps the type and the patterns and
+    nothing else — so three ``[[detector.detectors]]`` blocks reading
+    ``type = 'regex'`` were three ways of writing one.
+
+    Merging is safe because a regex detector emits one detection per pattern in
+    the order its mapping was built, and a composite concatenates its
+    detectors' detections in order, so the concatenation of the three is the
+    single mapping built in the same order. Verified over the registry: every
+    config, every pattern example and every sample, identical spans and labels.
+
+    Two limits keep that true. Only *neighbours* merge, because a detector of
+    another kind between two regex ones is a step in the order. And a label
+    carried twice with two different regexes blocks the merge, since one
+    mapping cannot hold both and the second would silently win.
+    """
+    folded: list[dict[str, Any]] = []
+    for detector in detectors:
+        previous = folded[-1] if folded else None
+        if previous is None or not _mergeable(previous, detector):
+            folded.append(dict(detector))
+            continue
+        for key in _CONTENT:
+            carried = detector.get(key)
+            if carried is None:
+                continue
+            if isinstance(carried, dict):
+                previous[key] = {**previous.get(key, {}), **carried}
+            else:
+                previous[key] = [*previous.get(key, []), *carried]
+    return folded
+
+
+def _mergeable(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    """Same configuration, and no label claimed twice with two shapes."""
+    if _settings(left) != _settings(right):
+        return False
+    here, there = left.get("patterns", {}), right.get("patterns", {})
+    return all(here.get(label, regex) == regex for label, regex in there.items())
+
+
+def _settings(detector: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in detector.items() if k not in _CONTENT}
 
 
 def _render_detector(
