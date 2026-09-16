@@ -1,5 +1,7 @@
 # API HTTP du hub
 
+*[English version](en/api.md).*
+
 Lecture seule, publique, sous `/api/v1`. C'est ce que la future CLI `piighost
 hub` et le site consomment. Les routes ne portent pas la clé d'API du template :
 elles ne servent que ce que le registre publie, et un tiers doit pouvoir résoudre

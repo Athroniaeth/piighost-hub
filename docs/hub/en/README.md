@@ -6,16 +6,22 @@ hub is for: the registry knows twenty-seven countries, and the people who can
 write a pattern for a Korean resident registration number are not, on the whole,
 reading French.
 
-Two documents are translated here, the two a contributor needs:
+All seven are translated now:
 
 - [manifest.md](manifest.md), what goes in a pattern, a group, a configuration,
   a tag file and a sample.
 - [resolution.md](resolution.md), what a reference names, how a commit is
   computed, how composition works and which check enforces what.
+- [api.md](api.md), the HTTP surface, its caching and the limits of the
+  playground.
+- [site.md](site.md), the pages, the charter and the choices that show.
+- [analytics.md](analytics.md), what is measured, what is deliberately not, and
+  how the two sides report.
+- [coverage.md](coverage.md), what the registry is measured against and what
+  that measurement cannot say.
+- [library-support.md](library-support.md), the `hub:` contract piighost has yet
+  to implement.
 
-Four remain in French only, because they describe the hub to whoever operates or
-extends it rather than to whoever contributes to it: [api.md](../api.md) for the
-HTTP surface, [site.md](../site.md) for the pages and their components,
-[library-support.md](../library-support.md) for the `hub:` contract piighost has
-yet to implement, and [coverage.md](../coverage.md) for how the registry is
-measured against the published inventories.
+The French originals are the ones next to this directory. When the two disagree,
+the French is the one the maintainers edit first; say so in an issue rather than
+guessing which is right.

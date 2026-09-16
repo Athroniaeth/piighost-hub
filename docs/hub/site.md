@@ -1,17 +1,20 @@
 # Le site
 
+*[English version](en/site.md).*
+
 Une application Svelte servie par nginx, qui parle à l'API sous `/api/v1` en
-origine unique. Sept routes, aucun état côté serveur, aucun compte.
+origine unique. Huit routes, aucun état côté serveur, aucun compte.
 
 | Route | Ce qu'on y fait |
 |---|---|
 | `/` | le catalogue : recherche, tri, liste d'objets, facettes à cocher |
-| `/r/:ns/:name[/:selector]` | une fiche : historique des commits à gauche, onglets Contenu, Fichier de pipeline, L'utiliser, Couverture à droite |
+| `/r/:ns/:name[/:selector]` | une fiche : historique des commits à gauche, onglets Contenu, Fichier de pipeline, L'utiliser à droite |
 | `/playground` | lancer un objet ou un regex candidat sur un texte |
 | `/playground/compare` | deux à quatre objets sur le même texte |
 | `/playground/chat` | l'aller-retour complet, avec un assistant scripté |
-| `/contribute` | vérifier un manifeste et ouvrir une pull request |
+| `/contribute` | rédiger un motif, un groupe ou une configuration, le vérifier, ouvrir une pull request |
 | `/labels` | les labels que le registre peut émettre, depuis le pied de page |
+| `/stats` | comment le registre est utilisé, depuis des compteurs agrégés à l'heure |
 
 ## Structure, d'après le LangSmith Hub
 
@@ -26,9 +29,11 @@ les visiteurs de `piighost` connaissent déjà les gestes.
 - **Un titre centré et une recherche en pilule.** La page d'accueil est le
   catalogue : un titre, une ligne, un champ de recherche large, et tout de suite
   la liste.
-- **Des chips de tri.** Pertinence, mis à jour récemment, les plus utilisés,
-  couverture la plus large, nom. Sans requête, l'ordre par défaut est la date de
-  mise à jour, la pertinence étant plate.
+- **Des chips de tri.** Couverture la plus large, pertinence, mis à jour
+  récemment, les plus utilisés, nom. Sans requête, l'ordre par défaut est la
+  couverture : quelqu'un qui arrive sans rien taper cherche ce qui couvre le
+  plus, pas ce qu'un mainteneur a touché en dernier. Dès qu'une requête est
+  tapée, la pertinence reprend la main.
 - **Une liste verticale, pas une grille.** Chaque ligne porte ses pastilles en
   tête (le type, puis les tags), la référence en titre, la description sur deux
   lignes, puis une ligne de métadonnées : date de mise à jour, nombre de labels,
@@ -41,7 +46,7 @@ les visiteurs de `piighost` connaissent déjà les gestes.
 - **Une fiche en deux colonnes.** À gauche, l'historique des commits, chaque
   carte portant son hash, ses tags pointeurs et sa date. À droite, le commit
   affiché avec ses pointeurs, puis des onglets : Contenu, Fichier de pipeline,
-  L'utiliser, Couverture. La barre de titre porte la référence, les pastilles,
+  L'utiliser. La barre de titre porte la référence, les pastilles,
   et trois actions : copier la référence, télécharger, essayer.
 
 ## Charte
@@ -59,6 +64,14 @@ laissant aucune autre origine. Les icônes viennent de lucide, une par import.
 la page de contribution sont une même carte en trois colonnes numérotées,
 Configurer, Texte, Résultats, avec un en-tête de région identique. C'est le
 composant `Region` qui porte cette grammaire, et les quatre pages l'importent.
+
+**Contribuer se fait par formulaire.** Un motif, un groupe et une configuration
+ont chacun le leur ; la configuration retombe sur l'éditeur TOML quand elle
+porte ce que le formulaire ne sait pas réécrire, un détecteur à modèle ou un
+étage hors des trois standards, en nommant la pièce en cause. Chaque exemple
+d'un motif porte son verdict en direct, rendu par le moteur Python qui
+l'exécutera, parce qu'un navigateur ne peut pas répondre honnêtement à cette
+question.
 
 **Les couleurs d'entités sont celles du studio.** Une palette de quinze teintes
 attribuée par ordre d'apparition, `PERSON` sur le primaire, portée
@@ -93,7 +106,7 @@ construit ne contient aucun attribut `style`.
 feuille bascule en noir sur blanc. Un DPO lit une fiche de couverture sur
 papier, pas un fichier TOML.
 
-**Un routeur en un fichier.** Sept routes, pas de layouts imbriqués : une
+**Un routeur en un fichier.** Huit routes, pas de layouts imbriqués : une
 dépendance de routage coûterait plus en indirection qu'elle n'apporte. nginx
 sert déjà `index.html` en repli, ce dont un routeur d'historique a besoin. Les
 liens restent de vrais `<a href>`, donc le clic du milieu et l'ouverture dans un

@@ -1,5 +1,7 @@
 # Mesurer l'usage du hub
 
+*[English version](en/analytics.md).*
+
 Deux choses utilisent ce hub et une seule a un navigateur. Le site est
 instrumenté depuis la page, où OpenPanel voit un appareil et une session.
 `piighost hub pull` est une ligne de commande : rien n'y charge de script, donc

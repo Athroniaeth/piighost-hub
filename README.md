@@ -183,7 +183,7 @@ just dev                                         # le site sur http://127.0.0.1:
 | [Le site](docs/hub/site.md) | les pages et les choix qui se voient |
 | [Ce qui revient à piighost](docs/hub/library-support.md) | le contrat pour le support `hub:` dans la bibliothèque |
 | [Mesurer l'usage](docs/hub/analytics.md) | les deux clients OpenPanel, ce qui est envoyé et ce qui ne l'est pas |
-| [In English](docs/hub/en/) | les deux documents dont un contributeur a besoin, traduits |
+| [In English](docs/hub/en/) | les sept documents, traduits |
 
 Deux choses valent d'être sues avant de s'en servir. Les détecteurs à modèle ne
 tournent pas dans le bac à sable, parce qu'il faudrait charger des poids à chaque

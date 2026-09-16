@@ -1,5 +1,7 @@
 # Ce qui revient à `piighost`
 
+*[English version](en/library-support.md).*
+
 Le hub publie, vérifie et sert. Consommer une référence depuis un déploiement
 revient à la bibliothèque, et ce travail vit dans son dépôt, pas ici. Ce document
 fixe le contrat pour que les deux côtés puissent avancer séparément.

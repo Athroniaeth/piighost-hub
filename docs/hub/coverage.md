@@ -1,5 +1,7 @@
 # Couverture
 
+*[English version](en/coverage.md).*
+
 Contre quoi ce registre se mesure, et ce que la mesure ne dit pas.
 
 Un registre de motifs écrit par ses auteurs finit par couvrir ce que ses
