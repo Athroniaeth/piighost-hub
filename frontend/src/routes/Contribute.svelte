@@ -2,7 +2,9 @@
   import ExternalLink from "@lucide/svelte/icons/external-link";
   import GitFork from "@lucide/svelte/icons/git-fork";
   import Loader from "@lucide/svelte/icons/loader-circle";
+  import Play from "@lucide/svelte/icons/play";
   import type { SubmissionResult } from "../generated/api";
+  import GroupTry from "../components/GroupTry.svelte";
   import KindIcon from "../components/KindIcon.svelte";
   import GroupFields from "../components/GroupFields.svelte";
   import GroupSources from "../components/GroupSources.svelte";
@@ -10,6 +12,7 @@
   import PatternFields from "../components/PatternFields.svelte";
   import RefPicker from "../components/RefPicker.svelte";
   import Button from "../components/ui/Button.svelte";
+  import Modal from "../components/ui/Modal.svelte";
   import Region from "../components/ui/Region.svelte";
   import { track } from "../lib/analytics";
   import { ApiError, api } from "../lib/api";
@@ -58,6 +61,10 @@
   let error = $state<string | null>(null);
   let busy = $state(false);
   let loading = $state(false);
+  // Two dialogs rather than a third column: the outcome of a check is read once
+  // and dismissed, and trying a group wants the room the column never had.
+  let showingResult = $state(false);
+  let trying = $state(false);
 
   // A form nobody has touched is not a form with eight faults, so the list
   // waits for the first keystroke, in the draft or in the name above it.
@@ -125,6 +132,7 @@
     error = null;
     try {
       result = await api.submit({ kind, namespace, name, manifest: body });
+      showingResult = true;
       track({
         name: "submission_checked",
         props: { kind, ok: result.ok, findings: result.findings.length },
@@ -180,7 +188,7 @@
   </fieldset>
 
   <div
-    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-18rem)] lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)] lg:divide-x lg:divide-y-0"
+    class="grid divide-y overflow-hidden rounded-xl border bg-card shadow-sm lg:h-[calc(100dvh-18rem)] lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:divide-x lg:divide-y-0"
   >
     <Region
       step={1}
@@ -250,69 +258,83 @@
       {:else}
         <GroupSources bind:draft={group} />
       {/if}
-    </Region>
 
-    <Region
-      step={3}
-      done={Boolean(result?.ok)}
-      title={t("contribute.findings")}
-      bodyClass="gap-3 overflow-x-hidden overflow-y-auto"
-    >
-      <Button onclick={check} disabled={busy || !ready}>
-        {#if busy}<Loader class="animate-spin" />{/if}
-        {busy ? t("play.running") : t("contribute.check")}
-      </Button>
-      {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
-
-      {#if showing}
-        <ul class="space-y-1.5">
-          {#each found as problem (problem.field + problem.message)}
-            <li class="rounded-md bg-muted/40 p-2 text-sm">
-              {t(`draft.${problem.message}` as Key)}
-            </li>
-          {/each}
-        </ul>
-      {:else if result}
-        <p class="text-xs text-muted-foreground">
-          {t("contribute.path")}
-          <code class="font-mono text-foreground">{result.path}</code>
-        </p>
-        {#if result.ok}
-          <p class="text-sm font-medium text-primary">{t("contribute.ok")}</p>
-          {#if result.pull_request_url}
-            <Button
-              href={result.pull_request_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="self-start"
-            >
-              {t("contribute.openPr")}
-              <ExternalLink />
-            </Button>
-          {/if}
-        {/if}
-        {#if result.findings.length > 0}
-          <ul class="space-y-1.5">
-            {#each result.findings as finding, index (index)}
-              <li class="rounded-md bg-muted/40 p-2 text-sm">
-                <span
-                  class={cn(
-                    "me-2 font-mono text-xs uppercase",
-                    finding.level === "error"
-                      ? "text-destructive"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  {finding.level}
-                </span>
-                {finding.message}
-              </li>
+      <!-- The foot of the column, where a third one used to be: what is still
+           missing, then the two things to do about it. -->
+      <div class="mt-auto shrink-0 space-y-2 border-t pt-3">
+        {#if showing}
+          <ul class="space-y-1 text-xs text-muted-foreground">
+            {#each found as problem (problem.field + problem.message)}
+              <li>{t(`draft.${problem.message}` as Key)}</li>
             {/each}
           </ul>
         {/if}
-      {:else}
-        <p class="text-sm text-muted-foreground">{t("contribute.empty")}</p>
-      {/if}
+        {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
+        <div class="flex items-center gap-2">
+          {#if kind === "group"}
+            <Button variant="outline" onclick={() => (trying = true)}>
+              <Play />
+              {t("try.title")}
+            </Button>
+          {/if}
+          <Button class="ms-auto" onclick={check} disabled={busy || !ready}>
+            {#if busy}<Loader class="animate-spin" />{/if}
+            {busy ? t("play.running") : t("contribute.check")}
+          </Button>
+        </div>
+      </div>
     </Region>
+
+    <Modal bind:open={showingResult} title={t("contribute.findings")}>
+      {#if result}
+        <div class="flex flex-col gap-3">
+          <p class="text-xs text-muted-foreground">
+            {t("contribute.path")}
+            <code class="font-mono break-all text-foreground"
+              >{result.path}</code
+            >
+          </p>
+          {#if result.ok}
+            <p class="text-sm font-medium text-primary">{t("contribute.ok")}</p>
+            {#if result.pull_request_url}
+              <Button
+                href={result.pull_request_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="self-start"
+              >
+                {t("contribute.openPr")}
+                <ExternalLink />
+              </Button>
+            {/if}
+          {/if}
+          {#if result.findings.length > 0}
+            <ul class="space-y-1.5">
+              {#each result.findings as finding, index (index)}
+                <li class="rounded-md bg-muted/40 p-2 text-sm">
+                  <span
+                    class={cn(
+                      "me-2 font-mono text-xs uppercase",
+                      finding.level === "error"
+                        ? "text-destructive"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {finding.level}
+                  </span>
+                  {finding.message}
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
+      {/if}
+    </Modal>
+
+    {#if kind === "group"}
+      <Modal bind:open={trying} title={t("try.title")} wide>
+        <GroupTry draft={group} />
+      </Modal>
+    {/if}
   </div>
 </div>

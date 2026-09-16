@@ -12,7 +12,7 @@ origine unique. Huit routes, aucun état côté serveur, aucun compte.
 | `/playground` | lancer un objet ou un regex candidat sur un texte |
 | `/playground/compare` | deux à quatre objets sur le même texte |
 | `/playground/chat` | l'aller-retour complet, avec un assistant scripté |
-| `/contribute` | rédiger un motif ou un groupe, le vérifier, ouvrir une pull request |
+| `/contribute` | rédiger un motif ou un groupe en deux colonnes, l'essayer et le vérifier depuis le pied de la seconde |
 | `/labels` | les labels que le registre peut émettre, depuis le pied de page |
 | `/stats` | comment le registre est utilisé, depuis des compteurs agrégés à l'heure |
 
@@ -104,6 +104,14 @@ propre.
 construction, chaque description portant `en` et `fr`. Le sélecteur de langue
 écrit aussi `document.documentElement.lang`, dont un lecteur d'écran tire sa
 voix.
+
+**Deux colonnes, et deux dialogues.** La page en a porté trois : identité,
+contenu, constats. La troisième ne servait qu'à deux moments, lire le résultat
+d'une vérification et essayer un groupe, et elle écrasait les deux autres le
+reste du temps. Ce qui reste manquant s'affiche au pied de la deuxième colonne,
+au-dessus des boutons ; le résultat d'une vérification et l'essai sont des
+`<dialog>` natifs. Le top layer évite au passage le rognage que la carte impose
+à tout ce qui déborde, deux fois appris sur ce projet.
 
 **Un groupe s'essaie sans être publié, et sans envoyer le texte.** Le bouton
 « Lancer ici » aplatit les sources par l'API, parce que décider ce qui arrive

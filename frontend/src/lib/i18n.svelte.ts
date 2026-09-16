@@ -218,7 +218,6 @@ const STRINGS = {
     "contribute.ok": "Every check passed.",
     "contribute.openPr": "Open the pull request",
     "contribute.findings": "Findings",
-    "contribute.empty": "Check to see the findings.",
 
     "stats.title": "Usage",
     "stats.lede": "What the registry is asked for, counted rather than logged.",
@@ -249,6 +248,7 @@ const STRINGS = {
     "common.notFound": "Nothing here",
     "common.notFoundLede": "That page does not exist.",
     "common.back": "Back to the catalogue",
+    "common.close": "Close",
     "common.copy": "Copy",
     "common.copied": "Copied",
 
@@ -468,7 +468,6 @@ const STRINGS = {
     "contribute.ok": "Tous les contrôles passent.",
     "contribute.openPr": "Ouvrir la pull request",
     "contribute.findings": "Constats",
-    "contribute.empty": "Vérifiez pour voir les constats.",
 
     "stats.title": "Usage",
     "stats.lede": "Ce qu'on demande au registre, compté et non journalisé.",
@@ -499,6 +498,7 @@ const STRINGS = {
     "common.notFound": "Rien ici",
     "common.notFoundLede": "Cette page n'existe pas.",
     "common.back": "Retour au catalogue",
+    "common.close": "Fermer",
     "common.copy": "Copier",
     "common.copied": "Copié",
 

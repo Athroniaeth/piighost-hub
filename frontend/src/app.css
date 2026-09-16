@@ -198,3 +198,13 @@
 [popover]:popover-open {
   display: flex;
 }
+
+/* The dialog's width, so a caller picks a size with a class rather than an
+   inline style the CSP would refuse. */
+dialog {
+  --modal-width: 34rem;
+}
+
+dialog.modal-wide {
+  --modal-width: 60rem;
+}

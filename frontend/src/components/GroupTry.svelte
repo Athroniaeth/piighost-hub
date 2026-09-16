@@ -69,12 +69,12 @@
   }
 </script>
 
-<section class="flex min-w-0 min-h-0 flex-col gap-2 border-t pt-3">
+<section class="flex min-h-0 min-w-0 flex-col gap-3">
   <!-- One row: the column is narrow, and a heading, a picker and a button on
        three lines push the text itself off the screen. -->
   <div class="flex items-center gap-2">
-    <h3 class="shrink-0 text-sm font-medium">{t("try.title")}</h3>
-    <div class="ms-auto flex min-w-0 items-center gap-2">
+    <p class="min-w-0 text-xs text-muted-foreground">{t("try.note")}</p>
+    <div class="ms-auto flex shrink-0 items-center gap-2">
       <SamplePicker onpick={pick} disabled={busy} />
       <Button
         variant="outline"
@@ -93,7 +93,7 @@
          the whole column sideways. This breaks inside a word and keeps the
          overflow here rather than on the page. -->
     <div
-      class="max-h-56 overflow-auto rounded-lg border bg-muted/30 p-3 text-sm [&_p]:break-all"
+      class="max-h-72 overflow-auto rounded-lg border bg-muted/30 p-3 text-sm [&_p]:break-all"
     >
       <EntityHighlight
         {text}
@@ -126,10 +126,8 @@
       bind:value={text}
       spellcheck="false"
       aria-label={t("try.text")}
-      class="{TEXTAREA} min-h-24"></textarea>
+      class="{TEXTAREA} min-h-40"></textarea>
   {/if}
 
   {#if error}<p class="text-xs text-destructive">{error}</p>{/if}
-
-  <p class="text-xs text-muted-foreground">{t("try.note")}</p>
 </section>

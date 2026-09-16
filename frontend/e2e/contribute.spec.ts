@@ -42,10 +42,14 @@ test.describe("contributing", () => {
     await expect(page.getByLabel("Caught as expected")).toHaveCount(4);
 
     await page.getByRole("button", { name: "Check" }).click();
-    await expect(page.getByText("Every check passed.")).toBeVisible();
+    // The outcome is a dialog, in the top layer, dismissed once read.
+    const outcome = page.locator("dialog[open]");
+    await expect(outcome.getByText("Every check passed.")).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Open the pull request/ }),
+      outcome.getByRole("link", { name: /Open the pull request/ }),
     ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator("dialog[open]")).toHaveCount(0);
   });
 
   test("says what the engine caught instead, before anything is submitted", async ({
@@ -76,7 +80,10 @@ test.describe("contributing", () => {
 
   test("stays quiet until something is typed", async ({ page }) => {
     await page.goto("/contribute");
-    await expect(page.getByText("Check to see the findings.")).toBeVisible();
+    // Nothing typed, nothing to complain about: the foot of the column is bare.
+    await expect(
+      page.getByText(/lower case words joined by dashes/),
+    ).toHaveCount(0);
     await page.getByLabel("Regex").fill("[a-z]+");
     await expect(
       page.getByText(/lower case words joined by dashes/),
@@ -127,7 +134,10 @@ test.describe("trying a group", () => {
     await page.getByPlaceholder("Filter by name, label or tag").fill("generic");
     await page.getByRole("option").first().click();
 
-    await page.getByRole("button", { name: "Run here" }).click();
+    await page.getByRole("button", { name: "Try it" }).click();
+    const dialog = page.locator("dialog[open]");
+    await expect(dialog).toHaveCount(1);
+    await dialog.getByRole("button", { name: "Run here" }).click();
     await expect(page.getByText(/caught/)).toBeVisible({ timeout: 150_000 });
     await expect(page.getByText("john.doe@example.com").first()).toBeVisible();
 

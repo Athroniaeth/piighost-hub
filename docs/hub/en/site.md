@@ -10,7 +10,7 @@ single origin. Eight routes, no server-side state, no accounts.
 | `/playground` | run an object or a candidate regex over a text |
 | `/playground/compare` | two to four objects over the same text |
 | `/playground/chat` | the whole round trip, with a scripted assistant |
-| `/contribute` | write a pattern or a group, check it, open a pull request |
+| `/contribute` | write a pattern or a group in two columns, try it and check it from the foot of the second |
 | `/labels` | every label the registry can emit, from the footer |
 | `/stats` | how the registry is used, from counters aggregated to the hour |
 
@@ -97,6 +97,14 @@ no state of its own.
 construction, every description carrying `en` and `fr`. The language switch also
 writes `document.documentElement.lang`, which is where a screen reader takes its
 voice from.
+
+**Two columns, and two dialogs.** The page carried three: identity, content,
+findings. The third earned its place at two moments only, reading the outcome of
+a check and trying a group, and crowded the other two the rest of the time. What
+is still missing shows at the foot of the second column, above the buttons; the
+outcome of a check and the try panel are native `<dialog>` elements. The top
+layer also avoids the clipping the card imposes on anything that overflows,
+learned twice on this project.
 
 **A group can be tried without being published, and without sending the text.**
 The "Run here" button flattens the sources through the API, because deciding
