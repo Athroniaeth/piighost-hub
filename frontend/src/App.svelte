@@ -64,6 +64,8 @@
       <Playground />
     {:else if route.name === "compare"}
       <Compare />
+      <!-- Unreachable while CHAT_ENABLED is false; kept so the flag is the
+           only thing to flip when a model detector lands. -->
     {:else if route.name === "chat"}
       <Chat />
     {:else if route.name === "contribute"}

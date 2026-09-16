@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRef, refPath, router } from "./router.svelte";
+import { CHAT_ENABLED, parseRef, refPath, router } from "./router.svelte";
 
 describe("parseRef", () => {
   it("splits a bare key, defaulting the selector to latest", () => {
@@ -40,12 +40,17 @@ describe("refPath", () => {
 
 describe("router", () => {
   it("matches the static routes", () => {
-    router.go("/playground/chat");
-    expect(router.route.name).toBe("chat");
+    router.go("/playground/compare");
+    expect(router.route.name).toBe("compare");
     router.go("/contribute");
     expect(router.route.name).toBe("contribute");
     router.go("/");
     expect(router.route.name).toBe("home");
+  });
+
+  it("does not match the chat route while the demo is off", () => {
+    router.go("/playground/chat");
+    expect(router.route.name).toBe(CHAT_ENABLED ? "chat" : "not-found");
   });
 
   it("captures the parameters of a detail route", () => {

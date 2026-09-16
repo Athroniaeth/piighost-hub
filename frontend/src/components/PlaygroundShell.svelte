@@ -2,17 +2,20 @@
   import type { Snippet } from "svelte";
   import Tabs from "./ui/Tabs.svelte";
   import { t } from "../lib/i18n.svelte";
+  import { CHAT_ENABLED } from "../lib/router.svelte";
 
   /**
    * The studio's workshop shell: full height under the 4rem header, link tabs
-   * between the three modes, then one card divided into numbered regions.
+   * between the modes, then one card divided into numbered regions.
    */
   let { children }: { children: Snippet } = $props();
 
   const tabs = $derived([
     { href: "/playground", label: t("play.run") },
     { href: "/playground/compare", label: t("play.compare") },
-    { href: "/playground/chat", label: t("play.chat") },
+    ...(CHAT_ENABLED
+      ? [{ href: "/playground/chat", label: t("play.chat") }]
+      : []),
   ]);
 </script>
 

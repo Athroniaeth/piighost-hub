@@ -11,6 +11,7 @@
   import Region from "../components/ui/Region.svelte";
   import { ApiError, api } from "../lib/api";
   import { t } from "../lib/i18n.svelte";
+  import { refPath } from "../lib/router.svelte";
   import { assignLabelColors } from "../lib/labels";
   import { EYEBROW, TEXTAREA } from "../lib/ui";
 
@@ -26,6 +27,22 @@
   let busy = $state(false);
 
   const slots = $derived(refs.map((_, index) => index));
+
+  /**
+   * A disputed value and the objects that caught it.
+   *
+   * "Caught by some" said a value was contested without saying by whom, which
+   * is the one thing a comparison is for. The catchers are derived here rather
+   * than asked of the API: the runs already carry every kept hit.
+   */
+  const disputed = $derived(
+    (result?.disputed ?? []).map((value) => ({
+      value,
+      by: (result?.runs ?? [])
+        .filter((run) => run.hits.some((hit) => hit.kept && hit.text === value))
+        .map((run) => run.ref),
+    })),
+  );
   const colors = $derived(
     assignLabelColors(
       result?.runs.flatMap((run) => run.hits.map((hit) => hit.label)) ?? [],
@@ -141,8 +158,20 @@
       </ul>
       <h3 class="{EYEBROW} mt-5 mb-2">{t("compare.disputed")}</h3>
       <ul class="space-y-1.5">
-        {#each result.disputed as value (value)}
-          <li class="rounded-md bg-muted/40 p-2 font-mono text-sm">{value}</li>
+        {#each disputed as entry (entry.value)}
+          <li class="rounded-md bg-muted/40 p-2">
+            <p class="font-mono text-sm break-all">{entry.value}</p>
+            <p class="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
+              {#each entry.by as ref (ref)}
+                <a
+                  href={refPath(ref)}
+                  class="font-mono text-xs text-muted-foreground hover:text-foreground hover:underline"
+                >
+                  {ref}
+                </a>
+              {/each}
+            </p>
+          </li>
         {:else}
           <li class="text-sm text-muted-foreground">{t("play.nothing")}</li>
         {/each}

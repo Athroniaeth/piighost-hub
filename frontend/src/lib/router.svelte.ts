@@ -13,6 +13,15 @@ export type Match = {
   params: Params;
 };
 
+/**
+ * The chat demo is off until a model detector exists. Scripted replies over
+ * regex hits show nothing the run tab does not already show, and the tab
+ * implied a capability the hub has not shipped. The route, the page, its
+ * strings and its analytics event are all kept: turning it back on is this
+ * one flag.
+ */
+export const CHAT_ENABLED: boolean = false;
+
 /** Route patterns, most specific first. `:name` captures one segment. */
 const ROUTES: [string, string][] = [
   ["/", "home"],
@@ -24,7 +33,7 @@ const ROUTES: [string, string][] = [
   ["/contribute", "contribute"],
   ["/r/:namespace/:name", "detail"],
   ["/r/:namespace/:name/:selector", "detail"],
-];
+].filter(([, name]) => CHAT_ENABLED || name !== "chat") as [string, string][];
 
 function matchPath(path: string): Match {
   const parts = path.replace(/\/+$/, "").split("/").filter(Boolean);

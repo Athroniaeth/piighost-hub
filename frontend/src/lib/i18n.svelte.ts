@@ -127,7 +127,7 @@ const STRINGS = {
     "compare.add": "Add",
     "compare.remove": "Remove",
     "compare.agreed": "Caught by all",
-    "compare.disputed": "Caught by some",
+    "compare.disputed": "Caught by ID",
     "compare.go": "Compare",
 
     "chat.lede":
@@ -376,7 +376,7 @@ const STRINGS = {
     "compare.add": "Ajouter",
     "compare.remove": "Retirer",
     "compare.agreed": "Reconnu par tous",
-    "compare.disputed": "Reconnu par certains",
+    "compare.disputed": "Reconnu par ID",
     "compare.go": "Comparer",
 
     "chat.lede":

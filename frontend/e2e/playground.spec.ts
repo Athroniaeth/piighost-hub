@@ -83,7 +83,9 @@ test.describe("the playground", () => {
     await expect(first).toHaveAttribute("title", /configuration/);
   });
 
-  test("shows what the model sees, checked from the start", async ({
+  // The chat demo is off: see CHAT_ENABLED in src/lib/router.svelte.ts. The
+  // page is kept, so this stays skipped rather than deleted.
+  test.skip("shows what the model sees, checked from the start", async ({
     page,
   }) => {
     await page.goto("/playground/chat");

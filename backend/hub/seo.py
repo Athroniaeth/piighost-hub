@@ -34,7 +34,9 @@ STATIC_PATHS = (
     "/stats",
     "/playground",
     "/playground/compare",
-    "/playground/chat",
+    # /playground/chat is off, see CHAT_ENABLED in the frontend router. A
+    # sitemap that advertises a route the app answers with its not-found page
+    # is worse than a sitemap that omits it.
     "/contribute",
 )
 
