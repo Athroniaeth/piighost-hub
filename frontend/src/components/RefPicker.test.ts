@@ -52,15 +52,17 @@ async function open() {
 describe("RefPicker", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("leads with the configurations, then groups, then patterns", async () => {
+  it("leads with the groups, then patterns, then configurations", async () => {
+    // The hub is a registry of regexes: a group is the set someone came to
+    // run, and a piighost config is a different object.
     const list = await open();
     const keys = within(list)
       .getAllByRole("option")
       .map((option) => option.textContent?.trim().split(/\s+/)[0]);
     expect(keys).toEqual([
-      "piighost/dev-secrets",
       "piighost/generic",
       "piighost/email",
+      "piighost/dev-secrets",
     ]);
   });
 
@@ -77,8 +79,8 @@ describe("RefPicker", () => {
   it("names the kind and the coverage in the title, with the whole key", async () => {
     const list = await open();
     const [first] = within(list).getAllByRole("option");
-    expect(first.getAttribute("title")).toContain("piighost/dev-secrets");
-    expect(first.getAttribute("title")).toContain("21");
+    expect(first.getAttribute("title")).toContain("piighost/generic");
+    expect(first.getAttribute("title")).toContain("group");
   });
 
   it("filters on the key, the tags and the labels", async () => {

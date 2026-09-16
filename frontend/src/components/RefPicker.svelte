@@ -13,8 +13,8 @@
    *
    * A native select gave 218 lines of identical grey text, which told a visitor
    * neither what an entry was nor how much it covered. This one leads with the
-   * configurations, since that is what someone came to run, and carries the
-   * kind as a glyph and the coverage as a number.
+   * groups, since a group is the set of regexes someone came to run, and
+   * carries the kind as a glyph and the coverage as a number.
    *
    * The panel is a popover, in the browser's top layer, and that is not a
    * detail. Every screen that uses this picker sits in a card that clips to
@@ -51,10 +51,12 @@
 
   type Kind = "pattern" | "group" | "config";
 
-  // Configurations first: a configuration is a pipeline you can run, a group is
-  // a building block, a pattern is a single shape. Within a kind, the widest
-  // coverage leads, matching the catalogue's own default order.
-  const RANK: Record<string, number> = { config: 0, group: 1, pattern: 2 };
+  // Groups first, then patterns, then configurations. The hub is a registry of
+  // regexes: a group is a set of them you can run as it is, a pattern is one
+  // shape, and a configuration is a piighost pipeline that happens to carry
+  // regexes — a different object, and not what someone came here for. Within
+  // a kind the widest coverage leads.
+  const RANK: Record<string, number> = { group: 0, pattern: 1, config: 2 };
 
   /** Wide enough for the longest key, unless the trigger is wider still. */
   const MIN_WIDTH = 320;

@@ -23,7 +23,9 @@
   const REGEX_PLACEHOLDER = String.raw`\bORD-[0-9]{6}\b`;
 
   let source = $state<"object" | "candidate">("object");
-  let ref = $state(router.query.get("ref") ?? "piighost/regex-default");
+  // The widest group, and the one the first sample is written for: a traceback
+  // pasted into an assistant, where the credentials are the accident.
+  let ref = $state(router.query.get("ref") ?? "piighost/logs");
   let regex = $state("");
   let text = $state("");
   let view = $state<"input" | "anonymized">("input");

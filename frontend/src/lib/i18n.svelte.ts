@@ -20,8 +20,8 @@ const STRINGS = {
 
     "home.title": "piighost hub",
     "home.lede":
-      "Explore and contribute tested de-identification patterns and configurations for piighost.",
-    "home.search": "Search patterns, groups, configurations, labels, tags...",
+      "Explore and contribute tested de-identification regexes: single patterns, and the groups that compose them.",
+    "home.search": "Search patterns, groups, labels, tags...",
     "home.all": "All",
     "home.patterns": "Patterns",
     "home.groups": "Groups",
@@ -63,7 +63,7 @@ const STRINGS = {
 
     "kind.pattern": "pattern",
     "kind.group": "group",
-    "kind.config": "configuration",
+    "kind.config": "piighost config",
 
     "pick.filter": "Filter by name, label or tag",
     "pick.coverage": "labels covered",
@@ -259,7 +259,7 @@ const STRINGS = {
     "common.copyFailed": "Copy failed",
 
     "footer.tagline":
-      "Tested, versioned de-identification configurations for piighost.",
+      "Tested, versioned de-identification regexes for piighost.",
     "footer.links": "Links",
     "footer.docs": "Documentation",
     "footer.mit": "MIT license.",
@@ -275,9 +275,8 @@ const STRINGS = {
 
     "home.title": "piighost hub",
     "home.lede":
-      "Explorez et proposez des motifs et des configurations de dé-identification testés pour piighost.",
-    "home.search":
-      "Chercher un motif, un groupe, une configuration, un label, un tag...",
+      "Explorez et proposez des regex de dé-identification testés : des motifs seuls, et les groupes qui les composent.",
+    "home.search": "Chercher un motif, un groupe, un label, un tag...",
     "home.all": "Tout",
     "home.patterns": "Motifs",
     "home.groups": "Groupes",
@@ -319,7 +318,7 @@ const STRINGS = {
 
     "kind.pattern": "motif",
     "kind.group": "groupe",
-    "kind.config": "configuration",
+    "kind.config": "config piighost",
 
     "pick.filter": "Filtrer par nom, label ou tag",
     "pick.coverage": "labels couverts",
@@ -517,7 +516,7 @@ const STRINGS = {
     "common.copyFailed": "Copie impossible",
 
     "footer.tagline":
-      "Des configurations de dé-identification testées et versionnées pour piighost.",
+      "Des regex de dé-identification testés et versionnés pour piighost.",
     "footer.links": "Liens",
     "footer.docs": "Documentation",
     "footer.mit": "Licence MIT.",

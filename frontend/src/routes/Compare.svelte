@@ -15,9 +15,13 @@
   import { assignLabelColors } from "../lib/labels";
   import { EYEBROW, TEXTAREA } from "../lib/ui";
 
+  // A country pack against the international set, on a French text: the pack
+  // catches the phone and reads the fourteen digits as a SIRET where the
+  // international set can only see a card number. That is the case for groups,
+  // in one screen.
   let refs = $state<string[]>([
-    "piighost/regex-default",
-    "piighost/fr-default",
+    "piighost/international",
+    "piighost/fr-extended",
   ]);
   let text = $state(
     "Patrick Dupont, 06 39 98 12 34, patrick@example.com, SIRET 732 829 320 00074, 75008 Paris.",

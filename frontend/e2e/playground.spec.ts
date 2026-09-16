@@ -94,11 +94,13 @@ test.describe("the playground", () => {
     expect(await listbox.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
   });
 
-  test("leads with the configurations in the picker", async ({ page }) => {
+  test("leads with the groups in the picker", async ({ page }) => {
+    // The hub is a registry of regexes: a group is the set someone came to
+    // run, a piighost config is a different object further down.
     await page.goto("/playground");
     await page.locator("#play-ref").click();
-    const first = page.getByRole("listbox").getByRole("option").first();
-    await expect(first).toHaveAttribute("title", /configuration/);
+    const options = page.getByRole("listbox").getByRole("option");
+    await expect(options.first()).toHaveAttribute("title", /• group •/);
   });
 
   // The chat demo is off: see CHAT_ENABLED in src/lib/router.svelte.ts. The
