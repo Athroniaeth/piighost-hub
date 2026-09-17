@@ -17,7 +17,6 @@ taille de corps s'appliquent comme au reste de l'API. Le contrat exact est
 | `GET /api/v1/refs/{ns}/{name}/{selector}` | un commit : digest, date, contenu figé |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/resolved` | la résolution : labels et provenance pour un motif ou un groupe, détecteurs et étages pour une config, et le pipeline rendu |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/pipeline.toml?memory=&keep_refs=` | le pipeline piighost en TOML, `application/toml` |
-| `GET /api/v1/refs/{ns}/{name}/{selector}/export?format=` | le jeu de labels pour un autre outil : `json`, `presidio`, `spacy` |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/snippets` | des extraits prêts à coller, un par cible |
 | `GET /api/v1/search?q=&kind=&tag=&label=&sort=` | la recherche et les compteurs de facettes du résultat ; `sort` vaut `relevance`, `updated`, `used`, `labels` ou `name` |
 | `GET /api/v1/stats?days=` | l'usage du registre sur une fenêtre, agrégé depuis des compteurs |

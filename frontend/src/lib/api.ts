@@ -17,7 +17,6 @@ import {
   apiV1RefsNamespaceManifestManifest,
   apiV1RefsNamespaceObjectDetail,
   apiV1RefsNamespaceSelectorCommitDetail,
-  apiV1RefsNamespaceSelectorExportExportLabels,
   apiV1RefsNamespaceSelectorPipelineTomlPipelineToml,
   apiV1RefsNamespaceSelectorResolvedResolved,
   apiV1RefsNamespaceSelectorSnippetsSnippetsFor,
@@ -144,18 +143,6 @@ export const api = {
         keep_refs: options.keepRefs,
         part: options.part,
       },
-      parseAs: "text",
-    });
-    return unwrap(result as unknown as Envelope<string>);
-  },
-
-  async exported(
-    ref: Ref,
-    format: "json" | "presidio" | "spacy",
-  ): Promise<string> {
-    const result = await apiV1RefsNamespaceSelectorExportExportLabels({
-      path: ref,
-      query: { format },
       parseAs: "text",
     });
     return unwrap(result as unknown as Envelope<string>);

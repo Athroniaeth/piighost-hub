@@ -21,7 +21,6 @@ from backend import REGISTRY_ROOT
 from backend.exceptions import AppError, NotFoundError
 from backend.hub.errors import RefError, ResolutionError
 from backend.hub.evaluate import diff_commits
-from backend.hub.exports import FORMATS, export, snippets
 from backend.hub.refs import Ref, is_commit, parse_ref
 from backend.hub.registry import REGISTRY_DIR_ENV_VAR, Registry
 from backend.hub.render import (
@@ -33,6 +32,7 @@ from backend.hub.render import (
 from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.samples import Sample
 from backend.hub.search import Index
+from backend.hub.snippets import snippets
 from backend.hub.store import Snapshot
 from backend.hub.usage import database_path, pulls_by_object, report
 
@@ -568,33 +568,6 @@ class HubController(Controller):
         """The annotated texts the playground offers and the scores are measured on."""
         return SamplesOut(
             items=[_sample_out(s) for s in registry_of(state).samples.values()]
-        )
-
-    @get("/refs/{namespace:str}/{name:str}/{selector:str}/export", name="hub:export")
-    async def export_labels(
-        self,
-        state: State,
-        namespace: FromPath[str],
-        name: FromPath[str],
-        selector: FromPath[str],
-        format: Annotated[
-            Literal["json", "presidio", "spacy"],
-            QueryParameter(description="Target tool."),
-        ] = "json",
-    ) -> Response[str]:
-        """Export a pattern or a group to another tool."""
-        registry = registry_of(state)
-        snapshot = _snapshot(registry, _ref(namespace, name, selector))
-        if snapshot.kind == "config":
-            raise BadRequestError("export takes a pattern or a group, not a config")
-        if format not in FORMATS:
-            raise BadRequestError(f"unknown format {format!r}")
-        try:
-            body, media_type = export(resolve_labels(registry, snapshot), format)
-        except ResolutionError as exc:
-            raise UnprocessableError(str(exc)) from exc
-        return Response(
-            body, media_type=media_type, headers=_cache_headers(selector, snapshot)
         )
 
     @get(

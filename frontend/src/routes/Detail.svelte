@@ -87,14 +87,6 @@
     { value: "detector" as const, label: t("detail.detectorOnly") },
   ]);
 
-  async function saveExport(format: "json" | "presidio" | "spacy") {
-    const body = await api.exported(ref, format);
-    const extension =
-      format === "json" ? "json" : format === "presidio" ? "py" : "jsonl";
-    download(`${name}-${format}.${extension}`, body, "text/plain");
-    track({ name: "labels_exported", props: { format } });
-  }
-
   async function savePipeline() {
     const suffix = part === "detector" ? "detector" : "pipeline";
     download(`${name}-${suffix}.toml`, await pipeline, "application/toml");
@@ -419,19 +411,6 @@
                 {/if}
               {/snippet}
             </Async>
-            {#if object.kind !== "config"}
-              <Card title={t("detail.export")}>
-                <div class="flex flex-wrap gap-2">
-                  {#each ["json", "presidio", "spacy"] as const as format (format)}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onclick={() => saveExport(format)}>{format}</Button
-                    >
-                  {/each}
-                </div>
-              </Card>
-            {/if}
 
             {#if resolved.detectors}
               <Card title={t("detail.detectors")}>

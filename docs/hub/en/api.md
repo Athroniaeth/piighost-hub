@@ -15,7 +15,6 @@ limit apply as they do to the rest of the API. The exact contract is
 | `GET /api/v1/refs/{ns}/{name}/{selector}` | one commit: digest, date, frozen content |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/resolved` | the resolution: labels and provenance for a pattern or a group, detectors and stages for a configuration, and the rendered pipeline |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/pipeline.toml?memory=&keep_refs=` | the piighost pipeline as TOML, `application/toml` |
-| `GET /api/v1/refs/{ns}/{name}/{selector}/export?format=` | the label set for another tool: `json`, `presidio`, `spacy` |
 | `GET /api/v1/refs/{ns}/{name}/{selector}/snippets` | ready-to-paste snippets, one per target |
 | `GET /api/v1/search?q=&kind=&tag=&label=&sort=` | the search and the facet counts of its result; `sort` is `relevance`, `updated`, `used`, `labels` or `name` |
 | `GET /api/v1/stats?days=` | the registry's usage over a window, aggregated from counters |

@@ -183,40 +183,7 @@ class TestCompare:
         assert response.status_code == 400
 
 
-class TestExportsAndBadges:
-    async def test_json_presidio_and_spacy(
-        self, client: AsyncTestClient[Litestar]
-    ) -> None:
-        body = (
-            await client.get(
-                "/api/v1/refs/piighost/all/latest/export", params={"format": "json"}
-            )
-        ).json()
-        assert [p["label"] for p in body["patterns"]] == [
-            "FR_SIRET",
-            "EMAIL",
-            "CREDIT_CARD",
-        ]
-        presidio = await client.get(
-            "/api/v1/refs/piighost/all/latest/export", params={"format": "presidio"}
-        )
-        assert presidio.headers["content-type"].startswith("text/x-python")
-        assert "PatternRecognizer(" in presidio.text
-        assert "score=1.0" in presidio.text
-        spacy = await client.get(
-            "/api/v1/refs/piighost/all/latest/export", params={"format": "spacy"}
-        )
-        assert spacy.text.strip().count("\n") == 2
-        assert '"label": "FR_SIRET"' in spacy.text
-
-    async def test_a_config_cannot_be_exported_as_patterns(
-        self, client: AsyncTestClient[Litestar]
-    ) -> None:
-        response = await client.get(
-            "/api/v1/refs/piighost/base/latest/export", params={"format": "json"}
-        )
-        assert response.status_code == 400
-
+class TestSnippetsAndBadges:
     async def test_snippets_and_badge(self, client: AsyncTestClient[Litestar]) -> None:
         # base carries a model detector, so its patterns are only half the
         # pipeline and the snippet must build the whole thing.

@@ -33,7 +33,6 @@ export type AnalyticsEvent =
       name: "pipeline_copied";
       props: { form: string; memory: string; part: string };
     }
-  | { name: "labels_exported"; props: { format: string } }
   | {
       name: "submission_checked";
       props: { kind: string; ok: boolean; findings: number };
