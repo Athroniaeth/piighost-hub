@@ -1,6 +1,6 @@
 # litestar-template
 
-[![CI](https://github.com/Athroniaeth/template-litestar-svelte/actions/workflows/ci.yml/badge.svg)](https://github.com/Athroniaeth/template-litestar-svelte/actions/workflows/ci.yml)
+[![CI](https://github.com/Athroniaeth/piighost-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/Athroniaeth/piighost-hub/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](.python-version)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

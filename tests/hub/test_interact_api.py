@@ -305,7 +305,12 @@ text = "ORD-12"
         assert body["ok"], body["findings"]
         assert body["path"] == "patterns/alice/order-id/pattern.toml"
         assert body["pull_request_url"].startswith("https://github.com/")
-        assert "filename=patterns%2Falice%2Forder-id" in body["pull_request_url"]
+        # The visitor is shown a registry path; GitHub is handed a repository
+        # one, because the registry is a directory of this application.
+        assert (
+            "filename=registry%2Fpatterns%2Falice%2Forder-id"
+            in body["pull_request_url"]
+        )
 
     async def test_a_broken_submission_reports_findings_and_no_link(
         self, client: AsyncTestClient[Litestar]

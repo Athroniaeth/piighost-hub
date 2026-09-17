@@ -6,7 +6,12 @@ import pytest
 
 from backend.hub.errors import HubError
 from backend.hub.registry import Registry
-from backend.hub.submissions import check_submission, pull_request_url, submission_path
+from backend.hub.submissions import (
+    check_submission,
+    pull_request_url,
+    repository_path,
+    submission_path,
+)
 from tests.hub.fixtures import write_pattern
 
 MANIFEST = r"""
@@ -158,6 +163,11 @@ class TestPullRequest:
         assert submission_path("group", "a", "b") == "groups/a/b/group.toml"
         assert submission_path("config", "a", "b") == "configs/a/b/config.toml"
 
+    def test_the_repository_path_carries_the_registry_directory(self) -> None:
+        """GitHub wants a path from the repository root; the checks do not."""
+        path = submission_path("pattern", "alice", "order-id")
+        assert repository_path(path) == f"registry/{path}"
+
 
 class TestDeployment:
     async def test_the_pull_request_target_comes_from_the_environment(
@@ -182,6 +192,5 @@ class TestDeployment:
             registry, "pattern", "alice", "order-id", MANIFEST
         )
         assert result.pull_request_url is not None
-        assert (
-            "/Athroniaeth/piighost-hub-registry/new/develop?" in result.pull_request_url
-        )
+        assert "/Athroniaeth/piighost-hub/new/main?" in result.pull_request_url
+        assert "filename=registry%2Fpatterns%2F" in result.pull_request_url

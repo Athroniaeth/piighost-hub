@@ -26,8 +26,25 @@ from backend.hub.store import Kind
 
 REPO_ENV_VAR = "HUB_REGISTRY_REPO"
 BRANCH_ENV_VAR = "HUB_REGISTRY_BRANCH"
-DEFAULT_REPO = "Athroniaeth/piighost-hub-registry"
-DEFAULT_BRANCH = "develop"
+DEFAULT_REPO = "Athroniaeth/piighost-hub"
+"""Where a contribution lands: this application's repository.
+
+The registry is a directory of it rather than a repository of its own, so
+there is one source of truth and no sync step between the tree the checks run
+against and the tree a visitor edits. REGISTRY_PREFIX is the cost of that
+choice.
+"""
+
+DEFAULT_BRANCH = "main"
+"""The branch a pull request targets."""
+
+REGISTRY_PREFIX = "registry"
+"""Where the registry tree sits inside the repository.
+
+submission_path builds a path for GitHub's create-a-file link, which is
+relative to the repository root, while the registry's own paths are relative
+to the registry root.
+"""
 
 
 def configured_repo() -> tuple[str, str]:
@@ -65,6 +82,17 @@ class SubmissionResult(msgspec.Struct):
 def submission_path(kind: Kind, namespace: str, name: str) -> str:
     """Where a submission of this kind lives in the registry tree."""
     return f"{KIND_DIRS[kind]}/{namespace}/{name}/{MANIFEST_FILES[kind]}"
+
+
+def repository_path(path: str) -> str:
+    """The same path seen from the repository root, which GitHub needs.
+
+    Two paths, because they answer two questions: a registry path is what the
+    checks stage and what the visitor is shown, and a repository path is where
+    the file goes once the registry is a directory of the application. Using
+    one for the other stages the manifest outside the tree it is checked in.
+    """
+    return f"{REGISTRY_PREFIX}/{path}"
 
 
 def pull_request_url(path: str, manifest: str, repo: str, branch: str) -> str:
@@ -207,7 +235,11 @@ def _check_submission(
         ok=ok,
         path=path,
         findings=_clean(findings, None),
-        pull_request_url=pull_request_url(path, manifest, repo, branch) if ok else None,
+        pull_request_url=(
+            pull_request_url(repository_path(path), manifest, repo, branch)
+            if ok
+            else None
+        ),
     )
 
 
