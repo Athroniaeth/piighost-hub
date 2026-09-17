@@ -31,7 +31,7 @@
     selector = "latest",
   }: { namespace: string; name: string; selector?: string } = $props();
 
-  type Tab = "content" | "pipeline" | "use";
+  type Tab = "content" | "pipeline";
 
   const ref = $derived({ namespace, name, selector });
 
@@ -74,7 +74,6 @@
   const tabs = $derived<{ value: Tab; label: string }[]>([
     { value: "content", label: t("detail.content") },
     { value: "pipeline", label: t("detail.pipeline") },
-    { value: "use", label: t("detail.use") },
   ]);
   const formOptions = $derived([
     { value: "flattened" as const, label: t("detail.flattened") },
@@ -117,19 +116,6 @@
         pattern: null,
       },
     ]);
-  }
-
-  /** `placeholder.type=label_counter, threshold=0.85`: the leaves of a stage. */
-  function describeStage(value: unknown, prefix = ""): string {
-    if (value === null || typeof value !== "object")
-      return `${prefix}${String(value)}`;
-    return Object.entries(value as Record<string, unknown>)
-      .map(([key, inner]) =>
-        typeof inner === "object" && inner !== null
-          ? describeStage(inner, `${prefix}${key}.`)
-          : `${prefix}${key}=${String(inner)}`,
-      )
-      .join(", ");
   }
 
   function kindName(kind: string) {
@@ -422,18 +408,55 @@
               </Card>
             {/if}
 
-            {#if resolved.stages && Object.keys(resolved.stages).length > 0}
-              <Card title={t("detail.stages")}>
-                <ul class="flex flex-wrap gap-1.5">
-                  {#each Object.entries(resolved.stages) as [stage, value] (stage)}
-                    <li class="rounded-md border px-2 py-1 font-mono text-xs">
-                      <span class="font-semibold">{stage}</span>
-                      <span class="text-muted-foreground"
-                        >{describeStage(value)}</span
+            <!-- The stages a config chose - linker, anonymizer, memory - used
+                 to sit here. They are the application's choices, not the
+                 registry's, and naming them told a visitor nothing they could
+                 act on. What goes here instead is how to use the object; the
+                 Pipeline file tab still shows the whole thing for whoever
+                 wants the stages too. -->
+            <Async promise={snippets}>
+              {#snippet children(value)}
+                {#if value}
+                  <Card title={t("detail.use")} bodyClass="space-y-3">
+                    {#snippet action()}
+                      <Segmented
+                        options={Object.keys(value.items).map((k) => ({
+                          value: k,
+                          label: k,
+                        }))}
+                        bind:value={snippet}
+                        label={t("detail.use")}
+                        size="default"
                       >
-                    </li>
+                        {#snippet icon(name)}
+                          {#if name === "python"}
+                            <BrandIcon name="python" />
+                          {:else}
+                            <FileCog class="size-4 shrink-0" />
+                          {/if}
+                        {/snippet}
+                      </Segmented>
+                    {/snippet}
+                    <CodeBlock
+                      code={value.items[snippet] ??
+                        Object.values(value.items)[0]}
+                      language={snippet === "python" ? "python" : "toml"}
+                    />
+                  </Card>
+                {/if}
+              {/snippet}
+            </Async>
+            {#if object.kind !== "config"}
+              <Card title={t("detail.export")}>
+                <div class="flex flex-wrap gap-2">
+                  {#each ["json", "presidio", "spacy"] as const as format (format)}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onclick={() => saveExport(format)}>{format}</Button
+                    >
                   {/each}
-                </ul>
+                </div>
               </Card>
             {/if}
 
@@ -496,52 +519,6 @@
                 <CodeBlock code={body} language="toml" />
               {/await}
             </Card>
-          {:else if tab === "use"}
-            <Async promise={snippets}>
-              {#snippet children(value)}
-                {#if value}
-                  <Card title={t("detail.use")} bodyClass="space-y-3">
-                    {#snippet action()}
-                      <Segmented
-                        options={Object.keys(value.items).map((k) => ({
-                          value: k,
-                          label: k,
-                        }))}
-                        bind:value={snippet}
-                        label={t("detail.use")}
-                        size="default"
-                      >
-                        {#snippet icon(name)}
-                          {#if name === "python"}
-                            <BrandIcon name="python" />
-                          {:else}
-                            <FileCog class="size-4 shrink-0" />
-                          {/if}
-                        {/snippet}
-                      </Segmented>
-                    {/snippet}
-                    <CodeBlock
-                      code={value.items[snippet] ??
-                        Object.values(value.items)[0]}
-                      language={snippet === "python" ? "python" : "toml"}
-                    />
-                  </Card>
-                {/if}
-              {/snippet}
-            </Async>
-            {#if object.kind !== "config"}
-              <Card title={t("detail.export")}>
-                <div class="flex flex-wrap gap-2">
-                  {#each ["json", "presidio", "spacy"] as const as format (format)}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onclick={() => saveExport(format)}>{format}</Button
-                    >
-                  {/each}
-                </div>
-              </Card>
-            {/if}
           {/if}
         </div>
       </div>
