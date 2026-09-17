@@ -2,37 +2,37 @@ schema_version = 1
 
 [sample]
 name = "health-record-fr"
-title = { en = "Medical note (French)", fr = "Compte rendu médical (français)" }
-tags = ["fr", "lang-fr", "healthcare", "document"]
+title = { en = "Medical note (France)" }
+tags = ["fr", "lang-en", "healthcare", "document"]
 text = """
-COMPTE RENDU DE CONSULTATION
+CONSULTATION REPORT
 
-Patiente : Marie Lefevre, née le 12/05/1985
-NIR : 2 85 05 78 006 084 36
-Adresse : 3 avenue du Parc, 69003 Lyon
-Téléphone : 04 99 00 12 34
-Médecin traitant : dr.martin@example.org
+Patient: Marie Lefevre, born 12/05/1985
+NIR: 2 85 05 78 006 084 36
+Address: 3 avenue du Parc, 69003 Lyon
+Phone: 04 99 00 12 34
+General practitioner: dr.martin@example.org
 
-Motif de la consultation
-------------------------
-Suivi à six semaines d'une intervention réalisée le 2 février. La patiente
-décrit une gêne résiduelle à l'effort, sans douleur au repos, et une reprise
-progressive de son activité professionnelle depuis trois semaines.
+Reason for the consultation
+---------------------------
+Six-week follow-up after an operation carried out on 2 February. The patient
+reports some discomfort left on exertion, no pain at rest, and a gradual
+return to work over the past three weeks.
 
-Examen
-------
-Cicatrice propre, sans signe inflammatoire. Mobilité complète retrouvée.
-Aucune complication relevée. Les résultats du bilan biologique du 28 février
-sont dans les normes et ne justifient pas de contrôle rapproché.
+Examination
+-----------
+Clean scar, no sign of inflammation. Full mobility recovered. No complication
+noted. The blood work of 28 February is within normal ranges and does not call
+for an early review.
 
-Conduite à tenir
-----------------
-Poursuite de la rééducation au rythme actuel, deux séances par semaine.
-Reprise du sport en charge autorisée dans un mois. Prochain rendez-vous dans
-six semaines, ou plus tôt en cas de réapparition de la douleur au repos.
+Plan
+----
+Rehabilitation continues at the current pace, two sessions a week. Sport under
+load may resume in a month. Next appointment in six weeks, or sooner if pain
+at rest comes back.
 
-Compte rendu transmis au médecin traitant à dr.martin@example.org et remis en
-main propre à la patiente.
+Report sent to the general practitioner at dr.martin@example.org and handed to
+the patient in person.
 """
 
 [[annotations]]

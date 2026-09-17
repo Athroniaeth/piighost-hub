@@ -2,7 +2,7 @@ schema_version = 1
 
 [sample]
 name = "dev-traceback"
-title = { en = "Traceback pasted into a coding assistant", fr = "Trace d'erreur collée dans un assistant de code" }
+title = { en = "Traceback pasted into a coding assistant" }
 tags = ["international", "lang-en", "software-dev", "code-assistant", "logs"]
 text = """
 Why does this keep failing in staging but not locally? Here is my config and

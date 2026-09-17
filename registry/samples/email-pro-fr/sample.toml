@@ -2,33 +2,32 @@ schema_version = 1
 
 [sample]
 name = "email-pro-fr"
-title = { en = "Business email (French)", fr = "E-mail professionnel (français)" }
-tags = ["fr", "lang-fr", "customer-support", "chat"]
+title = { en = "Business email (France)" }
+tags = ["fr", "lang-en", "customer-support", "chat"]
 text = """
-Objet : relance dossier 732 829 320 00074 - prélèvement rejeté
+Subject: follow-up on file 732 829 320 00074 - direct debit rejected
 
-Bonjour,
+Hello,
 
-Je suis Patrick Dupont, client chez vous depuis mars 2019, et je me permets de
-relancer après un premier message resté sans réponse la semaine dernière.
+I am Patrick Dupont, a customer of yours since March 2019, and I am following
+up after a first message that went unanswered last week.
 
-Le prélèvement du 5 du mois n'est pas passé sur mon compte
-FR76 3000 6000 0112 3456 7890 189. Ma banque m'indique que l'ordre a bien été
-présenté mais rejeté pour un motif qu'elle ne peut pas me détailler. Je n'ai
-reçu aucun avis de votre côté, et je découvre ce matin une pénalité de retard
-sur mon espace client.
+The direct debit due on the 5th did not go through on my account
+FR76 3000 6000 0112 3456 7890 189. My bank tells me the order was presented
+and then rejected, for a reason it cannot detail to me. I received no notice
+from your side, and this morning I found a late fee on my customer area.
 
-Mon dossier porte le numéro 732 829 320 00074, au nom de la société. Vous
-pouvez me joindre au 06 39 98 12 34 en journée, ou par retour de mail à
-patrick.dupont@example.com. Je suis joignable plus facilement l'après-midi.
+My file is number 732 829 320 00074, under the company name. You can reach me
+on 06 39 98 12 34 during the day, or by reply to patrick.dupont@example.com.
+Afternoons are easier for me.
 
-L'adresse de facturation n'a pas changé : 12 rue des Lilas, 75008 Paris. Si
-vous avez besoin d'un RIB à jour ou d'une attestation de ma banque, dites-le
-moi, je vous les envoie dans la journée.
+The billing address has not changed: 12 rue des Lilas, 75008 Paris. If you
+need an up-to-date bank mandate or a statement from my bank, say so and I will
+send them over the same day.
 
-Merci de me confirmer la levée de la pénalité une fois le point réglé.
+Please confirm the late fee is lifted once this is settled.
 
-Cordialement,
+Kind regards,
 Patrick Dupont
 """
 
