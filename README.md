@@ -1,359 +1,114 @@
-# litestar-template
+# piighost hub
 
 [![CI](https://github.com/Athroniaeth/piighost-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/Athroniaeth/piighost-hub/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](.python-version)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/vFg9GHQR2s)
 
-Squelette de projet Litestar + Svelte, avec le backend Python et le frontend Vite
-découplés : deux images Docker, deux cycles de déploiement, deux dimensionnements.
+**[piighost-hub.athroniaeth.cloud](https://piighost-hub.athroniaeth.cloud)**
 
-Le contrat entre les deux est `openapi.json`, versionné à la racine. Le backend
-l'exporte depuis ses handlers, le frontend en dérive ses types TypeScript sans avoir
-besoin de Python. En production, nginx sert le bundle et proxifie `/api` vers
-Litestar : une seule origine côté navigateur, donc pas de CORS ni d'URL d'API dans
-le bundle.
+A registry of tested de-identification regexes for [piighost](https://github.com/Athroniaeth/piighost): **138 patterns** and **48 groups** across **28 countries**, each addressed by name and version, each carrying the cases it must catch and the cases it must leave alone.
 
-Litestar 2.24, Svelte 5, Vite 8, Tailwind 4, nginx, pnpm, uv.
+Writing a regex for a national identifier is easy. Writing one that still behaves when it sits next to twenty others is not. A French SIRET is fourteen digits, which is also a credit card number; a five-digit postcode is French, Italian and American at once; a token inside a URL is claimed by the URL first. The registry exists because those collisions are the actual work, and because everyone rewrites the same twenty patterns badly.
 
-## Structure
+```python
+from piighost.components.detector import RegexDetector
 
-```
-backend/          application Litestar — sert /api, rien d'autre
-  __init__.py     chemins du projet
-  app.py          handlers et configuration des plugins
-frontend/         projet Vite (racine Vite)
-  src/            sources Svelte
-  src/generated/  client TypeScript généré (non versionné)
-  dist/           bundle de production (non versionné)
-deploy/nginx.conf reverse proxy : bundle + /api sur une seule origine
-openapi.json      contrat d'API versionné, exporté depuis les handlers
-Dockerfile.api    image de l'API (Python seul)
-Dockerfile.web    image du frontend (bundle Vite + nginx)
-justfile          raccourcis des tâches courantes
+detector = RegexDetector.from_hub("piighost/logs:fd79aec6")
+found = await detector.detect("mail me at a@b.co from 10.0.0.1")
 ```
 
-## Installation
+An object is versioned by its content: its identifier is the sha256 of its frozen manifest, and you pin it by commit (`piighost/fr-default:7cc7cb30`) or by a movable tag each namespace sets in its own (`alice/support:prod`). The `piighost` namespace sets none: an official object has `latest` and its commits, and nothing else moves under you.
 
-Il faut [uv](https://docs.astral.sh/uv/), [pnpm](https://pnpm.io/) et Node `^20.19`
-ou `>=22.12`, contrainte de Vite 8. [`just`](https://github.com/casey/just) est
-recommandé (`uv tool install rust-just`) mais facultatif.
+## What the registry guarantees
+
+Every object in it has passed the same checks, run in CI on every change:
+
+- **Its own examples.** A pattern declares what it must catch and what it must not, with the exact value expected. `piighost/fr-siret` catches `732 829 320 00074` in a sentence and leaves `7328293200007` alone.
+- **Its examples once composed.** This is the one that matters. When a group assembles twenty patterns, each contributing pattern's examples are replayed _against the whole group_ and must still come out with the right label. A card pattern that steals a SIRET fails the build, not a user's text.
+- **A bound on its backtracking.** Each pattern ships a hostile string — a valid prefix, an ambiguous fragment repeated to 100 000 characters, an ending that forbids the match — and must survive it. A regex that backtracks catastrophically never lands.
+- **Its vocabulary.** Tags come from a closed list of 55, so a facet means the same thing on every object.
+
+What it does **not** guarantee: anything about a model detector. The checks replay examples, bound backtracking and verify composition, none of which mean anything for a GLiNER2 step. Two configurations carry one, and their pages say so.
+
+## Using it
+
+### From Python
+
+```python
+from piighost.components.detector import RegexDetector
+
+detector = RegexDetector.from_hub("piighost/logs:fd79aec6")
+found = await detector.detect(text)
+```
+
+A reference pinned to a commit is immutable, so it is cached on disk and fetched once. A tag or `latest` moves, so it is fetched every time.
+
+> [!NOTE]
+> `RegexDetector.from_hub` and the `hub:` catalogs below need piighost 1.8, which is not released yet. Until then, fetch `pipeline.toml?part=detector` over HTTP and pass `config["detector"]["patterns"]` to `RegexDetector`. Every object's page shows the current form.
+
+### From a pipeline file
+
+```toml
+[detector]
+type = "regex"
+catalogs = ["hub:piighost/logs:fd79aec6"]
+
+# Your own on top: an inline pattern wins on a shared label.
+[detector.patterns]
+INTERNAL_ID = 'EMP-\d{6}'
+```
+
+### Over HTTP
 
 ```bash
-cp .env.example .env
-just install          # uv sync + litestar assets install
+curl 'https://piighost-hub.athroniaeth.cloud/api/v1/refs/piighost/logs/latest/pipeline.toml?part=detector'
 ```
 
-Sans `just`, la même chose à la main :
+`part=detector` keeps the detector alone, without the stages a configuration chose on your behalf. Drop it for the whole pipeline, add `?keep_refs=true` to get a file that names its hub references instead of inlining them, and `?memory=redis` to append a memory section.
+
+## Contributing a pattern
+
+The [contribution page](https://piighost-hub.athroniaeth.cloud/contribute) runs the maintainers' own checks on a manifest you write in a form, lets you try it against a real text in your browser, and then hands you a prefilled GitHub link. No account, no token, no write access to this repository from the service: the pull request is yours.
+
+Starting from an existing object is one click, which is usually the right move — a pattern that already passes composition is a better base than a blank field.
+
+## Running it
 
 ```bash
-uv sync
-uv run litestar assets install
+just install                                      # uv sync + pnpm install
+just dev                                          # the site on http://127.0.0.1:5173
+just check                                        # what CI runs: lint, tests, registry
 ```
 
-Ne sautez pas la copie du `.env` : il définit `LITESTAR_APP`. Sans lui, la CLI
-cherche l'application à la racine et ne la trouve pas, puisque le code est dans
-`backend/`.
-
-## Commandes
-
-Les tâches courantes passent par `just` ; `just` seul liste les recettes.
-
-| Commande | Effet |
-|----------|-------|
-| `just dev` | lance l'API (:8000) et le frontend (:5173) ensemble |
-| `just dev-api` | l'API seule, en rechargement à chaud |
-| `just dev-front` | le frontend seul, avec HMR |
-| `just types` | exporte `openapi.json` et régénère le client TypeScript |
-| `just lint` | ruff + pyrefly (Python), eslint + prettier + svelte-check (frontend) |
-| `just format` | formate et corrige (ruff côté Python, prettier + eslint côté frontend) |
-| `just test` | pytest avec couverture |
-| `just build` | bundle de production du frontend |
-| `just check` | tout : contrat + lint + tests (ce que lance la CI) |
-
-Chaque recette reprend les commandes `uv`/`pnpm` sous-jacentes ; rien n'oblige à
-passer par `just`, mais c'est le point d'entrée unique, aligné sur les hooks
-pre-commit et la CI.
-
-## Démarrer
-
 ```bash
-just dev
-```
-
-Deux process démarrent : l'API sur le port 8000 et le dev server Vite sur 5173.
-**Le site se consulte sur http://127.0.0.1:5173** — Vite proxifie `/api` vers
-l'API, exactement comme nginx le fera en production. Le code client appelle donc
-`/api` en relatif et ignore où vit le backend, en dev comme en production.
-
-L'API seule ne sert aucune page : `http://127.0.0.1:8000/` répond 404, par
-construction. Un test le vérifie.
-
-Si quelque chose cloche dans la configuration :
-
-```bash
-uv run litestar assets doctor
-```
-
-## Docker
-
-Deux images, chacune buildable sans l'autre :
-
-- `Dockerfile.api` — Python seul, sans Node ni outils de build. Ne contient que
-  l'interpréteur, le venv et `backend/`, sous un utilisateur non privilégié.
-- `Dockerfile.web` — étage Node qui dérive les types de `openapi.json` et build le
-  bundle, puis nginx sans privilèges qui le sert.
-
-```bash
-docker compose up --build
-```
-
-L'app répond sur http://127.0.0.1:8000, servie par nginx. L'API n'est pas exposée
-sur l'hôte : seul `web` l'atteint, par le réseau interne de compose. Le service
-`web` attend que le healthcheck de `api` passe avant de démarrer.
-
-### Coolify
-
-`compose.prod.yml` est la variante pour un déploiement Coolify. Trois différences avec
-`compose.yml`, toutes dues au fait de tourner derrière le Traefik de Coolify :
-
-- **aucun `ports:`** — publier un port contournerait le proxy et exposerait le
-  conteneur directement sur l'hôte ; Traefik joint `web` par le réseau du projet ;
-- **`SERVICE_FQDN_WEB_8080`** — variable magique, volontairement sans valeur : Coolify
-  génère un domaine, l'attache au service `web` et le route vers le port 8080 ;
-- **`restart: unless-stopped`**, et `API_KEY` déclarée avec `:?` donc requise dans
-  l'interface — une valeur vide bloque le déploiement.
-
-`api` n'a ni domaine ni port publié : Coolify garde ces services privés au réseau du
-projet, joignables seulement en `http://api:8000`, ce que fait nginx. Ne lui donnez un
-domaine que pour ouvrir l'API à des tiers, et lisez la section sur la clé d'API avant.
-
-nginx préserve les en-têtes `X-Forwarded-*` posés par le proxy amont au lieu de les
-écraser : Traefik termine le TLS et parle à nginx en clair, donc transmettre `$scheme`
-ferait croire à l'application que le visiteur n'est pas en HTTPS — de quoi casser les
-cookies `Secure` et les redirections absolues. Sans proxy devant, en local, la valeur
-retombe sur `$scheme`. Le module `real_ip` récupère par ailleurs l'adresse réelle du
-client, en ne faisant confiance qu'aux plages privées : `X-Forwarded-For` est contrôlé
-par l'appelant et ne doit jamais être cru s'il arrive directement d'Internet.
-
-Coolify considère ce fichier comme la source de vérité : déclarez les variables ici,
-pas seulement dans l'interface.
-
-### Dimensionner
-
-L'API porte la charge : le frontend est un bundle statique qu'un visiteur télécharge
-une fois, puis met en cache (les noms sont hashés, nginx les sert en `immutable`).
-C'est donc l'API qu'on dimensionne.
-
-```bash
-WEB_CONCURRENCY=4 docker compose up -d    # 4 workers Granian
-```
-
-Passer à l'horizontal ensuite ne demande que des répliques d'`api` derrière nginx —
-à condition de n'avoir mis aucun état en mémoire dans le processus.
-
-## Hub de configurations
-
-Ce dépôt porte le **piighost hub** : un registre de motifs regex, de groupes et
-de configurations de pipeline pour [piighost](https://github.com/Athroniaeth/piighost),
-avec le site qui les expose. Les manifestes sont dans `registry/`, le moteur dans
-`backend/hub/`, le site dans `frontend/src/`.
-
-Un objet est versionné par son contenu : son identifiant est le sha256 de son
-manifeste figé, et on l'épingle par commit (`piighost/fr-default:240a672d`) ou
-par tag mobile, que chaque espace de noms pose chez lui (`alice/support:prod`).
-L'espace `piighost` n'en pose aucun : un objet officiel n'a que `latest` et ses
-commits. Chaque motif porte ses exemples, et la CI rejoue ces
-exemples une fois les motifs composés, ce qui attrape une valeur volée par un
-motif voisin avant qu'elle n'arrive chez un utilisateur.
-
-```bash
-just hub-check                                   # valide le registre (inclus dans `just check`)
-just hub-record                                  # enregistre les têtes comme commits
-uv run python -m backend.hub resolve piighost/fr # ce que la référence contient
+just hub-check                                    # validate the registry alone
+just hub-record                                   # record the heads as immutable commits
+uv run python -m backend.hub resolve piighost/fr  # what a reference contains
 uv run python -m backend.hub render piighost/fr-default --memory redis
-just dev                                         # le site sur http://127.0.0.1:5173
 ```
 
-| Document | Contenu |
-|---|---|
-| [Format des manifestes](docs/hub/manifest.md) | motifs, groupes, configurations, samples, tags |
-| [Références, commits, résolution](docs/hub/resolution.md) | la grammaire, les commits, les règles de composition, les checks |
-| [API HTTP](docs/hub/api.md) | les routes, le cache, les limites du bac à sable |
-| [Le site](docs/hub/site.md) | les pages et les choix qui se voient |
-| [Ce qui revient à piighost](docs/hub/library-support.md) | le contrat pour le support `hub:` dans la bibliothèque |
-| [Mesurer l'usage](docs/hub/analytics.md) | les deux clients OpenPanel, ce qui est envoyé et ce qui ne l'est pas |
-| [In English](docs/hub/en/) | les sept documents, traduits |
+The manifests are in `registry/`, the engine in `backend/hub/`, the site in `frontend/src/`. The backend is Litestar 2.24 behind Granian, the frontend Svelte 5 with Vite 8 and Tailwind 4; `openapi.json` is versioned at the root and the TypeScript client is derived from it, so the two halves cannot drift.
 
-Deux choses valent d'être sues avant de s'en servir. Les détecteurs à modèle ne
-tournent pas dans le bac à sable, parce qu'il faudrait charger des poids à chaque
-requête ; les configurations qui en portent restent exécutables pour leur partie
-regex et la réponse nomme ce qui a été sauté. Et publier passe par une pull
-request : le site vérifie un manifeste avec les mêmes tests que les mainteneurs,
-puis renvoie un lien GitHub prérempli, sans qu'aucun jeton n'existe ici.
+## Documentation
 
-## Clé d'API
+| Document                                                     | Contents                                                  |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| [Manifest format](docs/hub/en/manifest.md)                   | patterns, groups, configurations, samples, tags           |
+| [References, commits, resolution](docs/hub/en/resolution.md) | the grammar, the commits, composition rules, the checks   |
+| [HTTP API](docs/hub/en/api.md)                               | the routes, the caching, the playground's limits          |
+| [The site](docs/hub/en/site.md)                              | the pages and the choices that show                       |
+| [Coverage](docs/hub/en/coverage.md)                          | what the registry is measured against, and what it misses |
+| [What piighost owes the hub](docs/hub/en/library-support.md) | the contract for `hub:` support in the library            |
+| [Measuring usage](docs/hub/en/analytics.md)                  | what is measured, what deliberately is not                |
+| [En français](docs/hub/)                                     | les sept documents, en version originale                  |
 
-`/api/hello` est protégée par une clé, `/api/health` reste publique (le healthcheck de
-compose l'atteint directement, sans proxy). Le garde vit dans `backend/security.py` et
-s'accroche au handler par `guards=[require_api_key]`.
+## Project
 
-Le point important : **la clé n'entre jamais dans le navigateur**. nginx l'ajoute en
-`proxy_set_header` côté serveur, et le proxy Vite fait de même en développement. Le
-frontend appelle donc `/api/hello` sans rien présenter — inspectez les requêtes dans
-les DevTools, il n'y a pas d'en-tête `X-API-Key`.
-
-C'est délibéré : une variable `VITE_*` est inlinée en clair dans le bundle, donc une
-clé embarquée dans un SPA est une clé publique.
-
-```bash
-API_KEY=… docker compose up -d          # ou API_KEY dans le .env
-curl http://127.0.0.1:8000/api/hello    # 200, via nginx qui injecte la clé
-curl -H "X-API-Key: …" http://api:8000/api/hello   # 200, client tiers
-```
-
-Sans `API_KEY`, rien ne démarre : `docker compose up` s'arrête à l'interpolation, et
-l'application elle-même refuse de démarrer (`ensure_api_key_configured`, appelée par
-`on_startup`). Le conteneur sort en code 1 avec la cause dans les logs, donc il ne
-devient jamais *healthy* et `depends_on: service_healthy` garde le frontend éteint :
-le déploiement signale l'échec au lieu de servir une application cassée.
-
-Ce garde-fou existe parce que l'inverse a été observé : sur Coolify, `${API_KEY:?}`
-ne bloque pas le déploiement comme le fait `docker compose` seul. La variable était
-vide, nginx a alors **supprimé** l'en-tête — il ne transmet pas un en-tête dont la
-valeur est vide — et l'API répondait 401 à chaque appel sans que rien n'indique
-pourquoi. La configuration échoue en fermé, jamais en ouvert, et désormais elle
-échoue bruyamment.
-
-Ce que cela protège, et ce que cela ne protège pas : la route est réservée aux appels
-passant par votre nginx ou porteurs de la clé, ce qui permet d'exposer un domaine
-d'API à des clients tiers. Ce n'est **pas** de l'authentification utilisateur — tout
-visiteur du site atteint `hello` à travers le proxy. Pour cloisonner des données par
-utilisateur, il faut une session (un cookie `HttpOnly` fonctionne sans CORS ici,
-grâce à l'origine unique).
-
-Swagger UI (`/schema/swagger`) affiche un bouton « Authorize » et un cadenas sur la
-route : le schéma de sécurité est déclaré dans `openapi.json`, donc le contrat ne
-présente pas la route comme libre d'accès.
-
-### Documentation OpenAPI
-
-`ENABLE_DOCS` (défaut `true`) commande les routes `/schema` — Swagger, Redoc,
-`openapi.json`. `compose.prod.yml` la passe à `false` : `/schema` publie l'inventaire
-complet des routes, et l'API disposant de son propre domaine sur Coolify, la masquer
-dans nginx ne suffirait pas. La coupure se fait donc dans l'application, où elle vaut
-pour tous les chemins d'accès. Mettez `ENABLE_DOCS=true` dans les variables du projet
-pour la rétablir le temps d'un diagnostic.
-
-Techniquement, `build_openapi_config` renvoie `None`, ce qui supprime le routeur
-`/schema`. Le schéma quitte alors la mémoire : `litestar assets generate-types` en a
-besoin, c'est pourquoi la recette `just types` force `ENABLE_DOCS=true`. Sans ce
-forçage, la commande n'exporterait plus rien — sans erreur — et le contrat dériverait
-sans que personne ne le voie.
-
-## Durcissement HTTP
-
-nginx pose quatre en-têtes sur les réponses du frontend (`deploy/security-headers.conf`) :
-`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, une `Referrer-Policy`
-stricte et une `Content-Security-Policy` en `'self'`. Le bundle est entièrement
-auto-hébergé — pas de CDN, pas de script inline, pas de `eval` — donc la CSP n'a besoin
-d'aucun `unsafe-inline`, et `connect-src 'self'` suffit pour appeler `/api` grâce à
-l'origine unique.
-
-Ce fichier est inclus dans chaque `location` plutôt que déclaré une fois sur le bloc
-`server` : nginx n'hérite pas des `add_header` dans un bloc enfant qui en déclare
-lui-même, et `/assets/` en pose un pour le cache — il perdrait donc silencieusement
-tous les autres. `/api` et `/schema` en sont exclus : une CSP ne concerne pas une
-réponse JSON, et Swagger UI a besoin de styles inline.
-
-L'API applique un quota de 120 requêtes par minute et par client
-(`build_rate_limit_config`), avec `/api/health` exempté pour ne jamais gêner le
-healthcheck. Le comptage n'utilise pas le client de la connexion — derrière nginx, ce
-serait le proxy pour tout le monde, donc un quota partagé — mais l'en-tête `X-Real-IP`,
-que nginx écrase et qu'un appelant ne peut donc pas forger.
-
-À savoir : le compteur vit dans le magasin en mémoire, propre à chaque worker. Avec
-`WEB_CONCURRENCY=4`, le quota effectif est donc quadruple. Le rendre exact, et le faire
-survivre à plusieurs répliques d'API, demande un magasin partagé comme Redis.
-
-## Qualité
-
-Le lint, le typage et les tests couvrent backend et frontend d'un seul point :
-
-```bash
-just lint             # ruff, pyrefly, eslint, prettier, svelte-check
-just test             # pytest + couverture
-```
-
-Les mêmes vérifications tournent à chaque commit via [prek](https://github.com/j178/prek)
-(ou pre-commit) — lancez `prek install` une fois — et dans la CI GitHub Actions.
-
-## Développement
-
-Lancez toujours `litestar` depuis la racine du dépôt. Depuis `frontend/`, Python ne
-trouve pas le package `backend` et la commande échoue.
-
-### Types TypeScript
-
-Après avoir touché à une route ou à un type de réponse :
-
-```bash
-just types      # uv run litestar assets generate-types
-```
-
-La commande écrit `openapi.json` à la racine, puis en tire les types, les schémas
-Zod, un client d'API et un helper de routage dans `frontend/src/generated/`.
-
-**Committez `openapi.json`.** C'est le contrat : il rend le frontend buildable sans
-Python, et tout changement d'API devient un diff lisible en revue. `just check`
-(donc la CI) régénère le fichier et échoue s'il a dérivé des handlers.
-
-Le frontend peut se régénérer seul, sans Python :
-
-```bash
-pnpm -C frontend generate-types
-```
-
-Un détail qui compte : annotez les réponses avec une dataclass ou un
-`msgspec.Struct`. Un `dict[str, str]` donne un `{ [key: string]: string }`,
-c'est-à-dire à peu près rien.
-
-### Commits
-
-Commits au format [Conventional Commits](https://www.conventionalcommits.org), via
-[Commitizen](https://commitizen-tools.github.io/commitizen/) configuré dans `cz.toml`.
-
-```bash
-uv run cz commit     # rédaction guidée
-uv run cz bump       # version, tag et CHANGELOG
-```
-
-Le format est aussi vérifié automatiquement à chaque commit : le hook `commitizen`
-(étape `commit-msg`) rejette un message non conforme. Il s'installe avec le reste
-via `prek install` (voir `default_install_hook_types` dans `.pre-commit-config.yaml`).
-
-`cz bump` lit et écrit la version dans `pyproject.toml` via uv. Tant que
-`major_version_zero` est actif, le projet ne dépasse pas `0.x`.
-
-### Travailler sur le frontend seul
-
-```bash
-just dev-front            # Vite seul, sans backend
-just build                # bundle de production dans frontend/dist
-```
-
-Les appels `/api` sont proxifiés vers `http://127.0.0.1:8000`. Si l'API écoute
-ailleurs, pointez `API_URL` dessus dans le `.env`. Sans API lancée, l'app s'affiche
-et les appels échouent — le frontend reste développable seul.
-
-## Branches et CI
-
-Le dépôt suit [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/) :
-`main` (production, taguée), `develop` (intégration), et des branches `feature/*`,
-`release/*`, `hotfix/*`. La CI (`.github/workflows/ci.yml`) valide le contrat, le lint
-et les tests sur `main` et `develop`.
-
-Elle ne construit pas les images : elles ne sont poussées vers aucun registre, et la
-plateforme de déploiement les rebâtit depuis le dépôt — un build en CI ne ferait que
-dupliquer, quelques minutes plus tôt, un échec qui apparaîtrait de toute façon au
-déploiement. Pour les vérifier en local : `docker compose build`.
+- **Community**: [Discord](https://discord.gg/vFg9GHQR2s) to get help, report a bad pattern, or propose a country pack
+- **Ecosystem**:
+  - **[piighost](https://github.com/Athroniaeth/piighost)**: the de-identification library this registry feeds
+  - **[piighost-api](https://github.com/Athroniaeth/piighost-api)**: the inference API server
+  - **[piighost-chat](https://github.com/Athroniaeth/piighost-chat)**: an example chat interface with human-in-the-loop
+- **License**: [MIT](LICENSE)
