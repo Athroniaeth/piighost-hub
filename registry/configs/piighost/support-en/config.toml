@@ -6,8 +6,18 @@ description = { en = "English support conversations: US and international shapes
 tags = ["us", "international", "lang-en", "customer-support", "chat", "tool-agent"]
 piighost = ">=1.7,<2"
 
-[[extends]]
-ref = "piighost/ner-base"
+# The model detector comes first, and it used to arrive by inheriting
+# piighost/ner-base. That object carried nothing else, and a registry of
+# tested regexes could say nothing about it: the checks replay examples,
+# bound backtracking and verify composition, none of which mean anything for
+# a model. It is declared here instead, where it is the one detector this
+# config does not guarantee.
+[[detectors]]
+name = "ner"
+type = "gliner2"
+model = "fastino/gliner2-multi-v1"
+labels = ["PERSON", "ADDRESS", "ORGANIZATION"]
+threshold = 0.5
 
 [[detectors]]
 name = "regex-us"
@@ -18,6 +28,12 @@ groups = ["piighost/us-extended"]
 name = "regex-generic"
 type = "regex"
 groups = ["piighost/generic"]
+
+[stages.linker]
+type = "exact"
+
+[stages.anonymizer.placeholder]
+type = "label_counter"
 
 [stages.expander]
 type = "word_boundary"
