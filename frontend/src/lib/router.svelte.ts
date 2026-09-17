@@ -27,6 +27,7 @@ const ROUTES: [string, string][] = [
   ["/", "home"],
   ["/labels", "labels"],
   ["/stats", "stats"],
+  ["/configs", "configs"],
   ["/playground", "playground"],
   ["/playground/compare", "compare"],
   ["/playground/chat", "chat"],

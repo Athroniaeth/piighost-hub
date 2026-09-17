@@ -2726,19 +2726,27 @@
             "allowEmptyValue": false,
             "allowReserved": false,
             "deprecated": false,
+            "description": "Repeatable. Kinds combine with OR.",
             "in": "query",
             "name": "kind",
             "required": false,
             "schema": {
-              "enum": [
-                "pattern",
-                "group",
-                "config",
-                null
-              ],
-              "type": [
-                "null",
-                "string"
+              "description": "Repeatable. Kinds combine with OR.",
+              "oneOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "pattern",
+                      "group",
+                      "config"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },

@@ -77,7 +77,7 @@ export type Ref = { namespace: string; name: string; selector: string };
 export const api = {
   async search(params: {
     q?: string;
-    kind?: "pattern" | "group" | "config";
+    kind?: ("pattern" | "group" | "config")[];
     tag?: string[];
     label?: string;
     sort?: "relevance" | "updated" | "used" | "labels" | "pulls" | "name";

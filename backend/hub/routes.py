@@ -474,7 +474,8 @@ class HubController(Controller):
             ),
         ] = "",
         kind: Annotated[
-            Literal["pattern", "group", "config"] | None, QueryParameter()
+            list[Literal["pattern", "group", "config"]] | None,
+            QueryParameter(description="Repeatable. Kinds combine with OR."),
         ] = None,
         tag: Annotated[
             list[str] | None,

@@ -42,6 +42,8 @@ describe("router", () => {
   it("matches the static routes", () => {
     router.go("/playground/compare");
     expect(router.route.name).toBe("compare");
+    router.go("/configs");
+    expect(router.route.name).toBe("configs");
     router.go("/contribute");
     expect(router.route.name).toBe("contribute");
     router.go("/");

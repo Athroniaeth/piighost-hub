@@ -9,6 +9,7 @@ put a service between the site and data it already holds in memory.
 """
 
 import unicodedata
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from backend.hub.registry import Registry
@@ -125,7 +126,7 @@ class Index:
         self,
         query: str = "",
         *,
-        kind: str | None = None,
+        kind: Sequence[str] | None = None,
         tags: list[str] | None = None,
         label: str | None = None,
         sort: str = "relevance",
@@ -140,14 +141,19 @@ class Index:
         referenced first, ``labels`` widest first, ``pulls`` most fetched first,
         ``name`` alphabetical.
 
+        ``kind`` is a list because the catalogue asks for several at once: the
+        site lists patterns and groups together and keeps the piighost configs
+        on their own page. An empty or absent list means every kind.
+
         ``pulls`` comes from the caller rather than the index because it changes
         with every request while the index is built once at startup.
         """
         needle = fold(query.strip())
         wanted = set(tags or [])
+        kinds = set(kind or ())
         results: list[tuple[int, str, Entry]] = []
         for entry in self.entries.values():
-            if kind is not None and entry.kind != kind:
+            if kinds and entry.kind not in kinds:
                 continue
             if wanted and not wanted.issubset(entry.tags):
                 continue

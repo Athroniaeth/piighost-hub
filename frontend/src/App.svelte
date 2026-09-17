@@ -2,6 +2,7 @@
   import SiteFooter from "./components/SiteFooter.svelte";
   import SiteNav from "./components/SiteNav.svelte";
   import Chat from "./routes/Chat.svelte";
+  import Configs from "./routes/Configs.svelte";
   import Compare from "./routes/Compare.svelte";
   import Contribute from "./routes/Contribute.svelte";
   import Detail from "./routes/Detail.svelte";
@@ -27,6 +28,7 @@
     const heading: Record<string, Key> = {
       labels: "labels.title",
       stats: "stats.title",
+      configs: "configs.title",
       playground: "nav.playground",
       compare: "play.compare",
       chat: "play.chat",
@@ -60,6 +62,8 @@
       <Labels />
     {:else if route.name === "stats"}
       <Stats />
+    {:else if route.name === "configs"}
+      <Configs />
     {:else if route.name === "playground"}
       <Playground />
     {:else if route.name === "compare"}

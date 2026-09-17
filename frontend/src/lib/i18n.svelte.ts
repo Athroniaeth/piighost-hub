@@ -242,6 +242,12 @@ const STRINGS = {
       "These are counters, not a log. The finest resolution is the hour, a row is a shape rather than a request, and no address, browser identity or text is recorded anywhere.",
 
     "labels.title": "Labels",
+    "configs.title": "piighost configs",
+    "home.configsNote":
+      "Patterns and groups. The pipelines built from them are the",
+    "configs.lede":
+      "Pipelines assembled from the registry's groups: a detector, then what happens once something is found. The catalogue itself is the regexes.",
+    "configs.link": "piighost configs",
     "labels.lede":
       "Every label this registry can emit, and the pattern that defines it.",
     "labels.definedBy": "defined by",
@@ -498,6 +504,12 @@ const STRINGS = {
       "Ce sont des compteurs, pas un journal. La résolution la plus fine est l'heure, une ligne est une forme et non une requête, et aucune adresse, aucune identité de navigateur, aucun texte n'est enregistré nulle part.",
 
     "labels.title": "Labels",
+    "configs.title": "Configs piighost",
+    "home.configsNote":
+      "Motifs et groupes. Les pipelines qui en sont faits sont les",
+    "configs.lede":
+      "Des pipelines assemblés à partir des groupes du registre : un détecteur, puis ce qui se passe une fois quelque chose trouvé. Le catalogue, lui, ce sont les regex.",
+    "configs.link": "Configs piighost",
     "labels.lede":
       "Tous les labels que ce registre peut émettre, et le motif qui les définit.",
     "labels.definedBy": "défini par",

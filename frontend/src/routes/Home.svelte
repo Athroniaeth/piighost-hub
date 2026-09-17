@@ -18,7 +18,11 @@
   type Sort = "relevance" | "updated" | "used" | "labels" | "pulls" | "name";
 
   const PER_PAGE = 15;
-  const KINDS: Kind[] = ["pattern", "group", "config"];
+  // The catalogue is the registry of regexes. A piighost configuration is a
+  // pipeline that happens to carry some, which is a different object with a
+  // page of its own; listing it here put 32 of them among 186 regexes and
+  // made the hub look like a config store.
+  const KINDS: Kind[] = ["pattern", "group"];
   // Widest coverage leads: a visitor who has not typed anything is looking for
   // the configuration that covers the most, not the one edited most recently.
   const SORTS: Sort[] = [
@@ -48,7 +52,7 @@
   const results = $derived(
     api.search({
       q: query,
-      kind: kind || undefined,
+      kind: kind ? [kind] : KINDS,
       tag: tags.length > 0 ? tags : undefined,
       label: label || undefined,
       sort,
@@ -208,6 +212,15 @@
               <Badge variant="outline" class="font-mono">{label}</Badge>
             </p>
           {/if}
+
+          <!-- Someone hunting for a configuration looks here first, finds
+               only regexes, and needs one line telling them where they went. -->
+          <p class="mt-3 text-xs text-muted-foreground">
+            {t("home.configsNote")}
+            <a href="/configs" class="underline hover:text-foreground"
+              >{t("configs.title")}</a
+            >.
+          </p>
 
           {#if result.items.length === 0}
             <p class="mt-10 text-sm text-muted-foreground">{t("home.empty")}</p>
