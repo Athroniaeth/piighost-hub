@@ -377,43 +377,13 @@
               </Card>
             {/if}
 
-            {#if resolved.detectors}
-              <Card title={t("detail.detectors")}>
-                <ol class="space-y-2">
-                  {#each resolved.detectors as detector (detector.name)}
-                    <li class="rounded-md bg-muted/40 p-3">
-                      <div class="flex flex-wrap items-baseline gap-2">
-                        <span class="font-medium">{detector.name}</span>
-                        <span class="font-mono text-xs text-muted-foreground"
-                          >{detector.type}</span
-                        >
-                        {#each detector.groups as group (group)}
-                          <a
-                            class="font-mono text-xs hover:underline"
-                            href={refPath(group)}>{group}</a
-                          >
-                        {/each}
-                      </div>
-                      {#if detector.labels}
-                        <p class="mt-2 flex flex-wrap gap-1">
-                          {#each detector.labels as entry (entry.label)}<EntityLabel
-                              label={entry.label}
-                              {colors}
-                            />{/each}
-                        </p>
-                      {/if}
-                    </li>
-                  {/each}
-                </ol>
-              </Card>
-            {/if}
-
-            <!-- The stages a config chose - linker, anonymizer, memory - used
-                 to sit here. They are the application's choices, not the
-                 registry's, and naming them told a visitor nothing they could
-                 act on. What goes here instead is how to use the object; the
-                 Pipeline file tab still shows the whole thing for whoever
-                 wants the stages too. -->
+            <!-- Use it leads, and the stages a config chose - linker,
+                 anonymizer, memory - used to be what sat here instead. Those
+                 are the application's choices, not the registry's. What the
+                 object is made of comes after how to run it, because a
+                 visitor arrives wanting the second; the Pipeline file tab
+                 still shows the whole thing for whoever wants the stages too.
+                 -->
             <Async promise={snippets}>
               {#snippet children(value)}
                 {#if value}
@@ -457,6 +427,37 @@
                     >
                   {/each}
                 </div>
+              </Card>
+            {/if}
+
+            {#if resolved.detectors}
+              <Card title={t("detail.detectors")}>
+                <ol class="space-y-2">
+                  {#each resolved.detectors as detector (detector.name)}
+                    <li class="rounded-md bg-muted/40 p-3">
+                      <div class="flex flex-wrap items-baseline gap-2">
+                        <span class="font-medium">{detector.name}</span>
+                        <span class="font-mono text-xs text-muted-foreground"
+                          >{detector.type}</span
+                        >
+                        {#each detector.groups as group (group)}
+                          <a
+                            class="font-mono text-xs hover:underline"
+                            href={refPath(group)}>{group}</a
+                          >
+                        {/each}
+                      </div>
+                      {#if detector.labels}
+                        <p class="mt-2 flex flex-wrap gap-1">
+                          {#each detector.labels as entry (entry.label)}<EntityLabel
+                              label={entry.label}
+                              {colors}
+                            />{/each}
+                        </p>
+                      {/if}
+                    </li>
+                  {/each}
+                </ol>
               </Card>
             {/if}
 
