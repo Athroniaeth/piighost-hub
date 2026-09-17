@@ -101,74 +101,65 @@ def export(labels: ResolvedLabels, fmt: str) -> tuple[str, str]:
     raise ValueError(f"unknown export format {fmt!r}")
 
 
-def snippets(ref: str, kind: str, *, origin: str, regex_only: bool) -> dict[str, str]:
-    """Ready-to-paste ways to use a reference, one per target.
+MIN_VERSION = "1.8"
+"""The piighost release that ships RegexDetector.from_hub and hub catalogs."""
 
-    Every recipe here was run against piighost 1.7.1 and the published image
-    before being written down. That matters because the obvious ones do not
-    work: the library has no hub client — ``load_pipeline`` takes a path and
-    there is no ``piighost hub`` command — so a snippet that resolves a
-    ``hub:`` reference by itself is fiction. Each one fetches the file over
-    HTTP instead.
+
+def snippets(ref: str, kind: str, *, origin: str, regex_only: bool) -> dict[str, str]:
+    """Ready-to-paste ways to use a reference: from Python, or from a config.
+
+    The registry hands out regexes, so both recipes are about the detector.
+    What a pipeline does afterwards — link, anonymize, remember — is the
+    application's to choose, and a hub that picked those for you would be a
+    different kind of thing.
 
     ``regex_only`` says the rendered detector is a plain regex one, which is
     every pattern and group and all but three configs. Those three carry a
-    model detector, where taking the patterns out would silently drop half the
-    pipeline, so they get the pipeline form.
+    model detector: their regexes are half the object, so they are shown being
+    built whole and get no catalog recipe, since a catalogs entry cannot say
+    model.
     """
-    key, _, selector = ref.partition(":")
-    base = f"{origin}/api/v1/refs/{key}/{selector}/pipeline.toml"
-    url = f"{base}?part=detector" if regex_only else base
-    file = "detector.toml" if regex_only else "pipeline.toml"
-
-    items = {
-        "cli": (
-            "# piighost has no hub client yet, so the file comes over HTTP.\n"
-            f"curl -o {file} \\\n  '{url}'\n"
-            f'piighost anonymize "mail me at a@b.co" --config {file}'
-        ),
-        "curl": f"curl -o {file} \\\n  '{url}'",
-        "python": _python(url, regex_only, kind),
-    }
-    if kind == "config":
-        # Only a config boots the published image: it runs piighost 1.3.0,
-        # where the linker and the anonymizer are required, and a group's
-        # rendered file carries neither. It also serves threads, hence the
-        # memory, and refuses to start unauthenticated without the opt-in.
-        items["docker"] = (
-            f"curl -o pipeline.toml \\\n  '{base}?memory=in_memory'\n"
-            "docker run --rm -p 8000:8000 \\\n"
-            "  -e PIIGHOST_ALLOW_ANONYMOUS=true \\\n"
-            '  -v "$PWD/pipeline.toml:/app/pipeline.toml" \\\n'
-            "  ghcr.io/athroniaeth/piighost-api:latest"
-        )
-    return items
-
-
-def _python(url: str, regex_only: bool, kind: str) -> str:
-    """The detector by its id, which is what the registry is for."""
     if not regex_only:
-        return (
-            "import tomllib\n"
-            "import urllib.request\n\n"
-            "from piighost.config import PipelineConfig\n\n"
-            f'URL = "{url}"\n'
-            "config = tomllib.loads(urllib.request.urlopen(URL).read().decode())\n\n"
-            "pipeline = PipelineConfig.model_validate(config).build()\n"
-            'result = await pipeline.anonymize("mail me at a@b.co")'
-        )
-    body = (
-        "import tomllib\n"
-        "import urllib.request\n\n"
+        return {"python": _whole_pipeline(ref, origin)}
+    return {"python": _from_hub(ref), "config": _catalog(ref)}
+
+
+def _from_hub(ref: str) -> str:
+    """The detector by its id, which is what the registry is for."""
+    return (
+        f"# needs piighost >= {MIN_VERSION}\n"
         "from piighost.components.detector import RegexDetector\n\n"
-        f'URL = "{url}"\n'
-        "config = tomllib.loads(urllib.request.urlopen(URL).read().decode())\n\n"
-        'detector = RegexDetector(config["detector"]["patterns"])\n'
+        f'detector = RegexDetector.from_hub("{ref}")\n'
         'found = await detector.detect("mail me at a@b.co")'
     )
-    if kind == "config":
-        body += (
-            "\n\n# For the whole pipeline instead, drop ?part=detector and:\n"
-            "#   pipeline = PipelineConfig.model_validate(config).build()"
-        )
-    return body
+
+
+def _catalog(ref: str) -> str:
+    """The same reference named from a pipeline file, fetched when it builds."""
+    return (
+        "# pipeline.toml\n"
+        "[detector]\n"
+        "type = 'regex'\n"
+        f"catalogs = ['hub:{ref}']\n"
+        "\n"
+        "# Your own on top: an inline pattern wins on a shared label.\n"
+        "[detector.patterns]\n"
+        "INTERNAL_ID = 'EMP-\\d{6}'"
+    )
+
+
+def _whole_pipeline(ref: str, origin: str) -> str:
+    """A reference carrying a model detector is used whole, or not at all."""
+    key, _, selector = ref.partition(":")
+    url = f"{origin}/api/v1/refs/{key}/{selector}/pipeline.toml"
+    return (
+        "# This one carries a model detector as well as regexes, so it is\n"
+        "# built whole rather than lifted apart.\n"
+        "import tomllib\n"
+        "import urllib.request\n\n"
+        "from piighost.config import PipelineConfig\n\n"
+        f'URL = "{url}"\n'
+        "config = tomllib.loads(urllib.request.urlopen(URL).read().decode())\n\n"
+        "pipeline = PipelineConfig.model_validate(config).build()\n"
+        'result = await pipeline.anonymize("mail me at a@b.co")'
+    )

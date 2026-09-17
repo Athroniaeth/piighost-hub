@@ -2,7 +2,7 @@
   import Download from "@lucide/svelte/icons/download";
   import GitCommit from "@lucide/svelte/icons/git-commit-horizontal";
   import Play from "@lucide/svelte/icons/play";
-  import Terminal from "@lucide/svelte/icons/terminal";
+  import FileCog from "@lucide/svelte/icons/file-cog";
   import type { CommitDetail, ObjectDetail, Resolved } from "../generated/api";
   import Async from "../components/Async.svelte";
   import EntityLabel from "../components/EntityLabel.svelte";
@@ -52,7 +52,7 @@
   let tab = $state<Tab>("content");
   let form = $state<"flattened" | "referenced">("flattened");
   let memory = $state<"" | "in_memory" | "redis" | "sqlalchemy">("");
-  let snippet = $state("cli");
+  let snippet = $state("python");
   // A config chooses a linker, an anonymizer, sometimes a guard and a memory,
   // which are decisions about the application rather than about detection.
   // Taking the detector alone is how you keep the registry's half.
@@ -512,12 +512,10 @@
                         size="default"
                       >
                         {#snippet icon(name)}
-                          {#if name === "cli"}
-                            <Terminal class="size-4 shrink-0" />
+                          {#if name === "python"}
+                            <BrandIcon name="python" />
                           {:else}
-                            <BrandIcon
-                              name={name as "curl" | "docker" | "python"}
-                            />
+                            <FileCog class="size-4 shrink-0" />
                           {/if}
                         {/snippet}
                       </Segmented>
@@ -525,7 +523,7 @@
                     <CodeBlock
                       code={value.items[snippet] ??
                         Object.values(value.items)[0]}
-                      language={snippet === "python" ? "python" : "shell"}
+                      language={snippet === "python" ? "python" : "toml"}
                     />
                   </Card>
                 {/if}

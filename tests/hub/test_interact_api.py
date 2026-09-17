@@ -223,7 +223,8 @@ class TestExportsAndBadges:
         snippets = (
             await client.get("/api/v1/refs/piighost/base/latest/snippets")
         ).json()
-        assert set(snippets["items"]) == {"cli", "curl", "docker", "python"}
+        # No catalog recipe either: a catalogs entry cannot say model.
+        assert set(snippets["items"]) == {"python"}
         assert "PipelineConfig" in snippets["items"]["python"]
         assert "RegexDetector" not in snippets["items"]["python"]
         badge = (await client.get("/api/v1/badge/piighost/all")).json()
@@ -233,30 +234,24 @@ class TestExportsAndBadges:
     async def test_a_group_is_used_through_its_detector(
         self, client: AsyncTestClient[Litestar]
     ) -> None:
-        """The registry hands out regexes, so the example uses the detector."""
-        items = (await client.get("/api/v1/refs/piighost/all/latest/snippets")).json()[
-            "items"
-        ]
-        assert "RegexDetector" in items["python"]
-        assert 'config["detector"]["patterns"]' in items["python"]
-        assert "?part=detector" in items["python"]
-        # Absolute, because a snippet is meant to be pasted into a shell.
-        assert "http://" in items["curl"]
-        # The published image runs an older piighost that refuses a group's
-        # file, so no docker recipe is offered for one.
-        assert "docker" not in items
+        """The registry hands out regexes, so both recipes are the detector."""
+        body = (await client.get("/api/v1/refs/piighost/all/latest/snippets")).json()
+        ref, items = body["ref"], body["items"]
+        assert set(items) == {"python", "config"}
+        assert f'RegexDetector.from_hub("{ref}")' in items["python"]
+        assert f"catalogs = ['hub:{ref}']" in items["config"]
 
-    async def test_no_snippet_pretends_the_library_resolves_a_hub_ref(
+    async def test_no_snippet_names_a_command_that_does_not_exist(
         self, client: AsyncTestClient[Litestar]
     ) -> None:
-        """piighost 1.7 has no hub client: no `hub:` argument, no `hub` command."""
+        """There is no piighost hub command, and no CLI or docker recipe left."""
         for key in ("piighost/all", "piighost/base", "piighost/child"):
             items = (await client.get(f"/api/v1/refs/{key}/latest/snippets")).json()[
                 "items"
             ]
+            assert set(items) <= {"python", "config"}, key
             for target, body in items.items():
                 assert "piighost hub" not in body, (key, target)
-                assert '"hub:' not in body, (key, target)
 
 
 class TestScoreAndDiff:
