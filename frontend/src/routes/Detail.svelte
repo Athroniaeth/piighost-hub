@@ -50,7 +50,10 @@
   const snippets = $derived(api.snippets(ref).catch(() => null));
 
   let tab = $state<Tab>("content");
-  let form = $state<"flattened" | "referenced">("flattened");
+  // By hub id first: naming the reference is the short form and the one that
+  // keeps the patterns auditable at their source. Inlining is the fallback,
+  // for a file that has to work with no hub to reach.
+  let form = $state<"flattened" | "referenced">("referenced");
   let memory = $state<"" | "in_memory" | "redis" | "sqlalchemy">("");
   let snippet = $state("python");
   // A config chooses a linker, an anonymizer, sometimes a guard and a memory,
@@ -76,8 +79,8 @@
     { value: "pipeline", label: t("detail.pipeline") },
   ]);
   const formOptions = $derived([
-    { value: "flattened" as const, label: t("detail.flattened") },
     { value: "referenced" as const, label: t("detail.referenced") },
+    { value: "flattened" as const, label: t("detail.flattened") },
   ]);
   const partOptions = $derived([
     { value: "pipeline" as const, label: t("detail.wholePipeline") },

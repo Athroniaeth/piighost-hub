@@ -10,19 +10,25 @@
 export type Token = { text: string; kind: string };
 
 const TOML_RULES: [RegExp, string][] = [
-  [/^#.*/, "comment"],
-  [/^\[\[?[^\]]*\]\]?/, "section"],
-  [/^'[^']*'/, "string"],
-  [/^"(?:[^"\\]|\\.)*"/, "string"],
-  [/^\b(?:true|false)\b/, "boolean"],
-  [/^-?\d+(?:\.\d+)?\b/, "number"],
-  [/^[A-Za-z0-9_-]+(?=\s*=)/, "key"],
-  [/^[=,{}[\]]/, "punctuation"],
-  [/^\s+/, "space"],
+  [/#.*/y, "comment"],
+  [/\[\[?[^\]]*\]\]?/y, "section"],
+  [/'[^']*'/y, "string"],
+  [/"(?:[^"\\]|\\.)*"/y, "string"],
+  [/\b(?:true|false)\b/y, "boolean"],
+  [/-?\d+(?:\.\d+)?\b/y, "number"],
+  [/[A-Za-z0-9_-]+(?=\s*=)/y, "key"],
+  [/[=,{}[\]]/y, "punctuation"],
+  [/\s+/y, "space"],
 ];
 
 /**
- * Walk a source against anchored rules, first match wins.
+ * Walk a source against sticky rules, first match wins.
+ *
+ * The rules are sticky and matched at an index into the whole source, never
+ * against a slice of it. A slice loses what came before, and `\b` reads the
+ * start of a string as a word boundary: `detector` sliced after `detect`
+ * begins with `or`, which is how a Python keyword came to be painted inside
+ * every identifier ending in one.
  *
  * What no rule claims is accumulated into one run of `fallback`, character by
  * character, so a block of ordinary text is one span and not one per letter.
@@ -33,20 +39,28 @@ function tokenise(
   fallback: string,
 ): Token[] {
   const tokens: Token[] = [];
-  let rest = source;
-  while (rest.length > 0) {
-    const rule = rules.find(([pattern]) => pattern.test(rest));
-    if (!rule) {
+  let index = 0;
+  while (index < source.length) {
+    let matched: string | null = null;
+    let kind = fallback;
+    for (const [pattern, name] of rules) {
+      pattern.lastIndex = index;
+      const found = pattern.exec(source);
+      if (found) {
+        matched = found[0];
+        kind = name;
+        break;
+      }
+    }
+    if (matched === null) {
       const last = tokens[tokens.length - 1];
-      if (last && last.kind === fallback) last.text += rest[0];
-      else tokens.push({ text: rest[0], kind: fallback });
-      rest = rest.slice(1);
+      if (last && last.kind === fallback) last.text += source[index];
+      else tokens.push({ text: source[index], kind: fallback });
+      index += 1;
       continue;
     }
-    const [pattern, kind] = rule;
-    const [matched] = pattern.exec(rest)!;
     tokens.push({ text: matched, kind });
-    rest = rest.slice(matched.length);
+    index += matched.length;
   }
   return tokens;
 }
@@ -57,16 +71,16 @@ export function tomlTokens(source: string): Token[] {
 }
 
 const REGEX_RULES: [RegExp, string][] = [
-  [/^\\[dDwWsSbBAZ]/, "class"],
-  [/^\\./, "escape"],
-  [/^\(\?<[=!][^)]*/, "group"],
-  [/^\(\?[:=!#]/, "group"],
-  [/^[()]/, "group"],
-  [/^\[(?:[^\]\\]|\\.)*\]/, "set"],
-  [/^\{\d+(?:,\d*)?\}/, "quantifier"],
-  [/^[*+?]/, "quantifier"],
-  [/^\|/, "alternation"],
-  [/^\^|^\$/, "anchor"],
+  [/\\[dDwWsSbBAZ]/y, "class"],
+  [/\\./y, "escape"],
+  [/\(\?<[=!][^)]*/y, "group"],
+  [/\(\?[:=!#]/y, "group"],
+  [/[()]/y, "group"],
+  [/\[(?:[^\]\\]|\\.)*\]/y, "set"],
+  [/\{\d+(?:,\d*)?\}/y, "quantifier"],
+  [/[*+?]/y, "quantifier"],
+  [/\|/y, "alternation"],
+  [/\^|^\$/y, "anchor"],
 ];
 
 /** Tokenise a regex so its structure is visible at a glance. */
@@ -75,19 +89,19 @@ export function regexTokens(source: string): Token[] {
 }
 
 const PYTHON_RULES: [RegExp, string][] = [
-  [/^#.*/, "comment"],
-  [/^[A-Za-z]{0,2}"""[\s\S]*?"""/, "string"],
-  [/^[A-Za-z]{0,2}'''[\s\S]*?'''/, "string"],
-  [/^[A-Za-z]{0,2}"(?:[^"\\]|\\.)*"/, "string"],
-  [/^[A-Za-z]{0,2}'(?:[^'\\]|\\.)*'/, "string"],
+  [/#.*/y, "comment"],
+  [/[A-Za-z]{0,2}"""[\s\S]*?"""/y, "string"],
+  [/[A-Za-z]{0,2}'''[\s\S]*?'''/y, "string"],
+  [/[A-Za-z]{0,2}"(?:[^"\\]|\\.)*"/y, "string"],
+  [/[A-Za-z]{0,2}'(?:[^'\\]|\\.)*'/y, "string"],
   [
-    /^\b(?:from|import|as|def|class|return|await|async|if|elif|else|for|while|with|try|except|finally|raise|yield|lambda|pass|in|not|and|or|is)\b/,
+    /\b(?:from|import|as|def|class|return|await|async|if|elif|else|for|while|with|try|except|finally|raise|yield|lambda|pass|in|not|and|or|is)\b/y,
     "keyword",
   ],
-  [/^\b(?:None|True|False)\b/, "boolean"],
-  [/^\b[A-Za-z_][A-Za-z0-9_]*(?=\()/, "function"],
-  [/^\b\d+(?:\.\d+)?\b/, "number"],
-  [/^[=(){}[\],.:]/, "punctuation"],
+  [/\b(?:None|True|False)\b/y, "boolean"],
+  [/\b[A-Za-z_][A-Za-z0-9_]*(?=\()/y, "function"],
+  [/\b\d+(?:\.\d+)?\b/y, "number"],
+  [/[=(){}[\],.:]/y, "punctuation"],
 ];
 
 /** Tokenise Python well enough to read a four-line snippet. */
