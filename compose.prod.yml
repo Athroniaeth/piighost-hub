@@ -14,6 +14,12 @@
 # and read the API key section of the README first.
 #
 # Coolify treats this file as the source of truth: declare things here, not in the UI.
+#
+# `environment` is a mapping, not a list. Coolify re-serializes the file before
+# handing it to compose, and it turns a list into a mapping by splitting each
+# entry on `=`. SERVICE_FQDN_WEB_8080 carries no `=`, so it came back keyed by
+# its index and compose refused the file: "non-string key in
+# services.web.environment: 0". A mapping has nothing to infer.
 
 services:
   web:
@@ -26,19 +32,19 @@ services:
         VITE_OPENPANEL_CLIENT_ID: ${VITE_OPENPANEL_CLIENT_ID:-}
     environment:
       # Magic variable, intentionally valueless: Coolify fills it in.
-      - SERVICE_FQDN_WEB_8080
+      SERVICE_FQDN_WEB_8080: ""
       # `:?` makes it a required variable in the UI — a blank value blocks the
       # deployment instead of shipping an API with an empty key to compare against.
-      - API_KEY=${API_KEY:?}
+      API_KEY: ${API_KEY:?}
       # Where the hub registry lives inside the image. Override to serve a mirror.
-      - HUB_REGISTRY_DIR=${HUB_REGISTRY_DIR:-/app/registry}
+      HUB_REGISTRY_DIR: ${HUB_REGISTRY_DIR:-/app/registry}
       # Target of the pull request link the contribution page builds.
-      - HUB_REGISTRY_REPO=${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub}
-      - HUB_REGISTRY_BRANCH=${HUB_REGISTRY_BRANCH:-main}
+      HUB_REGISTRY_REPO: ${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub}
+      HUB_REGISTRY_BRANCH: ${HUB_REGISTRY_BRANCH:-main}
       # The host /api/op forwards events to, and the origin nginx presents to
       # OpenPanel's allow list. Read once, when the template is rendered.
-      - OPENPANEL_HOST=${OPENPANEL_HOST:-opapi.athroniaeth.cloud}
-      - SITE_URL=${SITE_URL:-https://piighost-hub.athroniaeth.cloud}
+      OPENPANEL_HOST: ${OPENPANEL_HOST:-opapi.athroniaeth.cloud}
+      SITE_URL: ${SITE_URL:-https://piighost-hub.athroniaeth.cloud}
     depends_on:
       api:
         condition: service_healthy
@@ -50,25 +56,25 @@ services:
       dockerfile: Dockerfile.api
     environment:
       # Vertical scaling knob: one Granian worker per core is a sane start.
-      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-1}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
       # Docs off by default here: /schema publishes a full route inventory, and the
       # API has its own public domain on Coolify, so nginx cannot hide them. Set
       # ENABLE_DOCS=true in the project variables to turn them back on temporarily.
-      - ENABLE_DOCS=${ENABLE_DOCS:-false}
-      - API_KEY=${API_KEY:?}
+      ENABLE_DOCS: ${ENABLE_DOCS:-false}
+      API_KEY: ${API_KEY:?}
       # Where the hub registry lives inside the image. Override to serve a mirror.
-      - HUB_REGISTRY_DIR=${HUB_REGISTRY_DIR:-/app/registry}
+      HUB_REGISTRY_DIR: ${HUB_REGISTRY_DIR:-/app/registry}
       # Target of the pull request link the contribution page builds.
-      - HUB_REGISTRY_REPO=${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub}
-      - HUB_REGISTRY_BRANCH=${HUB_REGISTRY_BRANCH:-main}
+      HUB_REGISTRY_REPO: ${HUB_REGISTRY_REPO:-Athroniaeth/piighost-hub}
+      HUB_REGISTRY_BRANCH: ${HUB_REGISTRY_BRANCH:-main}
       # Usage counters. A volume rather than the image, else a deployment
       # forgets how the hub was used.
-      - HUB_USAGE_DB=${HUB_USAGE_DB:-/app/data/usage.db}
+      HUB_USAGE_DB: ${HUB_USAGE_DB:-/app/data/usage.db}
       # Where the API reports what a browser cannot report for itself. All three
       # or none; the secret never reaches the bundle. See hub/analytics.py.
-      - OPENPANEL_API_URL=${OPENPANEL_API_URL:-}
-      - OPENPANEL_CLIENT_ID=${OPENPANEL_CLIENT_ID:-}
-      - OPENPANEL_CLIENT_SECRET=${OPENPANEL_CLIENT_SECRET:-}
+      OPENPANEL_API_URL: ${OPENPANEL_API_URL:-}
+      OPENPANEL_CLIENT_ID: ${OPENPANEL_CLIENT_ID:-}
+      OPENPANEL_CLIENT_SECRET: ${OPENPANEL_CLIENT_SECRET:-}
     volumes:
       - usage:/app/data
     healthcheck:
