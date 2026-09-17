@@ -8,7 +8,7 @@
 
 **[piighost-hub.athroniaeth.cloud](https://piighost-hub.athroniaeth.cloud)**
 
-A registry of tested de-identification regexes for [piighost](https://github.com/Athroniaeth/piighost): **138 patterns** and **48 groups** across **28 countries**, each addressed by name and version, each carrying the cases it must catch and the cases it must leave alone.
+A registry of tested de-identification regexes for [piighost](https://github.com/Athroniaeth/piighost): **147 patterns** and **48 groups** across **28 countries**, each addressed by name and version, each carrying the cases it must catch and the cases it must leave alone.
 
 Writing a regex for a national identifier is easy. Writing one that still behaves when it sits next to twenty others is not. A French SIRET is fourteen digits, which is also a credit card number; a five-digit postcode is French, Italian and American at once; a token inside a URL is claimed by the URL first. The registry exists because those collisions are the actual work, and because everyone rewrites the same twenty patterns badly.
 

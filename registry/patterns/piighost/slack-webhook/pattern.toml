@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "slack-webhook"
+label = "SLACK_WEBHOOK"
+tags = ["international", "secrets", "software-dev", "logs"]
+regex = '\bhttps://hooks\.slack\.com/services/T[A-Z0-9]{8,12}/B[A-Z0-9]{8,12}/[A-Za-z0-9]{24}\b'
+
+[pattern.description]
+en = "Slack incoming webhook URL, whose path is the credential: anyone holding it can post to the channel. Collides with URL, which starts at the same character and covers the same span, so a group carrying both must declare this one first. The `logs` group leaves URL out for exactly this reason."
+
+# Identifiants inventés, longueurs exactes.
+[[examples.match]]
+text = "Configurez l'intégration avec https://hooks.slack.com/services/T0123ABCD/B0456EFGH/AbCdEfGhIjKlMnOpQrStUvWx aujourd'hui."
+value = "https://hooks.slack.com/services/T0123ABCD/B0456EFGH/AbCdEfGhIjKlMnOpQrStUvWx"
+
+# Le segment secret est trop court.
+[[examples.no_match]]
+text = "https://hooks.slack.com/services/T0123ABCD/B0456EFGH/tropcourt"
+
+# L'API publique, pas un webhook.
+[[examples.no_match]]
+text = "https://slack.com/api/chat.postMessage"
+
+[redos]
+prefix = 'https://hooks.slack.com/services/T0123ABCD/B0456EFGH/'
+filler = 'A'
+suffix = ' '

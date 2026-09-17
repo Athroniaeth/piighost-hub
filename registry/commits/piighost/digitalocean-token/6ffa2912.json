@@ -1,0 +1,43 @@
+{
+  "digest": "6ffa291208302276093c97764abd749121e8f698fdfddedf13bdb3a7b09160ca",
+  "recorded_at": "2026-09-17T14:22:27+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "digitalocean-token",
+    "schema_version": 1,
+    "label": "DIGITALOCEAN_TOKEN",
+    "regex": "\\bdop_v1_[a-f0-9]{64}\\b",
+    "description": {
+      "en": "DigitalOcean personal access token: dop_v1_ then sixty-four lowercase hex characters. The version in the prefix is part of the format, so a future dop_v2_ is a different pattern rather than a silent widening here.",
+      "fr": null
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Le script Terraform utilise dop_v1_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef pour créer les droplets.",
+          "value": "dop_v1_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "dop_v1_0123456789abcdef"
+        },
+        {
+          "text": "dop_v2_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "dop_v1_",
+      "filler": "a",
+      "suffix": "!"
+    }
+  }
+}

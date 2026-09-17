@@ -1,0 +1,33 @@
+schema_version = 1
+
+[pattern]
+name = "gitlab-token"
+label = "GITLAB_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bglpat-[A-Za-z0-9_-]{20,}(?![A-Za-z0-9_-])'
+
+[pattern.description]
+en = "GitLab personal, project or group access token: glpat- then at least twenty characters of the token alphabet. The lookahead pins the end so a longer token is taken whole rather than truncated to twenty. GitLab's other prefixes (gldt-, glrt-, glsoat-) are different objects and are not covered."
+
+# Jeton inventé, longueur minimale.
+[[examples.match]]
+text = "Le pipeline échoue avec glpat-AbCdEfGhIjKlMnOpQrSt dans les variables."
+value = "glpat-AbCdEfGhIjKlMnOpQrSt"
+
+# Jeton inventé, plus long que le minimum.
+[[examples.match]]
+text = "GITLAB_TOKEN=glpat-0123456789abcdefghij0123456789"
+value = "glpat-0123456789abcdefghij0123456789"
+
+# Trop court.
+[[examples.no_match]]
+text = "glpat-court"
+
+# Un tiret bas, pas un tiret : autre chose.
+[[examples.no_match]]
+text = "glpat_AbCdEfGhIjKlMnOpQrSt"
+
+[redos]
+prefix = 'glpat-'
+filler = 'a'
+suffix = '!'

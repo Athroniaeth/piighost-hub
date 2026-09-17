@@ -89,8 +89,8 @@ class Index:
                 tags=list(head.content.get("tags", [])),
                 labels=labels,
                 description={
-                    "en": description.get("en", ""),
-                    "fr": description.get("fr", ""),
+                    "en": description.get("en") or "",
+                    "fr": description.get("fr") or "",
                 },
                 updated_at=next(
                     (s.recorded_at for s in history if s.recorded_at), None
@@ -104,8 +104,11 @@ class Index:
                         head.name,
                         " ".join(entry.tags),
                         " ".join(labels),
-                        description.get("en", ""),
-                        description.get("fr", ""),
+                        # `or ""`, not a default: a manifest that declares
+                        # `fr = ` with nothing, or omits it since the site
+                        # stopped being bilingual, carries an explicit None.
+                        description.get("en") or "",
+                        description.get("fr") or "",
                     ]
                 )
             )

@@ -49,11 +49,19 @@ def write_pattern(
     no_matches: list[str] | None = None,
     extra: str = "",
     tail: str = "",
+    description: str | None = None,
 ) -> Path:
     matches = (
         matches if matches is not None else [(f"value {label.lower()}", label.lower())]
     )
     no_matches = no_matches if no_matches is not None else ["nothing here"]
+    # A table body, not a value: a caller passing `{ en = "..." }` gets an
+    # English-only manifest, which is what the registry writes now.
+    described = (
+        description.strip("{} ")
+        if description is not None
+        else f'en = "{label} test pattern"\nfr = "Motif de test {label}"'
+    )
     body = f"""
 schema_version = 1
 
@@ -65,8 +73,7 @@ regex = '{regex}'
 {extra}
 
 [pattern.description]
-en = "{label} test pattern"
-fr = "Motif de test {label}"
+{described}
 """
     for text, value in matches:
         body += f'\n[[examples.match]]\ntext = "{text}"\nvalue = "{value}"\n'

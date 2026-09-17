@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "ssh-public-key"
+label = "SSH_PUBLIC_KEY"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bssh-(?:rsa|ed25519|dss) [A-Za-z0-9+/]{40,}={0,3}'
+
+[pattern.description]
+en = "OpenSSH public key line: the algorithm, a space, then the base64 body. A public key is not a secret, and it is a stable identifier of a person and of the machines they reach, which is what puts it here. The trailing comment, usually user@host, is left out: it is an email-shaped value the contact patterns already carry."
+
+# Clé inventée, corps tronqué à une longueur plausible.
+[[examples.match]]
+text = "Ajoutez au serveur : ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3hZ7abcdefghijklmnopqrstuvwxyz012345 admin@poste-01"
+value = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3hZ7abcdefghijklmnopqrstuvwxyz012345"
+
+# Une commande, pas une clé.
+[[examples.no_match]]
+text = "ssh-agent bash"
+
+# Corps trop court.
+[[examples.no_match]]
+text = "ssh-ed25519 AAAAC3Nza"
+
+[redos]
+prefix = 'ssh-rsa '
+filler = 'A'
+suffix = '!'

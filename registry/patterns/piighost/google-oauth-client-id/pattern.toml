@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "google-oauth-client-id"
+label = "GOOGLE_OAUTH_CLIENT_ID"
+tags = ["international", "secrets", "software-dev"]
+regex = '\b\d{6,}-[a-z0-9]{10,}\.apps\.googleusercontent\.com\b'
+
+[pattern.description]
+en = "Google OAuth client identifier, the project number then the client hash under apps.googleusercontent.com. Not a secret on its own, since a web client ships it to the browser, but it names the project and travels with the client secret that is one."
+
+# Client inventé.
+[[examples.match]]
+text = "Le client OAuth 123456789012-abc123def456ghi789.apps.googleusercontent.com doit être régénéré."
+value = "123456789012-abc123def456ghi789.apps.googleusercontent.com"
+
+# Le segment client est trop court.
+[[examples.no_match]]
+text = "123456789012-abc.apps.googleusercontent.com"
+
+# Le domaine seul, sans identifiant.
+[[examples.no_match]]
+text = "www.googleusercontent.com"
+
+[redos]
+prefix = '123456789012-'
+filler = 'a'
+suffix = '!'

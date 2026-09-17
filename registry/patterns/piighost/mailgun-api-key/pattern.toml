@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "mailgun-api-key"
+label = "MAILGUN_API_KEY"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bkey-[0-9a-f]{32}\b'
+
+[pattern.description]
+en = "Mailgun private API key: key- then thirty-two lowercase hex characters. Restricted to hex on purpose: the wider alphanumeric form matches any key- prefixed identifier, and hex is what Mailgun emits. A bare thirty-two hex run without the prefix is not covered, because it is also an MD5 digest and a Twilio SID."
+
+# Clé inventée, trente-deux hex.
+[[examples.match]]
+text = "Le connecteur utilise encore key-3a06f0d129fd6fd54cc373599f47e016 dans la configuration."
+value = "key-3a06f0d129fd6fd54cc373599f47e016"
+
+# Trop courte.
+[[examples.no_match]]
+text = "key-3a06f0d129fd6fd54cc373599f47e0"
+
+# Hors de l'alphabet hexadécimal.
+[[examples.no_match]]
+text = "key-ZZZZf0d129fd6fd54cc373599f47e016"
+
+[redos]
+prefix = 'key-'
+filler = 'a'
+suffix = '!'

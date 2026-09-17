@@ -14,6 +14,11 @@ ref = "piighost/eu-vat"
 [[sources]]
 ref = "piighost/fr-siret"
 
+# A SIRET is a SIREN plus five digits, so the longer one is declared first and
+# fr-siren carries the lookahead that keeps it off an establishment number.
+[[sources]]
+ref = "piighost/fr-siren"
+
 [[sources]]
 ref = "piighost/es-nif-cif"
 

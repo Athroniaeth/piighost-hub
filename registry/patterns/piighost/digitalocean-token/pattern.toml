@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "digitalocean-token"
+label = "DIGITALOCEAN_TOKEN"
+tags = ["international", "secrets", "software-dev"]
+regex = '\bdop_v1_[a-f0-9]{64}\b'
+
+[pattern.description]
+en = "DigitalOcean personal access token: dop_v1_ then sixty-four lowercase hex characters. The version in the prefix is part of the format, so a future dop_v2_ is a different pattern rather than a silent widening here."
+
+# Jeton inventé, soixante-quatre hex.
+[[examples.match]]
+text = "Le script Terraform utilise dop_v1_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef pour créer les droplets."
+value = "dop_v1_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+
+# Trop court.
+[[examples.no_match]]
+text = "dop_v1_0123456789abcdef"
+
+# Une autre version du format.
+[[examples.no_match]]
+text = "dop_v2_0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+
+[redos]
+prefix = 'dop_v1_'
+filler = 'a'
+suffix = '!'

@@ -1,0 +1,28 @@
+schema_version = 1
+
+[pattern]
+name = "db-connection-string"
+label = "DB_CONNECTION_STRING"
+tags = ["international", "secrets", "network", "software-dev"]
+regex = '\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s:/@]+:[^\s@/]+@[^\s/]*[^\s/.,;:!?)\]]'
+
+[pattern.description]
+en = "A database URL carrying its password, the form an application reads from an environment variable and a traceback prints whole. The span stops at the host, so the database name and the query string are left in clear, which is what makes a redacted log still readable."
+
+# Identifiants inventés.
+[[examples.match]]
+text = "L'application se connecte via postgres://app_user:MotDePasse123@db.prod.interne:5432/facturation au démarrage."
+value = "postgres://app_user:MotDePasse123@db.prod.interne:5432"
+
+# Sans identifiants.
+[[examples.no_match]]
+text = "postgres://db.prod.interne:5432/facturation"
+
+# Une URL HTTP : c'est basic-auth-url.
+[[examples.no_match]]
+text = "https://user:pass@example.com"
+
+[redos]
+prefix = 'postgres://user:'
+filler = 'a'
+suffix = ' '

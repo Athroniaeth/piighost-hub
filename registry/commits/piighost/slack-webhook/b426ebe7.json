@@ -1,0 +1,44 @@
+{
+  "digest": "b426ebe77a28345b8f8a5458781a278d3feee76835d808c44d702f48af9c9974",
+  "recorded_at": "2026-09-17T14:22:27+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "slack-webhook",
+    "schema_version": 1,
+    "label": "SLACK_WEBHOOK",
+    "regex": "\\bhttps://hooks\\.slack\\.com/services/T[A-Z0-9]{8,12}/B[A-Z0-9]{8,12}/[A-Za-z0-9]{24}\\b",
+    "description": {
+      "en": "Slack incoming webhook URL, whose path is the credential: anyone holding it can post to the channel. Collides with URL, which starts at the same character and covers the same span, so a group carrying both must declare this one first. The `logs` group leaves URL out for exactly this reason.",
+      "fr": null
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev",
+      "logs"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Configurez l'intégration avec https://hooks.slack.com/services/T0123ABCD/B0456EFGH/AbCdEfGhIjKlMnOpQrStUvWx aujourd'hui.",
+          "value": "https://hooks.slack.com/services/T0123ABCD/B0456EFGH/AbCdEfGhIjKlMnOpQrStUvWx"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "https://hooks.slack.com/services/T0123ABCD/B0456EFGH/tropcourt"
+        },
+        {
+          "text": "https://slack.com/api/chat.postMessage"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "https://hooks.slack.com/services/T0123ABCD/B0456EFGH/",
+      "filler": "A",
+      "suffix": " "
+    }
+  }
+}

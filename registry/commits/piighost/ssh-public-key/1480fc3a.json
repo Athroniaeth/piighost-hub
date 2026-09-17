@@ -1,0 +1,43 @@
+{
+  "digest": "1480fc3aa6c02eadb46796a5edaa61992e1ab5e6ba60c9c231120ba913c2d6ac",
+  "recorded_at": "2026-09-17T14:22:27+00:00",
+  "content": {
+    "kind": "pattern",
+    "namespace": "piighost",
+    "name": "ssh-public-key",
+    "schema_version": 1,
+    "label": "SSH_PUBLIC_KEY",
+    "regex": "\\bssh-(?:rsa|ed25519|dss) [A-Za-z0-9+/]{40,}={0,3}",
+    "description": {
+      "en": "OpenSSH public key line: the algorithm, a space, then the base64 body. A public key is not a secret, and it is a stable identifier of a person and of the machines they reach, which is what puts it here. The trailing comment, usually user@host, is left out: it is an email-shaped value the contact patterns already carry.",
+      "fr": null
+    },
+    "tags": [
+      "international",
+      "secrets",
+      "software-dev"
+    ],
+    "resilience": true,
+    "examples": {
+      "match": [
+        {
+          "text": "Ajoutez au serveur : ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3hZ7abcdefghijklmnopqrstuvwxyz012345 admin@poste-01",
+          "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3hZ7abcdefghijklmnopqrstuvwxyz012345"
+        }
+      ],
+      "no_match": [
+        {
+          "text": "ssh-agent bash"
+        },
+        {
+          "text": "ssh-ed25519 AAAAC3Nza"
+        }
+      ]
+    },
+    "redos": {
+      "prefix": "ssh-rsa ",
+      "filler": "A",
+      "suffix": "!"
+    }
+  }
+}

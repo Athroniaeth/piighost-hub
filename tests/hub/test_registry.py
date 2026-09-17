@@ -8,6 +8,29 @@ from backend.hub.registry import Registry
 from tests.hub.fixtures import EMAIL, write, write_config, write_group, write_pattern
 
 
+class TestEnglishOnly:
+    def test_an_object_without_a_french_description_indexes(self, root: Path) -> None:
+        """The site stopped being bilingual, so `fr` is optional everywhere.
+
+        It was optional in the manifest model and required by the index, which
+        joined both translations into the haystack and tripped over the None.
+        """
+        from backend.hub.search import Index
+
+        write_pattern(
+            root,
+            "english-only",
+            "ENGLISH_ONLY",
+            r"\bEO-\d{4}\b",
+            matches=[("code EO-1234 here", "EO-1234")],
+            no_matches=["EO-12"],
+            description='{ en = "An English-only description." }',
+        )
+        index = Index(Registry.load(root))
+        assert index.entries["piighost/english-only"].description["fr"] == ""
+        assert index.search("english-only")
+
+
 class TestLoading:
     def test_heads_are_frozen_for_every_object(self, registry: Registry) -> None:
         assert set(registry.heads) == {
