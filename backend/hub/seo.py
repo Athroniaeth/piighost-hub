@@ -1,4 +1,4 @@
-"""robots.txt and sitemap.xml, both generated from the registry.
+"""robots.txt, sitemap.xml and llms.txt, all generated from the registry.
 
 Two things stand between a registry object and someone finding it: a crawler
 has to be allowed in, and it has to be told the page exists. The site is a
@@ -21,8 +21,11 @@ from xml.sax.saxutils import escape
 from litestar import Request, Response, get
 from litestar.datastructures import State
 
+from backend.hub.errors import ResolutionError
 from backend.hub.registry import Registry
+from backend.hub.resolve import resolve_config, resolve_labels
 from backend.hub.routes import STATE_KEY, origin_of
+from backend.hub.store import Snapshot
 
 XML_MEDIA_TYPE = "application/xml"
 TEXT_MEDIA_TYPE = "text/plain"
@@ -43,6 +46,9 @@ STATIC_PATHS = (
 
 # An hour: the registry changes when a pull request lands, not by the minute.
 CACHE = "public, max-age=3600"
+
+_REPO = "https://github.com/Athroniaeth/piighost-hub"
+"""Where the manifests live, which is the answer to "can I read the source"."""
 
 
 @get(
@@ -100,3 +106,129 @@ async def sitemap(request: Request, state: State) -> Response[str]:
         + "\n</urlset>\n"
     )
     return Response(body, media_type=XML_MEDIA_TYPE, headers={"Cache-Control": CACHE})
+
+
+@get(
+    "/llms.txt",
+    name="hub:llms",
+    media_type=TEXT_MEDIA_TYPE,
+    include_in_schema=False,
+)
+async def llms(request: Request, state: State) -> Response[str]:
+    """What the registry is, for a model reading the site rather than a crawler.
+
+    The llms.txt convention asks a site to say, in one file and in prose, what
+    it holds and where. It matters more here than on most sites: the pages are
+    rendered by JavaScript, and the assistants that answer "how do I redact PII
+    before a prompt" read raw HTML. This file is the one place where the whole
+    catalogue is legible without running anything.
+
+    Generated, like the sitemap, because a hand-written list of 226 objects is a
+    list of 180 three weeks later. Groups lead: a group is the set of regexes
+    someone runs, and naming 147 patterns first would bury it.
+    """
+    registry: Registry = getattr(state, STATE_KEY)
+    origin = origin_of(request)
+
+    def section(kind: str, title: str, note: str) -> list[str]:
+        rows = []
+        for key, head in sorted(registry.heads.items()):
+            if head.kind != kind:
+                continue
+            labels = _labels_of(registry, head)
+            summary = _one_line(head.content.get("description", {}).get("en", ""))
+            count = f" ({labels} labels)" if labels else ""
+            rows.append(f"- [{key}]({origin}/r/{key}){count}: {summary}")
+        if not rows:
+            return []
+        return [f"\n## {title}\n", note, ""] + rows
+
+    lines = [
+        "# piighost hub",
+        "",
+        (
+            "> A registry of tested de-identification regexes for piighost, a Python "
+            "library that keeps personal data out of LLM prompts and puts it back in "
+            "the response. Every pattern carries the cases it must catch, the cases it "
+            "must leave alone, and a bound on its backtracking; every group is checked "
+            "to still hold once its patterns are composed."
+        ),
+        "",
+        (
+            "An object is addressed by `namespace/name` and pinned by commit "
+            "(`piighost/fr-default:7cc7cb30`) or by a movable tag. The identifier is "
+            "the sha256 of the frozen manifest, so a pinned reference never changes "
+            "under you."
+        ),
+        "",
+        (
+            'Use one from Python with `RegexDetector.from_hub("piighost/logs")`, or '
+            'name it in a pipeline file with `catalogs = ["hub:piighost/logs"]`. '
+            "Both need piighost 1.8 or later."
+        ),
+        "",
+        "## How to read an object",
+        "",
+        f"- Its page: {origin}/r/NAMESPACE/NAME",
+        (
+            f"- Its detector, as TOML: {origin}/api/v1/refs/NAMESPACE/NAME/latest"
+            "/pipeline.toml?part=detector"
+        ),
+        (
+            f"- Its full pipeline: {origin}/api/v1/refs/NAMESPACE/NAME/latest"
+            "/pipeline.toml"
+        ),
+        f"- Search the catalogue: {origin}/api/v1/search?q=QUERY",
+    ]
+    lines += section(
+        "group",
+        "Groups",
+        "A group is a set of regexes checked to compose: each contributing "
+        "pattern's examples are replayed against the whole group.",
+    )
+    lines += section(
+        "pattern",
+        "Patterns",
+        "One shape and the label it emits.",
+    )
+    lines += section(
+        "config",
+        "piighost configurations",
+        "A pipeline that carries regexes and decides what happens after "
+        "detection. A different object from the regexes themselves.",
+    )
+    lines += [
+        "",
+        "## Elsewhere",
+        "",
+        "- [piighost, the library](https://github.com/Athroniaeth/piighost)",
+        "- [piighost documentation](https://piighost.dev/)",
+        f"- [This registry, on GitHub]({_REPO})",
+        "",
+    ]
+    return Response(
+        "\n".join(lines) + "\n",
+        media_type=TEXT_MEDIA_TYPE,
+        headers={"Cache-Control": CACHE},
+    )
+
+
+def _labels_of(registry: Registry, head: Snapshot) -> int:
+    """How many labels an object covers, or zero when it carries none."""
+    try:
+        if head.kind == "config":
+            resolved = resolve_config(registry, head)
+            return sum(
+                len(d.labels.labels) for d in resolved.regex_detectors() if d.labels
+            )
+        return len(resolve_labels(registry, head).labels)
+    except ResolutionError:
+        return 0
+
+
+def _one_line(text: str) -> str:
+    """The first sentence of a description, which is where its subject is."""
+    first = text.strip().split(". ")[0].strip()
+    if len(first) > 200:
+        first = first[:197].rsplit(" ", 1)[0] + "…"
+    return first + ("." if first and not first.endswith(".") else "")

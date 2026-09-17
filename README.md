@@ -6,7 +6,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/vFg9GHQR2s)
 
-**[piighost-hub.athroniaeth.cloud](https://piighost-hub.athroniaeth.cloud)**
+**[hub.piighost.dev](https://hub.piighost.dev)**
 
 A registry of tested de-identification regexes for [piighost](https://github.com/Athroniaeth/piighost): **147 patterns** and **48 groups** across **28 countries**, each addressed by name and version, each carrying the cases it must catch and the cases it must leave alone.
 
@@ -63,14 +63,14 @@ INTERNAL_ID = 'EMP-\d{6}'
 ### Over HTTP
 
 ```bash
-curl 'https://piighost-hub.athroniaeth.cloud/api/v1/refs/piighost/logs/latest/pipeline.toml?part=detector'
+curl 'https://hub.piighost.dev/api/v1/refs/piighost/logs/latest/pipeline.toml?part=detector'
 ```
 
 `part=detector` keeps the detector alone, without the stages a configuration chose on your behalf. Drop it for the whole pipeline, add `?keep_refs=true` to get a file that names its hub references instead of inlining them, and `?memory=redis` to append a memory section.
 
 ## Contributing a pattern
 
-The [contribution page](https://piighost-hub.athroniaeth.cloud/contribute) runs the maintainers' own checks on a manifest you write in a form, lets you try it against a real text in your browser, and then hands you a prefilled GitHub link. No account, no token, no write access to this repository from the service: the pull request is yours.
+The [contribution page](https://hub.piighost.dev/contribute) runs the maintainers' own checks on a manifest you write in a form, lets you try it against a real text in your browser, and then hands you a prefilled GitHub link. No account, no token, no write access to this repository from the service: the pull request is yours.
 
 Starting from an existing object is one click, which is usually the right move — a pattern that already passes composition is a better base than a blank field.
 

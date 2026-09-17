@@ -13,6 +13,12 @@ if (!target) {
   throw new Error("Root element #app not found");
 }
 
+// The document arrives with the page already in it, written by
+// scripts/prerender.mjs so a crawler that runs no JavaScript still reads the
+// registry. Svelte 5 appends rather than replaces, so the prerendered copy has
+// to go, or the visitor sees the page twice.
+target.innerHTML = "";
+
 const app = mount(App, {
   target,
 });

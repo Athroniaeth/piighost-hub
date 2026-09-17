@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc -b --noEmit",
+    "build": "vite build && tsc -b --noEmit && node scripts/prerender.mjs",
     "preview": "vite preview",
     "serve": "vite preview",
     "watch": "pnpm run serve",
@@ -46,6 +46,7 @@
     "postcss": "8.5.26",
     "prettier": "^3.9.6",
     "prettier-plugin-svelte": "^4.1.1",
+    "smol-toml": "^1.8.0",
     "svelte-check": "4.7.6",
     "tailwindcss": "4.3.3",
     "tslib": "2.8.1",

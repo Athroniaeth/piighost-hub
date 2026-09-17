@@ -21,7 +21,7 @@ from backend.exceptions import AppError, app_error_handler
 from backend.hub.analytics import Analytics
 from backend.hub.interact import PlaygroundController
 from backend.hub.routes import HubController, load_hub_registry
-from backend.hub.seo import robots, sitemap
+from backend.hub.seo import llms, robots, sitemap
 from backend.hub.usage import Usage, classify, client_of, database_path
 from backend.routes import ApiController
 from backend.security import API_KEY_HEADER, ensure_api_key_configured, identify_client
@@ -232,7 +232,7 @@ app = Litestar(
     plugins=plugins,
     # robots.txt and sitemap.xml sit at the root, where a crawler looks for
     # them, rather than under the /api prefix the rest of Python lives at.
-    route_handlers=[api_router, robots, sitemap],
+    route_handlers=[api_router, llms, robots, sitemap],
     middleware=[rate_limit_config.middleware],
     exception_handlers={AppError: app_error_handler},
     openapi_config=build_openapi_config(docs_enabled=DOCS_ENABLED),

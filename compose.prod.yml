@@ -44,7 +44,7 @@ services:
       # The host /api/op forwards events to, and the origin nginx presents to
       # OpenPanel's allow list. Read once, when the template is rendered.
       OPENPANEL_HOST: ${OPENPANEL_HOST:-opapi.athroniaeth.cloud}
-      SITE_URL: ${SITE_URL:-https://piighost-hub.athroniaeth.cloud}
+      SITE_URL: ${SITE_URL:-https://hub.piighost.dev}
     depends_on:
       api:
         condition: service_healthy

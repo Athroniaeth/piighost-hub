@@ -8,6 +8,8 @@ COPY frontend/package.json frontend/pnpm-lock.yaml ./frontend/
 RUN corepack enable && pnpm -C frontend install --frozen-lockfile
 
 COPY openapi.json ./openapi.json
+# The prerenderer reads the manifests to write one page per object.
+COPY registry ./registry
 COPY frontend ./frontend
 
 # Vite inlines VITE_* at build time, so the analytics client id is a build
