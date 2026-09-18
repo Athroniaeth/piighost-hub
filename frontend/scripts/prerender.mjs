@@ -377,6 +377,21 @@ function staticBody(route, heading, description) {
         ? objectList(configs)
         : "<p>No configuration is published yet. The registry holds patterns and groups.</p>",
     );
+  } else if (route === "/playground") {
+    // Compare is a mode of the playground, not a sibling of it, so it is named
+    // here rather than in the navigation. Without this it is in the sitemap
+    // with nothing pointing at it, which is how a page gets crawled once and
+    // then forgotten.
+    parts.push(
+      '<p><a href="/playground/compare">Compare several objects on the same ' +
+        "text</a>, value by value.</p>",
+    );
+  }
+  if (route === "/") {
+    parts.push(
+      '<p><a href="/stats">What the registry is asked for</a>: pulls, searches ' +
+        "and the objects behind them.</p>",
+    );
   }
   return parts.join("\n      ");
 }
