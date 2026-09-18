@@ -18,6 +18,14 @@
  *
  * Reads the manifests straight from `registry/`, not from the API: a build must
  * not need a running server, and the registry is already in the build context.
+ *
+ * The pages also link to each other. The first version of this script wrote 226
+ * correct documents with no anchors between them, reachable only from the
+ * sitemap: a crawler that landed on one found nothing to follow and left. Every
+ * page now carries the navigation, the catalogue lists every object, and an
+ * object page names the groups that use it, its neighbours by tag, and the
+ * object before and after it in the index — so the whole registry is walkable
+ * from any entry point, which is what a crawler and a reader both need.
  */
 
 import { createHash } from "node:crypto";
@@ -84,6 +92,40 @@ function readRegistry() {
   return objects.sort((a, b) => a.key.localeCompare(b.key));
 }
 
+/** The routes a reader moves between, on every page, as the header has them. */
+const ROUTES = [
+  { route: "/", label: "Catalogue" },
+  { route: "/labels", label: "Labels" },
+  { route: "/configs", label: "Configs" },
+  { route: "/playground", label: "Playground" },
+  { route: "/contribute", label: "Contribute" },
+];
+
+/** The navigation, with the current page left as text rather than a self-link. */
+function nav(current) {
+  const items = ROUTES.map(({ route, label }) =>
+    route === current
+      ? `<li>${esc(label)}</li>`
+      : `<li><a href="${esc(route)}">${esc(label)}</a></li>`,
+  ).join("");
+  return `<nav aria-label="Registry"><ul>${items}</ul></nav>`;
+}
+
+/** A list of objects as links, each followed by the sentence that names it. */
+function objectList(objects) {
+  const items = objects
+    .map(
+      (object) =>
+        `<li><a href="/r/${esc(object.key)}">${esc(object.key)}</a>` +
+        (object.description
+          ? ` — ${esc(summary(object.description, 120))}`
+          : "") +
+        `</li>`,
+    )
+    .join("\n        ");
+  return `<ul>\n        ${items}\n      </ul>`;
+}
+
 /** The first sentence, which is where a description says what it is. */
 function summary(text, limit = 155) {
   const first = String(text).trim().split(". ")[0].trim();
@@ -94,9 +136,18 @@ function summary(text, limit = 155) {
   return clipped + (clipped.endsWith("…") || clipped.endsWith(".") ? "" : ".");
 }
 
-/** The readable body of an object page, which the bundle replaces on mount. */
-function objectBody(object) {
+/**
+ * The readable body of an object page, which the bundle replaces on mount.
+ *
+ * `neighbours` is what turns the page from a leaf into a node: the groups that
+ * use this object, the objects that share a tag with it, and the two objects
+ * either side of it in the catalogue. The last pair matters most — it chains
+ * all 226 pages together, so a crawler that finds one finds the rest without
+ * ever going back to the sitemap.
+ */
+function objectBody(object, neighbours) {
   const parts = [
+    nav(null),
     `<h1>${esc(object.key)}</h1>`,
     `<p>${esc(object.description)}</p>`,
   ];
@@ -133,11 +184,65 @@ function objectBody(object) {
   if (object.tags.length) {
     parts.push(`<p>Tags: ${object.tags.map((t) => esc(t)).join(", ")}</p>`);
   }
+  // The API is disallowed in robots.txt, so the link is for the reader; saying
+  // so keeps it out of a crawler's queue instead of leaving it to be fetched
+  // and refused.
   parts.push(
-    `<p><a href="/api/v1/refs/${esc(object.key)}/latest/pipeline.toml?part=detector">` +
+    `<p><a rel="nofollow" href="/api/v1/refs/${esc(object.key)}/latest/pipeline.toml?part=detector">` +
       `Download the detector as TOML</a></p>`,
   );
+  const { usedBy, related, previous, next } = neighbours;
+  if (usedBy.length) {
+    parts.push(`<h2>Used by</h2>${objectList(usedBy)}`);
+  }
+  if (related.length) {
+    parts.push(`<h2>Related patterns</h2>${objectList(related)}`);
+  }
+  const around = [
+    previous
+      ? `<a rel="prev" href="/r/${esc(previous.key)}">← ${esc(previous.key)}</a>`
+      : null,
+    `<a href="/">All ${esc(object.kind)}s in the catalogue</a>`,
+    next
+      ? `<a rel="next" href="/r/${esc(next.key)}">${esc(next.key)} →</a>`
+      : null,
+  ].filter(Boolean);
+  parts.push(`<nav aria-label="Catalogue">${around.join(" · ")}</nav>`);
   return parts.join("\n      ");
+}
+
+/**
+ * What an object page links to besides itself.
+ *
+ * `related` is capped: a tag like `fr` covers thirty objects, and a page that
+ * links to all of them dilutes the ones that matter. Six is enough to give a
+ * crawler somewhere to go and a reader something to read, and the previous and
+ * next links guarantee the rest is reachable anyway.
+ */
+function neighboursOf(object, objects, index) {
+  const usedBy = objects.filter((other) =>
+    other.sources.some((ref) => ref.split(":")[0] === object.key),
+  );
+  const linked = new Set([
+    object.key,
+    ...usedBy.map((o) => o.key),
+    ...object.sources.map((ref) => ref.split(":")[0]),
+  ]);
+  const tags = new Set(object.tags);
+  const related = objects
+    .filter(
+      (other) =>
+        !linked.has(other.key) &&
+        other.kind === object.kind &&
+        other.tags.some((tag) => tags.has(tag)),
+    )
+    .slice(0, 6);
+  return {
+    usedBy,
+    related,
+    previous: objects[index - 1] ?? null,
+    next: objects[index + 1] ?? null,
+  };
 }
 
 /**
@@ -214,7 +319,7 @@ const objects = readRegistry();
 const counts = { pattern: 0, group: 0, config: 0 };
 for (const object of objects) counts[object.kind] += 1;
 
-for (const object of objects) {
+objects.forEach((object, index) => {
   const kindName = object.kind === "config" ? "piighost config" : object.kind;
   write(
     `/r/${object.key}`,
@@ -223,9 +328,57 @@ for (const object of objects) {
       description: summary(object.description),
       canonical: `${ORIGIN}/r/${object.key}`,
       jsonLd: objectJsonLd(object),
-      body: objectBody(object),
+      body: objectBody(object, neighboursOf(object, objects, index)),
     }),
   );
+});
+
+/**
+ * The bodies of the pages that are not an object.
+ *
+ * The catalogue lists every object rather than a selection. It is the page a
+ * crawler reaches first and the one that carries the most weight, so spending
+ * it on a summary and sending the rest to the sitemap was the wrong trade: one
+ * page of 226 links is how the registry gets crawled at all.
+ */
+function staticBody(route, heading, description) {
+  const parts = [
+    nav(route),
+    `<h1>${esc(heading)}</h1>`,
+    `<p>${esc(description)}</p>`,
+  ];
+  const of = (kind) => objects.filter((object) => object.kind === kind);
+  if (route === "/") {
+    parts.push(`<h2>Patterns</h2>${objectList(of("pattern"))}`);
+    parts.push(`<h2>Groups</h2>${objectList(of("group"))}`);
+    const configs = of("config");
+    if (configs.length)
+      parts.push(`<h2>piighost configs</h2>${objectList(configs)}`);
+  } else if (route === "/labels") {
+    // A label is what a detector emits, and several patterns can emit the same
+    // one. Grouping by label is the question a reader actually arrives with:
+    // "what catches an IBAN?", not "what is piighost/eu-iban?".
+    const byLabel = new Map();
+    for (const object of objects) {
+      if (!object.label) continue;
+      if (!byLabel.has(object.label)) byLabel.set(object.label, []);
+      byLabel.get(object.label).push(object);
+    }
+    const sections = [...byLabel.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(
+        ([label, carriers]) => `<h2>${esc(label)}</h2>${objectList(carriers)}`,
+      );
+    parts.push(sections.join("\n      "));
+  } else if (route === "/configs") {
+    const configs = of("config");
+    parts.push(
+      configs.length
+        ? objectList(configs)
+        : "<p>No configuration is published yet. The registry holds patterns and groups.</p>",
+    );
+  }
+  return parts.join("\n      ");
 }
 
 const STATIC = [
@@ -325,7 +478,7 @@ for (const page of STATIC) {
       description: page.description,
       canonical: `${ORIGIN}${page.route}`,
       jsonLd: catalog,
-      body: `<h1>${esc(page.heading)}</h1>\n      <p>${esc(page.description)}</p>`,
+      body: staticBody(page.route, page.heading, page.description),
     }),
   );
 }
