@@ -130,7 +130,7 @@ export function problems(draft: PatternDraft): Problem[] {
     found.push({ field: "regex", message: "regex.quote" });
   if (draft.en.trim() === "")
     found.push({ field: "en", message: "description.empty" });
-  if (/[—–]/.test(draft.en))
+  if (/[\u2014\u2013]/.test(draft.en))
     found.push({ field: "en", message: "description.dash" });
 
   const matches = draft.matches.filter(
