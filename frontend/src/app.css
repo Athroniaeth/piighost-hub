@@ -1,35 +1,42 @@
-/*
- * Design tokens, taken from piighost-studio so the hub reads as one product with
- * the rest of the ecosystem: shadcn neutral scale, one violet primary, Geist for
- * text and code, 0.625rem radius. Light is the default and dark is a class on
- * <html>, toggled by the visitor, never inferred from the system, as the studio
- * does.
+/* Tokens piighost. NE PAS ÉDITER À LA MAIN.
  *
- * Everything is a real stylesheet, never an inline style: the production CSP is
- * `style-src 'self'` with no `unsafe-inline`. Fonts are self-hosted for the same
- * reason, `default-src 'self'` covers font-src.
+ * Généré par brand/outils/tokens.mjs depuis brand/tokens/tokens.json et
+ * brand/tokens/entites.json. Les cinq surfaces sortent du même objet : la
+ * dérive 73 contre 45 relevée à l'étape 0 venait de fichiers recopiés.
+ *
+ * Cible : piighost-hub, frontend/src/app.css
+ *
+ * Direction : l'Évidence. Sur une interface, la seule couleur qui ne soit pas
+ * de la donnée est --primary, plus --destructive pour les états d'erreur.
+ * --primary est aussi la couleur de la marque depuis le 22 septembre 2026 : le
+ * corail est retiré, le fantôme se reconnaît à sa forme.
+ *
+ * Sombre par défaut depuis l'identité v3, clair en option. La classe .dark est
+ * posée sur <html> par theme.js avant la peinture, jamais déduite du système.
+ * Tout est une vraie feuille de style, jamais un style en ligne : la CSP de
+ * production est style-src 'self' sans unsafe-inline. Les polices sont auto
+ * hébergées pour la même raison.
  */
 
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/schibsted-grotesk";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
 @import "tailwindcss";
 
-/* The label palette lives in a TypeScript module, not in a component. Tailwind
-   keeps only the classes it has seen in a scanned file and skips anything the
-   .gitignore excludes; the root's Python `lib/` rule once matched this folder and
-   every entity chip rendered uncoloured. Naming the module keeps that from
-   coming back with the next ignore rule. */
+/* La palette d'attribution vit dans un module TypeScript, pas dans un
+   composant. Tailwind ne garde que les classes qu'il a vues dans un fichier
+   scanné : nommer le module évite que toutes les pastilles sortent sans
+   couleur. */
 @source "./lib/labels.ts";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono:
-    "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -43,181 +50,273 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  color-scheme: light;
+  --background: oklch(0.978 0.002 220);
+  --foreground: oklch(0.17 0.012 220);
+  --card: oklch(0.996 0.001 220);
+  --card-foreground: oklch(0.17 0.012 220);
+  --popover: oklch(0.996 0.001 220);
+  --popover-foreground: oklch(0.17 0.012 220);
   --primary: oklch(0.51 0.23 277);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.99 0.002 277);
+  --secondary: oklch(0.945 0.003 220);
+  --secondary-foreground: oklch(0.24 0.010 220);
+  --muted: oklch(0.952 0.002 220);
+  --muted-foreground: oklch(0.50 0.008 220);
+  --accent: oklch(0.945 0.003 220);
+  --accent-foreground: oklch(0.24 0.010 220);
+  --destructive: oklch(0.52 0.17 27);
+  --warning: oklch(0.62 0.134 70);
+  --border: oklch(0.862 0.005 220);
+  --input: oklch(0.650 0.007 220);
   --ring: oklch(0.51 0.23 277);
-  --radius: 0.625rem;
+  --sidebar: oklch(0.962 0.002 220);
+  --sidebar-foreground: oklch(0.17 0.012 220);
+  --sidebar-primary: oklch(0.51 0.23 277);
+  --sidebar-primary-foreground: oklch(0.99 0.002 277);
+  --sidebar-accent: oklch(0.932 0.003 220);
+  --sidebar-accent-foreground: oklch(0.24 0.010 220);
+  --sidebar-border: oklch(0.850 0.005 220);
+  --sidebar-ring: oklch(0.51 0.23 277);
+  --destructive-foreground: oklch(0.99 0.002 27);
+  --font-sans: "Schibsted Grotesk Variable", "Schibsted Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-heading: var(--font-sans);
+  --radius: 0.25rem;
+
+  /* Couleurs de donnée. */
+  --chart-1: oklch(0.62 0.16 27);
+  --chart-2: oklch(0.62 0.1535 55);
+  --chart-3: oklch(0.62 0.1271 85);
+  --chart-4: oklch(0.62 0.16 140);
+  --chart-5: oklch(0.62 0.1169 175);
+  --entite-01-valeur-fond: oklch(0.935 0.0328 27);
+  --entite-01-valeur-texte: oklch(0.53 0.15 27);
+  --entite-01-jeton-fond: oklch(0.855 0.0786 27);
+  --entite-01-jeton-texte: oklch(0.47 0.15 27);
+  --entite-01-puce: oklch(0.62 0.16 27);
+  --entite-02-valeur-fond: oklch(0.935 0.0386 55);
+  --entite-02-valeur-texte: oklch(0.52 0.1288 55);
+  --entite-02-jeton-fond: oklch(0.855 0.0918 55);
+  --entite-02-jeton-texte: oklch(0.46 0.1139 55);
+  --entite-02-puce: oklch(0.62 0.1535 55);
+  --entite-03-valeur-fond: oklch(0.935 0.068 85);
+  --entite-03-valeur-texte: oklch(0.52 0.1066 85);
+  --entite-03-jeton-fond: oklch(0.855 0.115 85);
+  --entite-03-jeton-texte: oklch(0.46 0.0943 85);
+  --entite-03-puce: oklch(0.62 0.1271 85);
+  --entite-04-valeur-fond: oklch(0.935 0.068 140);
+  --entite-04-valeur-texte: oklch(0.51 0.15 140);
+  --entite-04-jeton-fond: oklch(0.855 0.115 140);
+  --entite-04-jeton-texte: oklch(0.45 0.1449 140);
+  --entite-04-puce: oklch(0.62 0.16 140);
+  --entite-05-valeur-fond: oklch(0.935 0.068 175);
+  --entite-05-valeur-texte: oklch(0.51 0.0962 175);
+  --entite-05-jeton-fond: oklch(0.855 0.115 175);
+  --entite-05-jeton-texte: oklch(0.46 0.0867 175);
+  --entite-05-puce: oklch(0.62 0.1169 175);
+  --entite-06-valeur-fond: oklch(0.935 0.0509 215);
+  --entite-06-valeur-texte: oklch(0.51 0.0901 215);
+  --entite-06-jeton-fond: oklch(0.855 0.115 215);
+  --entite-06-jeton-texte: oklch(0.46 0.0813 215);
+  --entite-06-puce: oklch(0.62 0.1095 215);
+  --entite-07-valeur-fond: oklch(0.935 0.0334 245);
+  --entite-07-valeur-texte: oklch(0.52 0.1309 245);
+  --entite-07-jeton-fond: oklch(0.855 0.0769 245);
+  --entite-07-jeton-texte: oklch(0.46 0.1158 245);
+  --entite-07-puce: oklch(0.62 0.1561 245);
+  --entite-08-valeur-fond: oklch(0.935 0.0534 330);
+  --entite-08-valeur-texte: oklch(0.53 0.15 330);
+  --entite-08-jeton-fond: oklch(0.855 0.115 330);
+  --entite-08-jeton-texte: oklch(0.47 0.15 330);
+  --entite-08-puce: oklch(0.62 0.16 330);
+
+  /* Marque. Le corail est retiré : elle porte la couleur d'action.
+     Voir brand/charte/CHARTE.md, journal du 22 septembre 2026. */
+  --marque: var(--primary);
+
+  /* Coloration syntaxique : GitHub Primer, cité tel quel.
+     Seul hexadécimal du fichier, voir CHARTE.md section 8. */
+  --code-comment: #656d76;
+  --code-string: #0a3069;
+  --code-keyword: #cf222e;
+  --code-constant: #0550ae;
+  --code-entity: #6639ba;
+  --code-base: #24292f;
+
+  /* Drapeaux du sélecteur de langue. Ne suivent pas le thème :
+     un bleu marine éclairci en sombre serait un autre drapeau. */
+  --flag-white: #ffffff;
+  --flag-fr-blue: #0055a4;
+  --flag-fr-red: #ef4135;
+  --flag-us-blue: #0a3161;
+  --flag-us-red: #b31942;
+
+  /* Couleurs de marque des frameworks cités. Même raison que les
+     drapeaux : elles ne suivent pas le thème. */
+  --logo-langchain: #7fc8ff;
+  --logo-pydantic: #e92063;
+  --logo-discord: #5865f2;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  color-scheme: dark;
+  --background: oklch(0.155 0.010 220);
+  --foreground: oklch(0.962 0.002 220);
+  --card: oklch(0.198 0.011 220);
+  --card-foreground: oklch(0.962 0.002 220);
+  --popover: oklch(0.198 0.011 220);
+  --popover-foreground: oklch(0.962 0.002 220);
   --primary: oklch(0.62 0.19 277);
-  --primary-foreground: oklch(0.13 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --primary-foreground: oklch(0.155 0.010 220);
+  --secondary: oklch(0.262 0.010 220);
+  --secondary-foreground: oklch(0.962 0.002 220);
+  --muted: oklch(0.262 0.010 220);
+  --muted-foreground: oklch(0.715 0.009 220);
+  --accent: oklch(0.262 0.010 220);
+  --accent-foreground: oklch(0.962 0.002 220);
+  --destructive: oklch(0.70 0.155 27);
+  --warning: oklch(0.76 0.14 75);
+  --border: oklch(0.99 0.002 220 / 16%);
+  --input: oklch(0.99 0.002 220 / 38%);
   --ring: oklch(0.62 0.19 277);
+  --sidebar: oklch(0.178 0.010 220);
+  --sidebar-foreground: oklch(0.962 0.002 220);
+  --sidebar-primary: oklch(0.62 0.19 277);
+  --sidebar-primary-foreground: oklch(0.155 0.010 220);
+  --sidebar-accent: oklch(0.262 0.010 220);
+  --sidebar-accent-foreground: oklch(0.962 0.002 220);
+  --sidebar-border: oklch(0.99 0.002 220 / 16%);
+  --sidebar-ring: oklch(0.62 0.19 277);
+  --destructive-foreground: oklch(0.18 0.03 27);
+
+  /* Couleurs de donnée. */
+  --chart-1: oklch(0.62 0.16 27);
+  --chart-2: oklch(0.62 0.1535 55);
+  --chart-3: oklch(0.62 0.1271 85);
+  --chart-4: oklch(0.62 0.16 140);
+  --chart-5: oklch(0.62 0.1169 175);
+  --entite-01-valeur-fond: oklch(0.305 0.068 27);
+  --entite-01-valeur-texte: oklch(0.69 0.13 27);
+  --entite-01-jeton-fond: oklch(0.4 0.09 27);
+  --entite-01-jeton-texte: oklch(0.78 0.1285 27);
+  --entite-01-puce: oklch(0.62 0.16 27);
+  --entite-02-valeur-fond: oklch(0.305 0.068 55);
+  --entite-02-valeur-texte: oklch(0.68 0.13 55);
+  --entite-02-jeton-fond: oklch(0.4 0.09 55);
+  --entite-02-jeton-texte: oklch(0.78 0.13 55);
+  --entite-02-puce: oklch(0.62 0.1535 55);
+  --entite-03-valeur-fond: oklch(0.305 0.0625 85);
+  --entite-03-valeur-texte: oklch(0.68 0.13 85);
+  --entite-03-jeton-fond: oklch(0.4 0.082 85);
+  --entite-03-jeton-texte: oklch(0.78 0.13 85);
+  --entite-03-puce: oklch(0.62 0.1271 85);
+  --entite-04-valeur-fond: oklch(0.305 0.068 140);
+  --entite-04-valeur-texte: oklch(0.67 0.13 140);
+  --entite-04-jeton-fond: oklch(0.4 0.09 140);
+  --entite-04-jeton-texte: oklch(0.78 0.13 140);
+  --entite-04-puce: oklch(0.62 0.16 140);
+  --entite-05-valeur-fond: oklch(0.305 0.0575 175);
+  --entite-05-valeur-texte: oklch(0.67 0.1263 175);
+  --entite-05-jeton-fond: oklch(0.4 0.0754 175);
+  --entite-05-jeton-texte: oklch(0.77 0.13 175);
+  --entite-05-puce: oklch(0.62 0.1169 175);
+  --entite-06-valeur-fond: oklch(0.305 0.0539 215);
+  --entite-06-valeur-texte: oklch(0.67 0.1184 215);
+  --entite-06-jeton-fond: oklch(0.4 0.0707 215);
+  --entite-06-jeton-texte: oklch(0.78 0.13 215);
+  --entite-06-puce: oklch(0.62 0.1095 215);
+  --entite-07-valeur-fond: oklch(0.305 0.068 245);
+  --entite-07-valeur-texte: oklch(0.68 0.13 245);
+  --entite-07-jeton-fond: oklch(0.4 0.09 245);
+  --entite-07-jeton-texte: oklch(0.78 0.12 245);
+  --entite-07-puce: oklch(0.62 0.1561 245);
+  --entite-08-valeur-fond: oklch(0.305 0.068 330);
+  --entite-08-valeur-texte: oklch(0.68 0.13 330);
+  --entite-08-jeton-fond: oklch(0.4 0.09 330);
+  --entite-08-jeton-texte: oklch(0.78 0.13 330);
+  --entite-08-puce: oklch(0.62 0.16 330);
+
+  /* Coloration syntaxique : GitHub Primer, cité tel quel.
+     Seul hexadécimal du fichier, voir CHARTE.md section 8. */
+  --code-comment: #8b949e;
+  --code-string: #a5d6ff;
+  --code-keyword: #ff7b72;
+  --code-constant: #79c0ff;
+  --code-entity: #d2a8ff;
+  --code-base: #c9d1d9;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  html {
-    @apply font-sans antialiased;
-    color-scheme: light;
-  }
-  html.dark {
-    color-scheme: dark;
-  }
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* The studio scales the whole UI on large displays: everything is sized in rem,
-   so bumping the root acts like a browser zoom. Never use px font sizes. */
-@media (min-width: 1920px) {
   html {
-    font-size: 18px;
-  }
-}
-@media (min-width: 2560px) {
-  html {
-    font-size: 21px;
+    @apply font-sans;
   }
 }
 
-.skip-link {
-  position: absolute;
-  left: -9999px;
-}
-.skip-link:focus {
-  @apply left-2 top-2 z-50 rounded-md border bg-background px-3 py-2 text-sm;
-}
+/* Racine typographique variable. Toute l'échelle est en rem, donc remonter la
+   racine agit comme un zoom du navigateur. Relevé dans globals.css:144-153 du
+   studio, repris tel quel : c'est une contrainte, pas un choix. */
+@media (min-width: 1920px) { html { font-size: 18px; } }
+@media (min-width: 2560px) { html { font-size: 21px; } }
 
-/* Syntax tokens for TOML and regex, as classes: a highlighter that wrote
-   `style=` attributes would work in development and be blocked in production. */
-.tok-comment {
-  @apply text-muted-foreground italic;
-}
-.tok-section {
-  @apply font-semibold text-primary;
-}
-.tok-key {
-  @apply text-foreground;
-}
-.tok-string {
-  @apply text-emerald-700 dark:text-emerald-300;
-}
-.tok-number,
-.tok-boolean {
-  @apply text-amber-700 dark:text-amber-300;
-}
-.tok-punctuation {
-  @apply text-muted-foreground;
-}
-
-.tok-class {
-  @apply font-semibold text-primary;
-}
-.tok-escape {
-  @apply text-sky-700 dark:text-sky-300;
-}
-.tok-group {
-  @apply text-rose-700 dark:text-rose-300;
-}
-.tok-set {
-  @apply text-emerald-700 dark:text-emerald-300;
-}
-.tok-quantifier {
-  @apply font-semibold text-amber-700 dark:text-amber-300;
-}
-.tok-alternation,
-.tok-anchor {
-  @apply font-semibold text-fuchsia-700 dark:text-fuchsia-300;
-}
-
-.tok-keyword {
-  @apply font-semibold text-fuchsia-700 dark:text-fuchsia-300;
-}
-.tok-function {
-  @apply text-sky-700 dark:text-sky-300;
-}
-.tok-command {
-  @apply font-semibold text-primary;
-}
-.tok-flag {
-  @apply text-amber-700 dark:text-amber-300;
-}
-
-/* A coverage sheet is meant to be printed: controls go, ink stays black. */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  :root,
-  .dark {
-    --background: #fff;
-    --card: #fff;
-    --foreground: #000;
-    --border: #999;
-  }
-}
-
-/* A popover is `display: none` until it opens, and any author `display` beats
-   that user-agent rule, so a closed panel would draw itself inline and
-   unpositioned. Stated once here rather than as a utility: the layout the
-   picker needs is a column, and only while it is open. */
-[popover]:popover-open {
-  display: flex;
-}
-
-/* The dialog's width, so a caller picks a size with a class rather than an
-   inline style the CSP would refuse. */
-dialog {
-  --modal-width: 34rem;
-}
-
-dialog.modal-wide {
-  --modal-width: 60rem;
-}
+/* Une valeur détectée porte la teinte de sa catégorie et l'intensité de son
+   état : `-valeur` tant qu'elle est en clair, `-jeton` une fois remplacée.
+   Voir brand/tokens/README.md. */
+.entite-01-valeur { background-color: var(--entite-01-valeur-fond); color: var(--entite-01-valeur-texte); }
+.entite-01-jeton  { background-color: var(--entite-01-jeton-fond);  color: var(--entite-01-jeton-texte); }
+.entite-01-puce   { background-color: var(--entite-01-puce); }
+.entite-02-valeur { background-color: var(--entite-02-valeur-fond); color: var(--entite-02-valeur-texte); }
+.entite-02-jeton  { background-color: var(--entite-02-jeton-fond);  color: var(--entite-02-jeton-texte); }
+.entite-02-puce   { background-color: var(--entite-02-puce); }
+.entite-03-valeur { background-color: var(--entite-03-valeur-fond); color: var(--entite-03-valeur-texte); }
+.entite-03-jeton  { background-color: var(--entite-03-jeton-fond);  color: var(--entite-03-jeton-texte); }
+.entite-03-puce   { background-color: var(--entite-03-puce); }
+.entite-04-valeur { background-color: var(--entite-04-valeur-fond); color: var(--entite-04-valeur-texte); }
+.entite-04-jeton  { background-color: var(--entite-04-jeton-fond);  color: var(--entite-04-jeton-texte); }
+.entite-04-puce   { background-color: var(--entite-04-puce); }
+.entite-05-valeur { background-color: var(--entite-05-valeur-fond); color: var(--entite-05-valeur-texte); }
+.entite-05-jeton  { background-color: var(--entite-05-jeton-fond);  color: var(--entite-05-jeton-texte); }
+.entite-05-puce   { background-color: var(--entite-05-puce); }
+.entite-06-valeur { background-color: var(--entite-06-valeur-fond); color: var(--entite-06-valeur-texte); }
+.entite-06-jeton  { background-color: var(--entite-06-jeton-fond);  color: var(--entite-06-jeton-texte); }
+.entite-06-puce   { background-color: var(--entite-06-puce); }
+.entite-07-valeur { background-color: var(--entite-07-valeur-fond); color: var(--entite-07-valeur-texte); }
+.entite-07-jeton  { background-color: var(--entite-07-jeton-fond);  color: var(--entite-07-jeton-texte); }
+.entite-07-puce   { background-color: var(--entite-07-puce); }
+.entite-08-valeur { background-color: var(--entite-08-valeur-fond); color: var(--entite-08-valeur-texte); }
+.entite-08-jeton  { background-color: var(--entite-08-jeton-fond);  color: var(--entite-08-jeton-texte); }
+.entite-08-puce   { background-color: var(--entite-08-puce); }
