@@ -57,7 +57,7 @@ describe("problems", () => {
   });
 
   it("refuses an em-dash in a description", () => {
-    const found = problems(draft({ en: "An order — internal." }));
+    const found = problems(draft({ en: "An order \u2014 internal." }));
     expect(found.map((p) => p.message)).toContain("description.dash");
   });
 

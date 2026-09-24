@@ -54,7 +54,7 @@ export function groupProblems(draft: GroupDraft): Problem[] {
     found.push({ field: "tags", message: "tags.empty" });
   if (draft.en.trim() === "")
     found.push({ field: "en", message: "description.empty" });
-  if (/[—–]/.test(draft.en))
+  if (/[\u2014\u2013]/.test(draft.en))
     found.push({ field: "en", message: "description.dash" });
 
   const sources = draft.sources.filter((source) => source.ref !== "");
