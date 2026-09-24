@@ -9,10 +9,11 @@ describe("assignLabelColors", () => {
     expect(colors.get("IBAN")).toBe(PALETTE[1]);
   });
 
-  it("keeps the fixed labels on their own colour and out of the rotation", () => {
+  it("treats PERSON like any label: the primary is never a data colour", () => {
     const colors = assignLabelColors(["PERSON", "EMAIL"]);
-    expect(colors.get("PERSON")).toBe(FIXED_STYLES.PERSON);
-    expect(colors.get("EMAIL")).toBe(PALETTE[0]);
+    expect(Object.keys(FIXED_STYLES)).toHaveLength(0);
+    expect(colors.get("PERSON")).toBe(PALETTE[0]);
+    expect(colors.get("EMAIL")).toBe(PALETTE[1]);
   });
 
   it("wraps around rather than running out", () => {
