@@ -13,23 +13,29 @@
   <a href="/" class="shrink-0 text-[1.6rem] leading-none">
     <Wordmark />
   </a>
-  {#each items as item, index (index)}
-    <span class="text-muted-foreground/60" aria-hidden="true">/</span>
-    {#if item.href && index < items.length - 1}
-      <a
-        href={item.href}
-        class="truncate text-muted-foreground hover:text-foreground"
-        >{item.label}</a
-      >
-    {:else}
-      <span
-        class={cn(
-          "truncate",
-          index === items.length - 1 ? "font-medium" : "text-muted-foreground",
-        )}
-        aria-current={index === items.length - 1 ? "page" : undefined}
-        >{item.label}</span
-      >
-    {/if}
-  {/each}
+  <!-- Below 640px the trail has no room left and truncated to bare slashes:
+       the wordmark stays alone, and the page's own title carries the context. -->
+  <span class="hidden min-w-0 items-center gap-2 sm:flex">
+    {#each items as item, index (index)}
+      <span class="text-muted-foreground/60" aria-hidden="true">/</span>
+      {#if item.href && index < items.length - 1}
+        <a
+          href={item.href}
+          class="truncate text-muted-foreground hover:text-foreground"
+          >{item.label}</a
+        >
+      {:else}
+        <span
+          class={cn(
+            "truncate",
+            index === items.length - 1
+              ? "font-medium"
+              : "text-muted-foreground",
+          )}
+          aria-current={index === items.length - 1 ? "page" : undefined}
+          >{item.label}</span
+        >
+      {/if}
+    {/each}
+  </span>
 </nav>

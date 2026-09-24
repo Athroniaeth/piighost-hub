@@ -14,7 +14,7 @@
    * takes on the right. Detail pages hand their own trail through the router.
    *
    * Sized like piighost.dev's bar (h-16, px-6, 14px links, the wordmark at
-   * 1.6rem) so moving between the two sites does not jump. Below 768px the
+   * 1.6rem) so moving between the two sites does not jump. Below 1024px the
    * links go into a `details` menu, as on the site: the browser gives keyboard
    * opening, Escape and the no-script fallback for free.
    */
@@ -78,7 +78,7 @@
     <div class="flex shrink-0 items-center gap-1">
       <!-- A wrapper carries the breakpoint: Button always sets inline-flex, and
            cn() does not merge, so `hidden` on the button itself lost to it. -->
-      <nav aria-label={t("nav.main")} class="hidden items-center gap-1 md:flex">
+      <nav aria-label={t("nav.main")} class="hidden items-center gap-1 lg:flex">
         <a href="https://piighost.dev" class={LINK}>piighost.dev</a>
         <a href="/playground" class={LINK}>{t("nav.playground")}</a>
         <Button variant="outline" href="/contribute" class="mx-1"
@@ -96,7 +96,7 @@
         <GithubIcon class="size-5" />
       </Button>
       <ThemeToggle />
-      <details class="group md:hidden" bind:this={menu}>
+      <details class="group lg:hidden" bind:this={menu}>
         <summary
           class="inline-flex size-9 cursor-pointer list-none items-center justify-center rounded-lg transition-colors hover:bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           aria-label={t("nav.menu")}
