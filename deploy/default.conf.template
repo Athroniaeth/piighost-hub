@@ -130,6 +130,16 @@ server {
         try_files $uri =404;
     }
 
+    # The web app manifest: nginx's mime.types has no entry for .webmanifest, so it
+    # went out as application/octet-stream. Same `default_type` approach as .mjs
+    # above, for the same reason.
+    location = /manifest.webmanifest {
+        include /etc/nginx/security-headers.conf;
+
+        default_type application/manifest+json;
+        try_files $uri =404;
+    }
+
     # Asked for by browsers on their own. Without this it falls through to the SPA
     # fallback below and answers HTML with a 200, where an icon is expected.
     location = /favicon.ico {
