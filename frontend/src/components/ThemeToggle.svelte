@@ -13,5 +13,6 @@
   aria-pressed={theme.dark}
   onclick={() => theme.toggle()}
 >
-  {#if theme.dark}<Moon class="size-5" />{:else}<Sun class="size-5" />{/if}
+  <!-- The icon of the mode a click gives, as piighost.dev: a sun in dark mode. -->
+  {#if theme.dark}<Sun class="size-5" />{:else}<Moon class="size-5" />{/if}
 </Button>

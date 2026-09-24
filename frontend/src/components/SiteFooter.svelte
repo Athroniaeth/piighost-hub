@@ -15,6 +15,11 @@
       <p class="text-sm font-semibold">piighost</p>
       <ul class="mt-3 space-y-2 text-sm text-muted-foreground">
         <li>
+          <a class="hover:text-foreground" href="https://piighost.dev"
+            >piighost.dev</a
+          >
+        </li>
+        <li>
           <a
             class="hover:text-foreground"
             href="https://github.com/Athroniaeth/piighost"
