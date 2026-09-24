@@ -16,7 +16,7 @@
 
 <span
   class={cn(
-    "inline-flex items-center gap-[0.35em] font-sans font-bold tracking-[-0.035em]",
+    "inline-flex items-center gap-[0.3125em] font-sans font-bold tracking-[-0.035em]",
     extra,
   )}
 >
