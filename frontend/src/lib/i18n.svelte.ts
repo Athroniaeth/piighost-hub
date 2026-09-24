@@ -17,6 +17,8 @@ const STRINGS = {
     "nav.theme": "Toggle theme",
     "nav.language": "Change language",
     "nav.skip": "Skip to content",
+    "nav.menu": "Menu",
+    "nav.main": "Main navigation",
 
     "home.title": "piighost hub",
     "home.lede":
@@ -276,6 +278,8 @@ const STRINGS = {
     "nav.theme": "Changer de thème",
     "nav.language": "Changer de langue",
     "nav.skip": "Aller au contenu",
+    "nav.menu": "Menu",
+    "nav.main": "Navigation principale",
 
     "home.title": "piighost hub",
     "home.lede":

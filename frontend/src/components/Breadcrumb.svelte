@@ -10,7 +10,7 @@
 </script>
 
 <nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-2 text-sm">
-  <a href="/" class="shrink-0 text-base font-bold tracking-tight">
+  <a href="/" class="shrink-0 text-[1.6rem] leading-none">
     <Wordmark />
   </a>
   {#each items as item, index (index)}
