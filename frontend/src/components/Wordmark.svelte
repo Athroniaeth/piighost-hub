@@ -20,7 +20,7 @@
     extra,
   )}
 >
-  <Logo class="size-[1.2em] shrink-0" />
+  <Logo class="size-[1.17em] shrink-0" />
   <span class="inline-flex items-center gap-[0.25em]">
     <span>piighost</span>
     <span class="text-primary">hub</span>
