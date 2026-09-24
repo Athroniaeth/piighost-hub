@@ -1,13 +1,16 @@
 /**
- * Light by default, dark on request, remembered. The studio does the same and
- * ignores the system preference on purpose: a marketing site and its tools
+ * Dark by default, light on request, remembered (charter v3, as piighost.dev).
+ * The system preference is ignored on purpose: a marketing site and its tools
  * should look identical in a screenshot and on the visitor's screen.
+ *
+ * public/theme.js sets the class before first paint, since the page arrives
+ * prerendered; this module only keeps the state and the toggle.
  */
 
 const STORAGE_KEY = "piighost-hub-theme";
 
 class Theme {
-  dark = $state(localStorage.getItem(STORAGE_KEY) === "dark");
+  dark = $state(localStorage.getItem(STORAGE_KEY) !== "light");
 
   constructor() {
     this.apply();
