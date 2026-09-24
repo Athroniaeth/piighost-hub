@@ -296,6 +296,13 @@ function render(template, { title, description, canonical, jsonLd, body }) {
     /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/,
     `<meta property="og:description" content="${esc(description)}" />`,
   );
+  // og:image in absolute form: link previews (Discord, Slack, X) ignore a
+  // relative URL. A PNG, not the SVG it is drawn from: most of them do not
+  // display SVG at all.
+  html = html.replace(
+    /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/,
+    `<meta property="og:image" content="${esc(ORIGIN)}/og.png" />`,
+  );
   const head = [
     `<link rel="canonical" href="${esc(canonical)}" />`,
     `<meta property="og:url" content="${esc(canonical)}" />`,

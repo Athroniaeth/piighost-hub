@@ -1,0 +1,16 @@
+{
+  "name": "piighost hub",
+  "short_name": "piighost hub",
+  "description": "Tested de-identification regexes: patterns, and the groups that compose them.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "oklch(0.155 0.010 220)",
+  "theme_color": "oklch(0.155 0.010 220)",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "16x16 32x32 48x48 256x256", "type": "image/x-icon" },
+    { "src": "/favicon.svg", "type": "image/svg+xml" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
