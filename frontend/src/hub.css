@@ -98,3 +98,24 @@ dialog {
 dialog.modal-wide {
   --modal-width: 60rem;
 }
+
+/* The interface background, as piighost.dev's (charter, section 7): a field of
+   1px dots every 22px, 13% of the text colour in light mode and 17% in dark,
+   fixed so it does not scroll and stays the same from one page to the next.
+   A dot never draws a line, so it does not compete with the card borders the
+   hub is made of, and it adds no colour: colour here means a detected value.
+   Plain CSS, no image: the production CSP is `default-src 'self'`. */
+body::before {
+  --point: color-mix(in oklch, var(--foreground) 13%, transparent);
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--point) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.dark body::before {
+  --point: color-mix(in oklch, var(--foreground) 17%, transparent);
+}
